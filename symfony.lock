@@ -23,6 +23,9 @@
     "doctrine/common": {
         "version": "3.2.1"
     },
+    "doctrine/data-fixtures": {
+        "version": "1.5.1"
+    },
     "doctrine/dbal": {
         "version": "3.2.0"
     },
@@ -43,6 +46,18 @@
             "config/packages/test/doctrine.yaml",
             "src/Entity/.gitignore",
             "src/Repository/.gitignore"
+        ]
+    },
+    "doctrine/doctrine-fixtures-bundle": {
+        "version": "3.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
+        },
+        "files": [
+            "src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
@@ -82,6 +97,15 @@
     "doctrine/sql-formatter": {
         "version": "1.1.2"
     },
+    "easycorp/easyadmin-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "b131e6cbfe1b898a508987851963fff485986285"
+        }
+    },
     "egulias/email-validator": {
         "version": "3.1.2"
     },
@@ -90,6 +114,12 @@
     },
     "laminas/laminas-code": {
         "version": "4.5.1"
+    },
+    "league/flysystem": {
+        "version": "2.3.2"
+    },
+    "league/mime-type-detection": {
+        "version": "1.9.0"
     },
     "monolog/monolog": {
         "version": "2.3.5"
@@ -136,6 +166,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "stripe/stripe-php": {
+        "version": "v7.108.0"
+    },
     "symfony/asset": {
         "version": "v6.0.1"
     },
@@ -179,6 +212,9 @@
         "version": "v3.0.0"
     },
     "symfony/doctrine-bridge": {
+        "version": "v6.0.1"
+    },
+    "symfony/doctrine-messenger": {
         "version": "v6.0.1"
     },
     "symfony/dotenv": {
@@ -341,6 +377,9 @@
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
     },
+    "symfony/polyfill-uuid": {
+        "version": "v1.23.0"
+    },
     "symfony/process": {
         "version": "v6.0.0"
     },
@@ -433,6 +472,9 @@
             "config/packages/twig.yaml",
             "templates/base.html.twig"
         ]
+    },
+    "symfony/uid": {
+        "version": "v6.0.1"
     },
     "symfony/validator": {
         "version": "6.0",
