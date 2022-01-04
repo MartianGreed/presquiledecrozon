@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+    {{ form_row(form.address, { label: 'Numéro et nom de rue' }) }}
+    {{ form_row(form.address2, { label: 'Appartement, bâtiment (facultatif)' }) }}
+    {{ form_row(form.town, { label: 'Commune' }) }}
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

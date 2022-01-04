@@ -1,5 +1,11 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    form_themes:
+        - 'tailwind_2_layout.html.twig'
+        - '_forms/layout.html.twig'
+
+    globals:
+        app_locale: '%kernel.default_locale%'
 
 when@test:
     twig:

@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+    {{ form_row(form.furnitures, { label: 'Quel type de location proposez-vous ?' }) }}
+    {{ form_row(form.customFurnitures, { label: 'Équipement supplémentaire' }) }}
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

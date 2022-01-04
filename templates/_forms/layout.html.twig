@@ -1,0 +1,90 @@
+{% use 'tailwind_2_layout.html.twig' %}
+
+{%- block counter_row -%}
+    {%- set row_attr = row_attr|merge({
+        'class': 'counter__type__input',
+        'data-controller': 'form-types--counter',
+    }) -%}
+    {{- block('form_row') -}}
+{%- endblock -%}
+
+{%- block counter_widget -%}
+    {%- set widget_attr = { attr: { class: 'counter__type__input__item', 'data-form-types--counter-target': 'input' }} -%}
+    <div class="counter__type__widget__container">
+        <button
+                type="button"
+                aria-hidden="true"
+                class="counter__type__widget__action"
+                data-action="click->form-types--counter#decrease"
+        >-</button>
+        {{- form_widget(form, widget_attr) -}}
+        <button
+                type="button"
+                aria-hidden="true"
+                class="counter__type__widget__action"
+                data-action="click->form-types--counter#increase"
+        >+</button>
+    </div>
+{%- endblock -%}
+
+{%- block bedroom_row -%}
+    {%- set row_attr = row_attr|merge({
+        'class': 'bedroom__type__input',
+        'data-controller': 'form-types--bedroom',
+        'data-action': 'form-types--counter:changeCount->form-types--bedroom#changeBedCount'
+    }) -%}
+    {{- block('form_row') -}}
+{%- endblock -%}
+
+{%- block bedroom_label -%}
+    <div class="bedroom__type__label__wrapper">
+        <div class="bedroom__type__label__container">
+            {{- block('form_label') -}}
+            <button
+                    class="button button__blue"
+                    data-form-types--bedroom-target="fieldToggler"
+                    data-action="click->form-types--bedroom#toggleFields"
+            >
+                Définir le nombre de lits
+            </button>
+        </div>
+        <div>
+            <span class="bedroom__type__input__bed-counter" data-form-types--bedroom-target="bedCounter">0 lit</span>
+        </div>
+    </div>
+
+
+{%- endblock -%}
+
+{%- block bedroom_widget -%}
+    <div class="hidden bedroom__type__fields" data-form-types--bedroom-target="fieldContainer">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock -%}
+
+
+{%- block custom_furnitures_row -%}
+    {% set prototype = form_row(form.vars.prototype) %}
+    {%- set row_attr = row_attr|merge({
+        'class': 'custom_furnitures__type__input',
+        'data-controller': 'form-types--custom-furnitures',
+        'data-prototype': prototype,
+    }) -%}
+
+    {{- block('form_row') -}}
+{%- endblock -%}
+
+{%- block custom_furnitures_widget -%}
+    {{- form_widget(form, { attr: { 'data-form-types--custom-furnitures-target': 'fieldContainer' } }) -}}
+    <div id="custom-furnitures-input">
+        <input type="text" data-form-types--custom-furnitures-target="input" placeholder="Équipement supplémentaire" />
+        <button type="button" class="button button__blue" data-action="form-types--custom-furnitures#addItem">Ajouter</button>
+    </div>
+{%- endblock -%}
+
+{%- block _rental_furnitures_customFurnitures_entry_row -%}
+    <div class="custom_furnitures__type__entry">
+        <button type="button" data-action="form-types--custom-furnitures#removeItem">x</button>
+        {{- block('form_widget') -}}
+    </div>
+{%- endblock -%}

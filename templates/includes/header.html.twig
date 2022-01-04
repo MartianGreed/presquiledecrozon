@@ -1,0 +1,95 @@
+<nav id="header" class="header__container shadow-sm bg-white flex justify-between px-6 py-3 relative">
+    <a class="header__logo" href="{{ url('app_homepage') }}">
+        <img src="{{ asset('build/images/logo.png') }}" alt="Logo Presqu'île de Crozon">
+    </a>
+
+    <div class="header__content hidden md:flex">
+        <ul class="flex gap-4 items-center">
+            <li class="nav-item">
+                <button id="search-btn"><i class="fa fa-search"></i></button>
+            </li>
+            <li class="nav-item dropdown action-menu-header">
+                <div
+                        class="dropdown-button__container"
+                        data-controller="dropdown-button"
+                >
+                    <div>
+                        <button
+                                type="button"
+                                class="dropdown-button__toggler"
+                                id="menu-button"
+                                aria-expanded="true"
+                                aria-haspopup="true"
+                                data-dropdown-button-target="toggler"
+                                data-action="dropdown-button#handleClick"
+                        >
+                            Se loger
+                            <!-- Heroicon name: solid/chevron-down -->
+                            <svg class="transition -mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                 fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd"
+                                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div
+                            class="dropdown-button__content hidden"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="menu-button"
+                            tabindex="-1"
+                            data-dropdown-button-target="menu"
+                    >
+                        <div class="py-1" role="none">
+                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                            <a href="{{ url('app_homepage') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                               role="menuitem" tabindex="-1" id="menu-item-0">Se loger</a>
+                            <a href="{{ url('app_homepage') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                               role="menuitem" tabindex="-1" id="menu-item-1">Se restaurer</a>
+                            <a href="{{ url('app_homepage') }}" class="text-gray-700 block px-4 py-2 text-sm"
+                               role="menuitem" tabindex="-1" id="menu-item-2">Se divertir</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item"><a class="px-3 button button__blue" href="{{ url('app_create_rental') }}">Déposer une
+                    annonce</a></li>
+            <li class="nav-item">
+                <button type="button" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></button>
+            </li>
+        </ul>
+    </div>
+    <div class="md:hidden flex items-center">
+        <button
+                class="outline-none mobile-menu-button ml-3"
+                id="toggler-button"
+                data-controller="mobile-menu"
+                data-mobile-menu-toggle-value="#mobile-menu"
+                data-action="mobile-menu#showMenu"
+        >
+            <svg
+                    class="w-6 h-6 text-gray-700"
+                    id="toggler-svg"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+            >
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+    <div class="hidden mobile-menu absolute top-full w-full bg-white left-0 drop-shadow-xl" id="mobile-menu">
+        <ul class="nav__menu__mobile__container flex-col items-center">
+            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">Portfolio</a></li>
+            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">Process & Methodo</a></li>
+            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}#qui-suis-je" class="block text-sm px-2 py-4 transition duration-300">Qui suis-je ?</a></li>
+            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">MemoMaz ®</a></li>
+        </ul>
+    </div>
+</nav>

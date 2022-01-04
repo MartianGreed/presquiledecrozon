@@ -36,6 +36,9 @@ class Profile
     #[ORM\Column(type: 'string', length: 1, nullable: true)]
     private ?string $gender;
 
+    #[ORM\OneToOne(mappedBy: 'profile', targetEntity: User::class, cascade: ['persist', 'remove'])]
+    private $account;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -121,6 +124,28 @@ class Profile
     public function setGender(?string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getAccount(): ?User
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?User $account): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($account === null && $this->account !== null) {
+            $this->account->setProfile(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($account !== null && $account->getProfile() !== $this) {
+            $account->setProfile($this);
+        }
+
+        $this->account = $account;
 
         return $this;
     }

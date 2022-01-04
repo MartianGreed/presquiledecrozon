@@ -24,12 +24,17 @@ class PostalCode
     #[ORM\JoinColumn(nullable: false)]
     private ?Department $department;
 
-    #[ORM\ManyToMany(targetEntity: Town::class, mappedBy: 'postalCodes')]
+    #[ORM\OneToMany(mappedBy: 'postalCodes', targetEntity: Town::class)]
     private Collection $towns;
 
     public function __construct()
     {
         $this->towns = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->code;
     }
 
     public function getId(): ?string

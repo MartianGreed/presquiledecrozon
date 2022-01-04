@@ -1,0 +1,44 @@
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+:root {
+    --primaryColor: #006287;
+    --primaryLight: #e8f0f3;
+    --secondaryColor: #f89da4;
+    --yellow: #d8a42e;
+    --red: #e74c3c;
+    --greenBorder: #85d6c7;
+    --grey: #464f56;
+    --lightGrey: #f7f5f2;
+    --lightFontGrey: #a7a9ab;
+    --white: #fff;
+    --searchBtnBg: #eeeeee;
+    --formLabel: #979797;
+
+    --footerMain: #4A4A4A;
+    --footerLightGrey: #D8D8D8;
+    --footerCopyright: #979797;
+    --formBorder: rgba(0, 91, 125, 0.14);
+
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+}
+
+body {
+    min-height: 100vh;
+}
+
+@import 'components/components';
+@import 'pages/pages';

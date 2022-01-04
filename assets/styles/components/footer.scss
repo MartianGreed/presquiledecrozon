@@ -1,0 +1,33 @@
+.footer {
+    &__wrapper {
+
+    }
+
+    &__container {
+        @apply container mx-3 md:mx-auto;
+
+        .footer__primary {
+            @apply flex flex-col md:flex-row gap-0 md:gap-6 justify-center border-b border-b-gray-300 mb-3;
+
+            a {
+                &.footer__primary__item {
+                    @apply text-gray-700 p-1 md:p-3;
+                }
+            }
+        }
+
+        .footer__secondary {
+            @apply flex flex-col md:flex-row gap-1 md:gap-3 justify-start md:justify-center divide-x-0 md:divide-x-2 divide-gray-300;
+
+            a {
+                &.footer__secondary__item {
+                    @apply flex w-full text-blue justify-start md:justify-center p-1 md:p-3;
+                }
+            }
+        }
+
+        .footer__copyright {
+            @apply text-center text-gray-400 mt-3;
+        }
+    }
+}

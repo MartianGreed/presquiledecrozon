@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    {{ form_row(form.rentalType, { label: 'Quel type de location proposez-vous ?' }) }}
+    {{ form_row(form.peopleCount, { label: 'Nombre de personnes' }) }}
+    {{ form_row(form.bedroomCount, {
+        label: 'Nombre de chambres',
+        row_attr: { 'data-form-types--counter-update-field-value': '#bedroom-count'
+        }
+    }) }}
+    {{ form_row(form.bedrooms, { label: 'Nombre de couchages', id: 'bedroom-count' }) }}
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

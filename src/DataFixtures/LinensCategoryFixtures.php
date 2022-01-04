@@ -11,6 +11,7 @@ class LinensCategoryFixtures extends Fixture
     public const LINENS_BAIN = 'linens-bain';
     public const LINENS_HOUSE = 'linens-house';
     public const LINENS_NIGHT = 'linens-night';
+    public const LINENS_LITTERY = 'linens-littery';
 
     public function load(ObjectManager $manager): void
     {
@@ -20,8 +21,11 @@ class LinensCategoryFixtures extends Fixture
         $houseLinens = $this->createLinensCategory($manager, 'Linge de maison');
         $this->addReference(self::LINENS_HOUSE, $houseLinens);
 
-        $nightLinens = $this->createLinensCategory($manager, 'Linge de nuit');
+        $nightLinens = $this->createLinensCategory($manager, 'Linge de lit');
         $this->addReference(self::LINENS_NIGHT, $nightLinens);
+
+        $literyLinens = $this->createLinensCategory($manager, 'Literie');
+        $this->addReference(self::LINENS_LITTERY, $literyLinens);
 
         $manager->flush();
     }

@@ -1,0 +1,13 @@
+{% extends 'create_rental/create-rental-layout.html.twig' %}
+
+{% block create_rental_aside %}
+    <h2>Bonjour Joël</h2>
+    <p>
+        Nous démarrons le processus de mise en ligne de votre logement pour de la location de particuliers à particuliers.<br /><br />Afin de conserver vos informations, nous vous recommandons de cliquer sur le boutton "Sauvegarder".
+    </p>
+{% endblock %}
+
+{% block create_rental_main %}
+    <h1>Equipements</h1>
+    {% include 'create_rental/_forms/furnitures.html.twig' with { form: form } %}
+{% endblock %}

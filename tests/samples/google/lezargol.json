@@ -1,0 +1,79 @@
+{
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "Lézargol",
+          "short_name": "Lézargol",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Argol",
+          "short_name": "Argol",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Finistère",
+          "short_name": "Finistère",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Bretagne",
+          "short_name": "Bretagne",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "France",
+          "short_name": "FR",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "29560",
+          "short_name": "29560",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "Lézargol, 29560 Argol, France",
+      "geometry": {
+        "location": {
+          "lat": 48.2133309,
+          "lng": -4.31496
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 48.2207656,
+            "lng": -4.2989526
+          },
+          "southwest": {
+            "lat": 48.2058951,
+            "lng": -4.3309674
+          }
+        }
+      },
+      "place_id": "ChIJv5DKo-zOFkgRkHypv8-lDAo",
+      "types": [
+        "neighborhood",
+        "political"
+      ]
+    }
+  ],
+  "status": "OK"
+}

@@ -1,0 +1,15 @@
+.create__rental {
+    @apply container mx-auto;
+
+    &__container {
+        @apply grid grid-cols-1 mx-3 md:mx-0 md:grid-cols-6 my-12 gap-0 md:gap-6;
+    }
+
+    &__aside {
+        @apply col-span-2 bg-sky-200 text-blue p-3;
+    }
+
+    &__main {
+        @apply col-span-4;
+    }
+}

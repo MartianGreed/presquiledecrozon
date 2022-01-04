@@ -1,0 +1,63 @@
+label.required:after {
+    content: '*';
+
+    @apply ml-2;
+}
+
+input[type="checkbox"] {
+    @apply mr-2;
+}
+
+.counter__type__input {
+    .counter__type__widget__action {
+        @apply text-blue p-2;
+    }
+
+    .counter__type__input__item {
+        @apply w-20 px-4 py-2 text-center text-blue;
+    }
+}
+
+.bedroom__type__input {
+    .bedroom__type__label__wrapper {
+        @apply border-b border-b-gray-300 pb-3 mt-3;
+
+        .bedroom__type__label__container {
+            @apply flex justify-between;
+        }
+
+        .bedroom__type__input__bed-counter {
+            @apply text-gray-400 text-xs;
+        }
+    }
+
+
+    .bedroom__type__fields {
+        @apply py-3 border-b border-b-gray-300;
+
+        .counter__type__input {
+            @apply flex flex-row-reverse items-center justify-end;
+
+            label { @apply ml-3; }
+        }
+    }
+}
+
+#rental_furnitures_furnitures {
+    @apply grid grid-cols-4 gap-6 my-6;
+}
+
+#custom-furnitures-input {
+    input {
+        @apply px-3 py-2 border-2 rounded-lg border-blue text-xs;
+    }
+    button {
+
+    }
+}
+
+.custom_furnitures__type__entry {
+    @apply flex gap-x-2 my-2;
+}
+
+

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déposez votre annonce{% endblock %}
+{% set content_class = 'create__rental' %}
+
+{% block body %}
+    <div class="create__rental__container">
+        <aside class="create__rental__aside">
+            {% block create_rental_aside '' %}
+        </aside>
+        <div class="create__rental__main">
+            {% block create_rental_main '' %}
+        </div>
+    </div>
+{% endblock %}

@@ -24,12 +24,17 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface
         'Taie d\'oreiller',
         'Traversin',
     ];
+    public static $literyLinens = [
+        'Oreiller/traversin',
+        'Couette',
+    ];
 
     public function load(ObjectManager $manager): void
     {
         $this->createLinensForCategory($manager, static::$bathLinens, LinensCategoryFixtures::LINENS_BAIN);
         $this->createLinensForCategory($manager, static::$houseLinens, LinensCategoryFixtures::LINENS_HOUSE);
         $this->createLinensForCategory($manager, static::$nightLinens, LinensCategoryFixtures::LINENS_NIGHT);
+        $this->createLinensForCategory($manager, static::$literyLinens, LinensCategoryFixtures::LINENS_LITTERY);
 
         $manager->flush();
     }

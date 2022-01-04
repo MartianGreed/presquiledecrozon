@@ -1,0 +1,88 @@
+{
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "25",
+          "short_name": "25",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Place Grégoire Bordillon",
+          "short_name": "Pl. Grégoire Bordillon",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "Angers",
+          "short_name": "Angers",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Maine-et-Loire",
+          "short_name": "Maine-et-Loire",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pays de la Loire",
+          "short_name": "Pays de la Loire",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "France",
+          "short_name": "FR",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "49100",
+          "short_name": "49100",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "25 Pl. Grégoire Bordillon, 49100 Angers, France",
+      "geometry": {
+        "location": {
+          "lat": 47.4738125,
+          "lng": -0.5624408
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 47.4751614802915,
+            "lng": -0.561091819708498
+          },
+          "southwest": {
+            "lat": 47.4724635197085,
+            "lng": -0.5637897802915021
+          }
+        }
+      },
+      "place_id": "ChIJ1-I0jsV4CEgR3mREnXHopKg",
+      "plus_code": {
+        "compound_code": "FCFQ+G2 Angers, France",
+        "global_code": "8CVXFCFQ+G2"
+      },
+      "types": [
+        "street_address"
+      ]
+    }
+  ],
+  "status": "OK"
+}

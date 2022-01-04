@@ -2,14 +2,20 @@
 
 namespace App\Entity;
 
+use App\Entity\Rental\Rental;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,13 +25,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\Email]
     private string $email;
 
     #[ORM\Column(type: 'json')]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
     #[ORM\Column(type: 'string')]
     private string $password;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Rental::class)]
+    private $rentals;
+
+    #[ORM\OneToOne(inversedBy: 'account', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
+    private $profile;
+
+    public function __construct()
+    {
+        $this->rentals = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -95,5 +113,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Rental[]
+     */
+    public function getRentals(): Collection
+    {
+        return $this->rentals;
+    }
+
+    public function addRental(Rental $rental): self
+    {
+        if (!$this->rentals->contains($rental)) {
+            $this->rentals[] = $rental;
+            $rental->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRental(Rental $rental): self
+    {
+        if ($this->rentals->removeElement($rental)) {
+            // set the owning side to null (unless already changed)
+            if ($rental->getOwner() === $this) {
+                $rental->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?Profile $profile): self
+    {
+        $this->profile = $profile;
+
+        return $this;
     }
 }

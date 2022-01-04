@@ -26,12 +26,12 @@ class Town
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $inseeCode;
 
-    #[ORM\ManyToMany(targetEntity: PostalCode::class, inversedBy: 'towns')]
-    private Collection $postalCodes;
+    #[ORM\ManyToOne(targetEntity: PostalCode::class, inversedBy: 'towns')]
+    private ?PostalCode $postalCode = null;
 
-    public function __construct()
+    public function __toString(): string
     {
-        $this->postalCodes = new ArrayCollection();
+        return $this->name;
     }
 
     public function getId(): ?string
@@ -75,27 +75,14 @@ class Town
         return $this;
     }
 
-    /**
-     * @return Collection|PostalCode[]
-     */
-    public function getPostalCodes(): Collection
+    public function getPostalCode(): PostalCode
     {
-        return $this->postalCodes;
+        return $this->postalCode;
     }
 
-    public function addPostalCode(PostalCode $postalCode): self
+    public function setPostalCode(PostalCode $postalCode): self
     {
-        if (!$this->postalCodes->contains($postalCode)) {
-            $this->postalCodes[] = $postalCode;
-        }
-
-        return $this;
-    }
-
-    public function removePostalCode(PostalCode $postalCode): self
-    {
-        $this->postalCodes->removeElement($postalCode);
-
+        $this->postalCode = $postalCode;
         return $this;
     }
 }

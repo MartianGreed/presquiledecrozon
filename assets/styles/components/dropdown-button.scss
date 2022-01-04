@@ -1,0 +1,42 @@
+.dropdown-button {
+    &__container {
+        @apply relative inline-block text-left;
+
+
+        &.toggled {
+            .dropdown-button__toggler {
+                svg {
+                    @apply rotate-0;
+                }
+            }
+        }
+    }
+
+    &__toggler {
+        @apply inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 rounded-full;
+
+        svg {
+            @apply -rotate-90;
+        }
+    }
+
+    &__content {
+        @apply transition ease-out duration-100 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none;
+
+        &.appear-enter {
+            @apply transform opacity-0 scale-95;
+        }
+
+        &.appear-enter-active {
+            @apply transform opacity-100 scale-100;
+        }
+
+        &.appear-leave {
+            @apply transform opacity-100 scale-100;
+        }
+
+        &.appear-leave-active {
+            @apply transform opacity-0 scale-95;
+        }
+    }
+}
