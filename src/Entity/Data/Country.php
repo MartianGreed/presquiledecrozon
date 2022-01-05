@@ -15,14 +15,15 @@ class Country
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private ?string $code;
+    private ?string $code = null;
 
+    /** @var ArrayCollection<int, Region> */
     #[ORM\OneToMany(mappedBy: 'country', targetEntity: Region::class)]
     private Collection $regions;
 
@@ -61,7 +62,7 @@ class Country
     }
 
     /**
-     * @return Collection|Region[]
+     * @psalm-return ArrayCollection<int, Region>
      */
     public function getRegions(): Collection
     {
@@ -80,12 +81,7 @@ class Country
 
     public function removeRegion(Region $region): self
     {
-        if ($this->regions->removeElement($region)) {
-            // set the owning side to null (unless already changed)
-            if ($region->getCountry() === $this) {
-                $region->setCountry(null);
-            }
-        }
+        $this->regions->removeElement($region);
 
         return $this;
     }

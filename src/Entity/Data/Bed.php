@@ -14,16 +14,16 @@ class Bed
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $label;
+    private ?string $label = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $help;
+    private ?string $help = null;
 
     #[ORM\Column(type: 'bed_size', nullable: true)]
-    private ?BedSize $size;
+    private ?BedSize $size = null;
 
     public function getId(): ?string
     {
@@ -54,9 +54,10 @@ class Bed
         return $this;
     }
 
+    /** @psalm-return array<string, int>|null */
     public function getSize(): ?array
     {
-        return $this->size;
+        return $this->size?->toArray();
     }
 
     public function setSize(?BedSize $size): self

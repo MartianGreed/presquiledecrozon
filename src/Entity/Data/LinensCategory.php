@@ -15,11 +15,12 @@ class LinensCategory
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
+    /** @var ArrayCollection<int, Linens> */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Linens::class)]
     private Collection $linens;
 
@@ -46,7 +47,7 @@ class LinensCategory
     }
 
     /**
-     * @return Collection|Linens[]
+     * @psalm-return ArrayCollection<int, Linens>
      */
     public function getLinens(): Collection
     {
@@ -65,12 +66,7 @@ class LinensCategory
 
     public function removeLinen(Linens $linen): self
     {
-        if ($this->linens->removeElement($linen)) {
-            // set the owning side to null (unless already changed)
-            if ($linen->getCategory() === $this) {
-                $linen->setCategory(null);
-            }
-        }
+        $this->linens->removeElement($linen);
 
         return $this;
     }

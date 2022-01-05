@@ -11,17 +11,15 @@ class Geolocation
 {
     use IdentityTrait;
 
-    #[ORM\Column(type: 'json')]
-    private array $coordinates;
-
     #[ORM\OneToOne(mappedBy: 'geolocation', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
 
-    private function __construct(array $location)
+    /** @param array<string, array<string|int>|float> $coordinates  */
+    private function __construct(#[ORM\Column(type: 'json')] private array $coordinates)
     {
-        $this->coordinates = $location;
     }
 
+    /** @param array<string, array<string|int>|float> $location  */
     final public static function new(array $location): self
     {
         if (!array_key_exists('lat', $location) || !array_key_exists('lng', $location)) {
@@ -36,11 +34,13 @@ class Geolocation
         return $this->setRental($rental);
     }
 
+    /** @psalm-return array<string, array<string|int>|float> */
     public function getCoordinates(): ?array
     {
         return $this->coordinates;
     }
 
+    /** @param array<string, array<string|int>|float> $coordinates */
     public function setCoordinates(array $coordinates): self
     {
         $this->coordinates = $coordinates;
@@ -53,15 +53,9 @@ class Geolocation
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setGeolocation(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getGeolocation() !== $this) {
+        if ($rental->getGeolocation() !== $this) {
             $rental->setGeolocation($this);
         }
 

@@ -19,8 +19,9 @@ class Configuration
     private RentalType $type;
 
     #[ORM\Column(type: 'integer')]
-    private ?int $peopleCount;
+    private int $peopleCount;
 
+    /** @var ArrayCollection<int, Bedroom> */
     #[ORM\OneToMany(mappedBy: 'configuration', targetEntity: Bedroom::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $bedrooms;
 
@@ -33,19 +34,19 @@ class Configuration
         $this->bedrooms = new ArrayCollection();
     }
 
-    public function getType(): ?RentalType
+    public function getType(): RentalType
     {
         return $this->type;
     }
 
-    public function setType(?RentalType $type): self
+    public function setType(RentalType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getPeopleCount(): ?int
+    public function getPeopleCount(): int
     {
         return $this->peopleCount;
     }
@@ -58,7 +59,7 @@ class Configuration
     }
 
     /**
-     * @return Collection|Bedroom[]
+     * @psalm-return ArrayCollection<int, Bedroom>
      */
     public function getBedrooms(): Collection
     {
@@ -77,12 +78,7 @@ class Configuration
 
     public function removeBedroom(Bedroom $bedroom): self
     {
-        if ($this->bedrooms->removeElement($bedroom)) {
-            // set the owning side to null (unless already changed)
-            if ($bedroom->getConfiguration() === $this) {
-                $bedroom->setConfiguration(null);
-            }
-        }
+        $this->bedrooms->removeElement($bedroom);
 
         return $this;
     }

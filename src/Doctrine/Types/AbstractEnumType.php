@@ -5,37 +5,50 @@ namespace App\Doctrine\Types;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
+/**
+ * @template T
+ */
 abstract class AbstractEnumType extends Type
 {
-    protected $name;
+    protected string $name;
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
-        $values = array_map(function($val) { return "'".$val->value."'"; }, $this->getCases());
+        $values = array_map(static fn ($val) => "'" . $val->value . "'", $this->getCases());
 
-        return "ENUM(".implode(", ", $values).")";
+        return "ENUM(" . implode(", ", $values) . ")";
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    /**
+     * @param string $value
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         return $this->tryFrom($value);
     }
 
+    /**
+     * @param T $value
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         return $value->value;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;
     }
 
+    /**
+     * @return non-empty-array<T>
+     */
     abstract protected function getCases(): array;
+
     abstract protected function tryFrom(string $value): mixed;
 }

@@ -8,19 +8,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 final class BedroomType extends AbstractType
 {
-    private BedRepository $bedRepository;
-
-    public function __construct(BedRepository $bedRepository)
+    public function __construct(private readonly BedRepository $bedRepository)
     {
-        $this->bedRepository = $bedRepository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $beds = $this->bedRepository->findAll();
 
         foreach ($beds as $bed) {
-            $builder->add($bed->getId(), CounterType::class, [
+            $builder->add((string) $bed->getId(), CounterType::class, [
                 'label' => $bed->getLabel(),
                 'attr' => [
                     'data-action' => 'form-types--bedroom#changeBedCount'
@@ -29,7 +26,7 @@ final class BedroomType extends AbstractType
         }
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'bedroom';
     }

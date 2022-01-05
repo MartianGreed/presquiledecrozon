@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Profile|null findOneBy(array $criteria, array $orderBy = null)
  * @method Profile[]    findAll()
  * @method Profile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Profile>
  */
 class ProfileRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class ProfileRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Profile::class);
     }
-
-    // /**
-    //  * @return Profile[] Returns an array of Profile objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Profile
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

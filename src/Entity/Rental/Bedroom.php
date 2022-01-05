@@ -18,6 +18,7 @@ class Bedroom
     #[ORM\JoinColumn(nullable: false)]
     private Configuration $configuration;
 
+    /** @var ArrayCollection<int, Bed> */
     #[ORM\ManyToMany(targetEntity: Bed::class)]
     private Collection $beds;
 
@@ -27,7 +28,7 @@ class Bedroom
     }
 
     /**
-     * @return Collection|Bed[]
+     * @psalm-return ArrayCollection<int, Bed>
      */
     public function getBeds(): Collection
     {
@@ -51,12 +52,12 @@ class Bedroom
     }
 
 
-    public function getConfiguration(): ?Configuration
+    public function getConfiguration(): Configuration
     {
         return $this->configuration;
     }
 
-    public function setConfiguration(?Configuration $configuration): self
+    public function setConfiguration(Configuration $configuration): self
     {
         $this->configuration = $configuration;
 

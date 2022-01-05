@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterUserType;
+use App\Security\SecurityUserDTO;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/logout', name: 'app_logout')]
-    public function logout(): void
+    public function logout(): never
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
@@ -44,8 +45,10 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var SecurityUserDTO $dto */
             $dto = $form->getData();
             $user = new User();
+
             $user->setEmail($dto->email)->setPassword($passwordHasher->hashPassword($user, $dto->password));
 
             $manager->persist($user);

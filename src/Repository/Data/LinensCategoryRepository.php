@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method LinensCategory|null findOneBy(array $criteria, array $orderBy = null)
  * @method LinensCategory[]    findAll()
  * @method LinensCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<LinensCategory>
  */
 class LinensCategoryRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class LinensCategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, LinensCategory::class);
     }
-
-    // /**
-    //  * @return LinensCategory[] Returns an array of LinensCategory objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?LinensCategory
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

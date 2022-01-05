@@ -17,6 +17,7 @@ class Condition
     #[ORM\Column(type: 'boolean')]
     private bool $smokingAllowed = false;
 
+    /** @var array<int, string>  */
     #[ORM\Column(type: 'array')]
     private array $additionnalRules = [];
 
@@ -47,11 +48,13 @@ class Condition
         return $this;
     }
 
+    /** @psalm-return array<int, string>  */
     public function getAdditionnalRules(): ?array
     {
         return $this->additionnalRules;
     }
 
+    /** @param array<int, string> $additionnalRules */
     public function setAdditionnalRules(array $additionnalRules): self
     {
         $this->additionnalRules = $additionnalRules;
@@ -64,15 +67,9 @@ class Condition
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setCondition(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getCondition() !== $this) {
+        if ($rental->getCondition() !== $this) {
             $rental->setCondition($this);
         }
 

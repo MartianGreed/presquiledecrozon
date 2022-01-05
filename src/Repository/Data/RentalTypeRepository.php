@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method RentalType|null findOneBy(array $criteria, array $orderBy = null)
  * @method RentalType[]    findAll()
  * @method RentalType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<RentalType>
  */
 class RentalTypeRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class RentalTypeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RentalType::class);
     }
-
-    // /**
-    //  * @return RentalType[] Returns an array of RentalType objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?RentalType
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Preferences|null findOneBy(array $criteria, array $orderBy = null)
  * @method Preferences[]    findAll()
  * @method Preferences[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Preferences>
  */
 class PreferencesRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class PreferencesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Preferences::class);
     }
-
-    // /**
-    //  * @return Preferences[] Returns an array of Preferences objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Preferences
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

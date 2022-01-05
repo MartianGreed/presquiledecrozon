@@ -11,18 +11,12 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class RentalConfigurationService
 {
-    private BedRepository $bedRepository;
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager, BedRepository $bedRepository)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly BedRepository $bedRepository)
     {
-        $this->entityManager = $entityManager;
-        $this->bedRepository = $bedRepository;
     }
 
     public function createConfiguration(Rental $rental, ConfigurationDTO $configurationDTO): Configuration
     {
-
         $configuration = null === $rental->getConfiguration()
             ? $this->createConfigurationObjectFromDTO($rental, $configurationDTO)
             : $this->updateConfigurationObjectFromDTO($rental, $configurationDTO)
@@ -44,7 +38,13 @@ final class RentalConfigurationService
 
     private function updateConfigurationObjectFromDTO(Rental $rental, ConfigurationDTO $configurationDTO): Configuration
     {
-        return $this->hydrateConfigurationObjectFromDTO($rental->getConfiguration(), $configurationDTO);
+        $configuration = $rental->getConfiguration();
+
+        if (null === $configuration) {
+            throw new \LogicException('Configuration cannot be null when updating');
+        }
+
+        return $this->hydrateConfigurationObjectFromDTO($configuration, $configurationDTO);
     }
 
     private function hydrateConfigurationObjectFromDTO(Configuration $configuration, ConfigurationDTO $configurationDTO): Configuration
@@ -56,7 +56,12 @@ final class RentalConfigurationService
                     continue;
                 }
 
-                $bedroom->addBed($this->bedRepository->find($bedId));
+                $bed = $this->bedRepository->find($bedId);
+                if (null === $bed) {
+                    throw new \LogicException('Bed with ID: ' . $bedId . ' does not exists');
+                }
+
+                $bedroom->addBed($bed);
             }
 
             $configuration->addBedroom($bedroom);

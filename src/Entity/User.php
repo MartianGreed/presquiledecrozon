@@ -22,23 +22,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\Email]
     private string $email;
 
+    /** @var array<string>  */
     #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_USER'];
 
     #[ORM\Column(type: 'string')]
     private string $password;
 
+    /** @var ArrayCollection<int, Rental>  */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Rental::class)]
-    private $rentals;
+    private Collection $rentals;
 
     #[ORM\OneToOne(inversedBy: 'account', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
-    private $profile;
+    private ?Profile $profile = null;
 
     public function __construct()
     {
@@ -74,6 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
+     * @psalm-return array<string>
      */
     public function getRoles(): array
     {
@@ -84,6 +87,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @param array<string> $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -109,15 +115,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection|Rental[]
-     */
+    /** @psalm-return ArrayCollection<int, Rental>  */
     public function getRentals(): Collection
     {
         return $this->rentals;

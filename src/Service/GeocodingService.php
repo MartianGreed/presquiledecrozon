@@ -3,21 +3,16 @@
 namespace App\Service;
 
 use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Domain\Rental\Service\GeocodingServiceInterface;
+use App\Entity\Data\Town;
 use App\Entity\Rental\Address;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class GeocodingService
+final class GeocodingService implements GeocodingServiceInterface
 {
-    private HttpClientInterface $client;
-    private string $apiUrl;
-    private string $apiKey;
-
-    public function __construct(HttpClientInterface $client, string $apiUrl, string $apiKey)
+    public function __construct(private readonly HttpClientInterface $client, private readonly string $apiUrl, private readonly string $apiKey)
     {
-        $this->client = $client;
-        $this->apiUrl = $apiUrl;
-        $this->apiKey = $apiKey;
     }
 
     public function geocode(Address $address): GeolocationDTO
@@ -58,10 +53,23 @@ final class GeocodingService
         if (null !== $address->getAddress2()) {
             $formatted .= ',+' . $address->getAddress2();
         }
-        $formatted .= ',+' . $address->getTown()->getName();
-        $formatted .= ',+' . $address->getTown()->getPostalCode()->getCode();
-        $formatted .= ',+' . $address->getTown()->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName();
+
+        $town = $this->getTownObjectFromAddress($address);
+
+        $formatted .= ',+' . $town->getName();
+        $formatted .= ',+' . $town->getPostalCode()->getCode();
+        $formatted .= ',+' . $town->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName();
 
         return $formatted;
+    }
+
+    private function getTownObjectFromAddress(Address $address): Town
+    {
+        $town = $address->getTown();
+        if (null === $town) {
+            throw new \LogicException('Town cannot be null to geocode an Address');
+        }
+
+        return $town;
     }
 }

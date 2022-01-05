@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Price|null findOneBy(array $criteria, array $orderBy = null)
  * @method Price[]    findAll()
  * @method Price[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Price>
  */
 class PriceRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class PriceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Price::class);
     }
-
-    // /**
-    //  * @return Price[] Returns an array of Price objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Price
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -13,6 +13,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Rental|null findOneBy(array $criteria, array $orderBy = null)
  * @method Rental[]    findAll()
  * @method Rental[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Rental>
  */
 class RentalRepository extends ServiceEntityRepository
 {
@@ -28,9 +30,10 @@ class RentalRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('r');
 
+        /** @var ?Rental $rental */
         $rental = $qb
             ->select('r')
-            ->where($qb->expr()->neq('r.status', "'". Status::PUBLISHED->value ."'"))
+            ->where($qb->expr()->neq('r.status', "'" . Status::PUBLISHED->value . "'"))
             ->andWhere($qb->expr()->eq('r.owner', "'$userId'"))
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
@@ -39,8 +42,9 @@ class RentalRepository extends ServiceEntityRepository
         ;
 
         if (null === $rental) {
-            throw new EntityNotFoundException('No unpublished rental found for user :'. $userId);
+            throw new EntityNotFoundException('No unpublished rental found for user :' . $userId);
         }
+
 
         return $rental;
     }

@@ -14,10 +14,10 @@ class Linens
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $label;
+    private ?string $label = null;
 
     #[ORM\ManyToOne(targetEntity: LinensCategory::class, inversedBy: 'linens')]
     #[ORM\JoinColumn(nullable: false)]
@@ -40,12 +40,12 @@ class Linens
         return $this;
     }
 
-    public function getCategory(): ?LinensCategory
+    public function getCategory(): LinensCategory
     {
         return $this->category;
     }
 
-    public function setCategory(?LinensCategory $category): self
+    public function setCategory(LinensCategory $category): self
     {
         $this->category = $category;
 

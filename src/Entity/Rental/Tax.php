@@ -12,10 +12,10 @@ class Tax
     use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private $localTax;
+    private string $localTax;
 
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
-    private ?int $cleaningTax;
+    private ?int $cleaningTax = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $linensTax = null;
@@ -59,20 +59,15 @@ class Tax
         return $this;
     }
 
-    public function getRental(): ?Rental
+    public function getRental(): Rental
     {
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setTax(null);
-        }
-
         // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getTax() !== $this) {
+        if ($rental->getTax() !== $this) {
             $rental->setTax($this);
         }
 

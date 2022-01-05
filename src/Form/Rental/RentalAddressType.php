@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RentalAddressType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('address', TextType::class)
@@ -21,12 +21,12 @@ final class RentalAddressType extends AbstractType
             ])
             ->add('town', EntityType::class, [
                 'class' => Town::class,
-                'choice_label' => static fn(Town $town) => sprintf('(%s) %s', $town->getPostalCode()->getCode(), $town->getName())
+                'choice_label' => static fn (Town $town) => sprintf('(%s) %s', $town->getPostalCode()->getCode(), $town->getName())
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Address::class,

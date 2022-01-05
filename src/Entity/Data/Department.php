@@ -15,18 +15,19 @@ class Department
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $slug;
+    private ?string $slug = null;
 
     #[ORM\ManyToOne(targetEntity: Region::class, inversedBy: 'departments')]
     #[ORM\JoinColumn(nullable: false)]
     private Region $region;
 
+    /** @var ArrayCollection<int, PostalCode> */
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: PostalCode::class)]
     private Collection $postalCodes;
 
@@ -64,12 +65,12 @@ class Department
         return $this;
     }
 
-    public function getRegion(): ?Region
+    public function getRegion(): Region
     {
         return $this->region;
     }
 
-    public function setRegion(?Region $region): self
+    public function setRegion(Region $region): self
     {
         $this->region = $region;
 
@@ -77,7 +78,7 @@ class Department
     }
 
     /**
-     * @return Collection|PostalCode[]
+     * @psalm-return ArrayCollection<int, PostalCode>
      */
     public function getPostalCodes(): Collection
     {
@@ -96,12 +97,7 @@ class Department
 
     public function removePostalCode(PostalCode $postalCode): self
     {
-        if ($this->postalCodes->removeElement($postalCode)) {
-            // set the owning side to null (unless already changed)
-            if ($postalCode->getDepartment() === $this) {
-                $postalCode->setDepartment(null);
-            }
-        }
+        $this->postalCodes->removeElement($postalCode);
 
         return $this;
     }

@@ -14,25 +14,15 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class RentalService
 {
-    private EntityManagerInterface $manager;
-    private RentalRepository $rentalRepository;
-    private MessageBusInterface $bus;
-
-    public function __construct(
-        EntityManagerInterface $manager,
-        RentalRepository $rentalRepository,
-        MessageBusInterface $bus
-    ) {
-        $this->manager = $manager;
-        $this->rentalRepository = $rentalRepository;
-        $this->bus = $bus;
+    public function __construct(private readonly EntityManagerInterface $manager, private readonly RentalRepository $rentalRepository, private readonly MessageBusInterface $bus)
+    {
     }
 
     public function findOrCreateRental(User $user): Rental
     {
         try {
-            return $this->rentalRepository->findLatestDraftRentalForUser($user->getId());
-        } catch (EntityNotFoundException $e) {
+            return $this->rentalRepository->findLatestDraftRentalForUser((string) $user->getId());
+        } catch (EntityNotFoundException) {
             $rental = Rental::new($user);
 
             $this->manager->persist($rental);
@@ -46,7 +36,10 @@ final class RentalService
     {
         $rental->saveDescription($description);
 
-        $this->manager->persist($rental->getDescription());
+        /** @var Description $rentalDescription */
+        $rentalDescription = $rental->getDescription();
+
+        $this->manager->persist($rentalDescription);
         $this->saveEntity($rental);
 
         return $rental;
@@ -56,18 +49,14 @@ final class RentalService
     {
         $rental->saveAddress($address);
 
-        $this->manager->persist($rental->getAddress());
+        /** @var Address $rentalAddress */
+        $rentalAddress = $rental->getAddress();
+
+        $this->manager->persist($rentalAddress);
         $this->saveEntity($rental);
 
-        $address = $rental->getAddress();
         $this->bus->dispatch(
-            new FetchRentalGeolocation(
-                $rental->getId(),
-                $address->getAddress(),
-                $address->getTown()->getName(),
-                $address->getTown()->getPostalCode()->getCode(),
-                $address->getAddress2(),
-            )
+            new FetchRentalGeolocation((string) $rental->getId())
         );
 
         return $rental;

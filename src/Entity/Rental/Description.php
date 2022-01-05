@@ -12,10 +12,10 @@ class Description
     use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $title;
+    private ?string $title = null;
 
     #[ORM\Column(type: 'text')]
-    private ?string $description;
+    private ?string $description = null;
 
     #[ORM\OneToOne(mappedBy: 'description', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
@@ -49,15 +49,9 @@ class Description
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setDescription(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getDescription() !== $this) {
+        if ($rental->getDescription() !== $this) {
             $rental->setDescription($this);
         }
 

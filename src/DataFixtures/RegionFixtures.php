@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Data\Country;
 use App\Entity\Data\Region;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -9,12 +10,13 @@ use Doctrine\Persistence\ObjectManager;
 
 class RegionFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const REGION_BRETAGNE = 'region-bretagne';
+    final public const REGION_BRETAGNE = 'region-bretagne';
 
     public function load(ObjectManager $manager): void
     {
         $region = new Region();
 
+        /** @var Country $country */
         $country = $this->getReference(CountryFixtures::COUNTRY_FRANCE);
 
         $region

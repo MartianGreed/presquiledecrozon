@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Domain\Rental\DTO\ConfigurationDTO;
 use App\Domain\Rental\Service\RentalConfigurationService;
-use App\Domain\Rental\Service\RentalDescriptionService;
 use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Description;
+use App\Entity\Rental\Rental;
 use App\Form\Rental\RentalAddressType;
 use App\Form\Rental\RentalDescriptionType;
 use App\Form\Rental\RentalFurnituresType;
@@ -21,11 +21,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/deposez-votre-annonce')]
 class CreateRentalController extends AbstractController
 {
-    private RentalService $rentalService;
+    use WithUserTrait;
 
-    public function __construct(RentalService $rentalService)
+    public function __construct(private readonly RentalService $rentalService)
     {
-        $this->rentalService = $rentalService;
     }
 
     #[Route('/configuration', name: 'app_create_rental')]
@@ -42,8 +41,10 @@ class CreateRentalController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $configurationService->createConfiguration($rental, $form->getData());
-            } catch (\Exception $e) {
+                /** @var ConfigurationDTO $data */
+                $data = $form->getData();
+                $configurationService->createConfiguration($rental, $data);
+            } catch (\Exception) {
                 $form->addError(new FormError('Nous avons eu un probleme lors de l\'enregistrement de la configuration de votre logement.'));
 
                 return $this->renderForm('create_rental/configuration.html.twig', [
@@ -68,7 +69,9 @@ class CreateRentalController extends AbstractController
         $form = $this->createForm(RentalFurnituresType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->rentalService->saveEntity($form->getData());
+            /** @var Rental $data */
+            $data = $form->getData();
+            $this->rentalService->saveEntity($data);
 
             return $this->redirectToRoute('app_create_rental_description');
         }
@@ -79,16 +82,16 @@ class CreateRentalController extends AbstractController
     }
 
     #[Route('/description', name: 'app_create_rental_description')]
-    public function description(
-        Request $request,
-        RentalDescriptionService $descriptionService,
-    ): Response {
+    public function description(Request $request): Response
+    {
         $rental = $this->rentalService->findOrCreateRental($this->getUser());
 
         $form = $this->createForm(RentalDescriptionType::class, $rental->getDescription() ?? new Description());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->rentalService->saveDescription($rental, $form->getData());
+            /** @var Description $data */
+            $data = $form->getData();
+            $this->rentalService->saveDescription($rental, $data);
 
             return $this->redirectToRoute('app_create_rental_address');
         }
@@ -99,16 +102,16 @@ class CreateRentalController extends AbstractController
     }
 
     #[Route('/adresse', name: 'app_create_rental_address')]
-    public function address(
-        Request $request,
-        RentalDescriptionService $descriptionService,
-    ): Response {
+    public function address(Request $request): Response
+    {
         $rental = $this->rentalService->findOrCreateRental($this->getUser());
 
         $form = $this->createForm(RentalAddressType::class, $rental->getAddress() ?? new Address());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->rentalService->saveAddress($rental, $form->getData());
+            /** @var Address $data */
+            $data = $form->getData();
+            $this->rentalService->saveAddress($rental, $data);
 
             return $this->redirectToRoute('app_create_rental_description');
         }

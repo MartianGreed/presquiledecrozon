@@ -4,7 +4,7 @@ namespace App\Tests\Unit\App\Service;
 
 use App\Entity\Rental\Address;
 use App\Service\GeocodingService;
-use App\Tests\Unit\App\Factory\Rental\TownFactory;
+use App\Tests\Unit\App\Factory\TownFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +13,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class GeocodingServiceTest extends TestCase
 {
-    private HttpClientInterface|MockObject $clientMock;
+    private MockObject $clientMock;
     private GeocodingService $service;
 
 
@@ -56,7 +56,8 @@ final class GeocodingServiceTest extends TestCase
 
     private function createResponseInterfaceMock(): ResponseInterface
     {
-        $responseContent = file_get_contents(dirname(dirname(dirname(__DIR__))).'/samples/google/lezargol.json');
+        /** @var string $responseContent */
+        $responseContent = file_get_contents(dirname(__DIR__, 3) . '/samples/google/lezargol.json');
 
         $responseMock = $this->createMock(ResponseInterface::class);
 

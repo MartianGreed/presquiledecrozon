@@ -14,6 +14,7 @@ use App\Entity\Rental\Price;
 use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
 use App\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 trait RentalAccessorTrait
@@ -46,6 +47,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
+    /** @psalm-return ArrayCollection<int, Furniture>  */
     final public function getFurnitures(): Collection
     {
         return $this->furnitures;
@@ -67,11 +69,13 @@ trait RentalAccessorTrait
         return $this;
     }
 
+    /** @psalm-return array<int, string>  */
     final public function getCustomFurnitures(): ?array
     {
         return $this->customFurnitures;
     }
 
+    /** @psalm-param array<int, string> $customFurnitures  */
     final public function setCustomFurnitures(array $customFurnitures): self
     {
         $this->customFurnitures = $customFurnitures;
@@ -139,6 +143,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
+    /** @psalm-return ArrayCollection<int, Unavailability>  */
     final public function getUnavailabilities(): Collection
     {
         return $this->unavailabilities;
@@ -156,13 +161,7 @@ trait RentalAccessorTrait
 
     final public function removeUnavailability(Unavailability $unavailability): self
     {
-        if ($this->unavailabilities->removeElement($unavailability)) {
-            // set the owning side to null (unless already changed)
-            if ($unavailability->getRental() === $this) {
-                $unavailability->setRental(null);
-            }
-        }
-
+        $this->unavailabilities->removeElement($unavailability);
         return $this;
     }
 
@@ -190,6 +189,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
+    /** @psalm-return ArrayCollection<int, Price>  */
     final public function getPrices(): Collection
     {
         return $this->prices;
@@ -207,12 +207,7 @@ trait RentalAccessorTrait
 
     final public function removePrice(Price $price): self
     {
-        if ($this->prices->removeElement($price)) {
-            // set the owning side to null (unless already changed)
-            if ($price->getRental() === $this) {
-                $price->setRental(null);
-            }
-        }
+        $this->prices->removeElement($price);
 
         return $this;
     }

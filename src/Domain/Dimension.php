@@ -4,13 +4,8 @@ namespace App\Domain;
 
 class Dimension
 {
-    protected int $height;
-    protected int $width;
-
-    public function __construct(int $height, int $width)
+    public function __construct(protected int $height, protected int $width)
     {
-        $this->height = $height;
-        $this->width = $width;
     }
 
     final public function getHeight(): int
@@ -23,6 +18,9 @@ class Dimension
         return $this->width;
     }
 
+    /**
+     * @return array{height: int, width: int}
+     */
     final public function toArray(): array
     {
         return [

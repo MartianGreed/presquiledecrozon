@@ -3,33 +3,41 @@
 namespace App\DataFixtures;
 
 use App\Entity\Data\Linens;
+use App\Entity\Data\LinensCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class LinensFixtures extends Fixture implements DependentFixtureInterface
 {
-    public static $bathLinens = [
+    /** @var non-empty-array<string> */
+    public static array $bathLinens = [
         'Serviette de toilette',
         'Drap de plage',
         'Drap de bain',
     ];
-    public static $houseLinens = [
+
+    /** @var non-empty-array<string> */
+    public static array $houseLinens = [
         'Serviette de table',
         'Torchons',
     ];
-    public static $nightLinens = [
+
+    /** @var non-empty-array<string> */
+    public static array $nightLinens = [
         'Drap housse',
         'Housse de couette',
         'Taie d\'oreiller',
         'Traversin',
     ];
-    public static $literyLinens = [
+
+    /** @var non-empty-array<string> */
+    public static array $literyLinens = [
         'Oreiller/traversin',
         'Couette',
     ];
 
-    public function load(ObjectManager $manager): void
+    final public function load(ObjectManager $manager): void
     {
         $this->createLinensForCategory($manager, static::$bathLinens, LinensCategoryFixtures::LINENS_BAIN);
         $this->createLinensForCategory($manager, static::$houseLinens, LinensCategoryFixtures::LINENS_HOUSE);
@@ -39,8 +47,13 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * @param non-empty-array<string> $names
+     *
+     */
     private function createLinensForCategory(ObjectManager $manager, array $names, string $categoryKey): void
     {
+        /** @var LinensCategory $category */
         $category = $this->getReference($categoryKey);
         foreach ($names as $item) {
             $linen = (new Linens())->setLabel($item);
@@ -50,7 +63,7 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface
         }
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [LinensCategoryFixtures::class];
     }

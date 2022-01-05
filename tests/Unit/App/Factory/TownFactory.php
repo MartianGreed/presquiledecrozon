@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Unit\App\Factory\Rental;
+namespace App\Tests\Unit\App\Factory;
 
 use App\Entity\Data\Town;
 

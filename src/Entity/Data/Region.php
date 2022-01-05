@@ -15,27 +15,28 @@ class Region
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private ?string $prefix1;
+    private ?string $prefix1 = null;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private ?string $prefix2;
+    private ?string $prefix2 = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $slug;
+    private ?string $slug = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $displayOldName = false;
 
     #[ORM\ManyToOne(targetEntity: Country::class, inversedBy: 'regions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Country $country;
+    private Country $country;
 
+    /** @var ArrayCollection<int, Department> */
     #[ORM\OneToMany(mappedBy: 'region', targetEntity: Department::class)]
     private Collection $departments;
 
@@ -109,12 +110,12 @@ class Region
         return $this;
     }
 
-    public function getCountry(): ?Country
+    public function getCountry(): Country
     {
         return $this->country;
     }
 
-    public function setCountry(?Country $country): self
+    public function setCountry(Country $country): self
     {
         $this->country = $country;
 
@@ -122,7 +123,7 @@ class Region
     }
 
     /**
-     * @return Collection|Department[]
+     * @psalm-return ArrayCollection<int, Department>
      */
     public function getDepartments(): Collection
     {
@@ -141,12 +142,7 @@ class Region
 
     public function removeDepartment(Department $department): self
     {
-        if ($this->departments->removeElement($department)) {
-            // set the owning side to null (unless already changed)
-            if ($department->getRegion() === $this) {
-                $department->setRegion(null);
-            }
-        }
+        $this->departments->removeElement($department);
 
         return $this;
     }

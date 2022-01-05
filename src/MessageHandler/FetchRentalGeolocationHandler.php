@@ -2,29 +2,25 @@
 
 namespace App\MessageHandler;
 
+use App\Domain\Rental\Service\GeocodingServiceInterface;
 use App\Entity\Rental\Geolocation;
 use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;
-use App\Service\GeocodingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 final class FetchRentalGeolocationHandler implements MessageHandlerInterface
 {
-    private RentalRepository $rentalRepository;
-    private GeocodingService $geocodingService;
-    private EntityManagerInterface $manager;
-
-    public function __construct(RentalRepository $rentalRepository, GeocodingService $geocodingService, EntityManagerInterface $manager)
-    {
-        $this->rentalRepository = $rentalRepository;
-        $this->geocodingService = $geocodingService;
-        $this->manager = $manager;
+    public function __construct(
+        private readonly RentalRepository $rentalRepository,
+        private readonly GeocodingServiceInterface $geocodingService,
+        private readonly EntityManagerInterface $manager
+    ) {
     }
 
-    public function __invoke(FetchRentalGeolocation $message)
+    public function __invoke(FetchRentalGeolocation $message): void
     {
-        $rental = $this->rentalRepository->find($message->getRentalId());
+        $rental = $this->rentalRepository->find($message->rentalId);
         if (null === $rental) {
             throw new \LogicException('Rental is null');
         }

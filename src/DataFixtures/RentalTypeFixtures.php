@@ -8,11 +8,11 @@ use Doctrine\Persistence\ObjectManager;
 
 class RentalTypeFixtures extends Fixture
 {
-    public const RENTAL_TYPE_FLAT = 'rental-type-flat';
-    public const RENTAL_TYPE_HOUSE = 'rental-type-house';
-    public const RENTAL_TYPE_HOST = 'rental-type-host';
-    public const RENTAL_TYPE_CHALET = 'rental-type-chalet';
-    public const RENTAL_TYPE_TRAILER = 'rental-type-trailer';
+    final public const RENTAL_TYPE_FLAT = 'rental-type-flat';
+    final public const RENTAL_TYPE_HOUSE = 'rental-type-house';
+    final public const RENTAL_TYPE_HOST = 'rental-type-host';
+    final public const RENTAL_TYPE_CHALET = 'rental-type-chalet';
+    final public const RENTAL_TYPE_TRAILER = 'rental-type-trailer';
 
     public function load(ObjectManager $manager): void
     {

@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Unavailability|null findOneBy(array $criteria, array $orderBy = null)
  * @method Unavailability[]    findAll()
  * @method Unavailability[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Unavailability>
  */
 class UnavailabilityRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class UnavailabilityRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Unavailability::class);
     }
-
-    // /**
-    //  * @return Unavailability[] Returns an array of Unavailability objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Unavailability
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

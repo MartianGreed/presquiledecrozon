@@ -14,14 +14,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class RentalInformationsType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('rentalType', EntityType::class, [
-                'class'        => RentalType::class,
+                'class' => RentalType::class,
                 'choice_label' => 'label',
-                'expanded'     => true,
-                'multiple'     => false,
+                'expanded' => true,
+                'multiple' => false,
             ])
             ->add('peopleCount', CounterType::class)
             ->add('bedroomCount', CounterType::class)
@@ -36,7 +36,7 @@ final class RentalInformationsType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => ConfigurationDTO::class,

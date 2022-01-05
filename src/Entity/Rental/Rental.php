@@ -25,9 +25,11 @@ class Rental
     #[ORM\OneToOne(mappedBy: 'rental', targetEntity: Configuration::class, cascade: ['persist', 'remove'])]
     private ?Configuration $configuration = null;
 
+    /** @var ArrayCollection<int, Furniture>  */
     #[ORM\ManyToMany(targetEntity: Furniture::class)]
     private Collection $furnitures;
 
+    /** @var array<int, string>  */
     #[ORM\Column(type: 'array')]
     private array $customFurnitures = [];
 
@@ -35,7 +37,7 @@ class Rental
     private ?Description $description = null;
 
     #[ORM\Column(type: 'string', length: 255, unique: true, nullable: true)]
-    private ?string $slug;
+    private ?string $slug = null;
 
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Address::class, cascade: ['persist', 'remove'])]
     private ?Address $address = null;
@@ -46,6 +48,7 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'])]
     private ?Preferences $preferences = null;
 
+    /** @var ArrayCollection<int, Unavailability>  */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true)]
     private Collection $unavailabilities;
 
@@ -55,6 +58,7 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Condition::class, cascade: ['persist', 'remove'])]
     private ?Condition $condition = null;
 
+    /** @var ArrayCollection<int, Price>  */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Price::class, orphanRemoval: true)]
     private Collection $prices;
 
@@ -66,7 +70,7 @@ class Rental
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'rentals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner;
+    private ?User $owner = null;
 
     public function __construct()
     {
@@ -93,8 +97,8 @@ class Rental
         }
 
         $this->description
-             ->setTitle($description->getTitle())
-             ->setDescription($description->getDescription())
+             ->setTitle((string) $description->getTitle())
+             ->setDescription((string) $description->getDescription())
         ;
 
         return $this;
@@ -108,7 +112,7 @@ class Rental
         }
 
         $this->address
-            ->setAddress($address->getAddress())
+            ->setAddress((string) $address->getAddress())
             ->setAddress2($address->getAddress2())
             ->setTown($address->getTown())
         ;

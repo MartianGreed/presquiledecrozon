@@ -8,7 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class CountryFixtures extends Fixture
 {
-    public const COUNTRY_FRANCE = 'country-france';
+    final public const COUNTRY_FRANCE = 'country-france';
 
     public function load(ObjectManager $manager): void
     {

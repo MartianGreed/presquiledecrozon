@@ -7,16 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: FurnitureRepository::class)]
-class Furniture
+class Furniture implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     public function getId(): ?string
     {
@@ -37,6 +37,6 @@ class Furniture
 
     public function __toString(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 }

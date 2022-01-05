@@ -14,7 +14,7 @@ final class BedSizeType extends JsonType
     /**
      * {@inheritdoc}
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if ($value === null) {
             return null;
@@ -24,27 +24,21 @@ final class BedSizeType extends JsonType
             throw new NotSupported('Value has to be of type BedSize to use this doctrine type');
         }
 
-        try {
-            return (string) $value;
-        } catch (JsonException $e) {
-            throw ConversionException::conversionFailedSerialization($value, 'json', $e->getMessage(), $e);
-        }
+        return (string) $value;
     }
 
     /**
      * {@inheritdoc}
+     * @param ?string $value
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
         if ($value === null || $value === '') {
             return null;
         }
 
-        if (is_resource($value)) {
-            $value = stream_get_contents($value);
-        }
-
         try {
+            /** @var array<string, int> $sizeObj */
             $sizeObj = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
             return new BedSize((int) $sizeObj['height'], (int) $sizeObj['width']);
         } catch (JsonException $e) {

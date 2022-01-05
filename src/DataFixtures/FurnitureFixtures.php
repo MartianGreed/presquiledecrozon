@@ -8,7 +8,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class FurnitureFixtures extends Fixture
 {
-    private static $furnitures = [
+    /** @var non-empty-array<string>  */
+    private array $furnitures = [
         'Piscine',
         'TV',
         'Garages / parking',
@@ -32,7 +33,7 @@ class FurnitureFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        foreach (static::$furnitures as $furniture) {
+        foreach ($this->furnitures as $furniture) {
             $this->createFurniture($manager, $furniture);
         }
 
@@ -45,6 +46,5 @@ class FurnitureFixtures extends Fixture
         $furniture->setName($name);
 
         $manager->persist($furniture);
-
     }
 }

@@ -11,6 +11,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Bedroom|null findOneBy(array $criteria, array $orderBy = null)
  * @method Bedroom[]    findAll()
  * @method Bedroom[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Bedroom>
  */
 class BedroomRepository extends ServiceEntityRepository
 {
@@ -18,33 +20,4 @@ class BedroomRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Bedroom::class);
     }
-
-    // /**
-    //  * @return Bedroom[] Returns an array of Bedroom objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Bedroom
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

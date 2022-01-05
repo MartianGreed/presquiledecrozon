@@ -9,29 +9,29 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: TownRepository::class)]
-class Town
+class Town implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name;
+    private ?string $name = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $slug;
+    private ?string $slug = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $inseeCode;
+    private ?string $inseeCode = null;
 
     #[ORM\ManyToOne(targetEntity: PostalCode::class, inversedBy: 'towns')]
-    private ?PostalCode $postalCode = null;
+    private PostalCode $postalCode;
 
     public function __toString(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 
     public function getId(): ?string

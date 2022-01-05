@@ -7,9 +7,10 @@ use App\Entity\Rental\Configuration;
 
 final class ConfigurationDTO
 {
-    public ?RentalType $rentalType = null;
+    public RentalType $rentalType;
     public int $peopleCount = 0;
     public int $bedroomCount = 0;
+    /** @var array<int, array<string, int>> */
     public array $bedrooms = [];
 
     public static function fromEntity(Configuration $configuration): self
@@ -21,10 +22,14 @@ final class ConfigurationDTO
         $self->bedroomCount = $configuration->getBedrooms()->count();
 
         for ($i = 0; $i < $self->bedroomCount; $i++) {
-            $bedroom  = $configuration->getBedrooms()->get($i);
+            $bedroom = $configuration->getBedrooms()->get($i);
+            if (null === $bedroom) {
+                continue;
+            }
+
             $self->bedrooms[] = [];
             foreach ($bedroom->getBeds() as $bed) {
-                if (!array_key_exists($bed->getId(), $self->bedrooms[$i])) {
+                if (!array_key_exists((string) $bed->getId(), $self->bedrooms[$i])) {
                     $self->bedrooms[$i][$bed->getId()] = 0;
                 }
 
@@ -34,5 +39,4 @@ final class ConfigurationDTO
 
         return $self;
     }
-
 }

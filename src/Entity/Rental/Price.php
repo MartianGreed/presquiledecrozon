@@ -12,16 +12,16 @@ class Price
     use IdentityTrait;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $rangeStart;
+    private ?\DateTimeInterface $rangeStart = null;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $rangeEnd;
+    private ?\DateTimeInterface $rangeEnd = null;
 
     #[ORM\Column(type: 'integer')]
-    private ?int $weeklyRate;
+    private ?int $weeklyRate = null;
 
     #[ORM\Column(type: 'integer')]
-    private ?int $dailyRate;
+    private ?int $dailyRate = null;
 
     #[ORM\ManyToOne(targetEntity: Rental::class, inversedBy: 'prices')]
     #[ORM\JoinColumn(nullable: false)]
@@ -75,12 +75,12 @@ class Price
         return $this;
     }
 
-    public function getRental(): ?Rental
+    public function getRental(): Rental
     {
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
         $this->rental = $rental;
 

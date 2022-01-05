@@ -9,21 +9,22 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: PostalCodeRepository::class)]
-class PostalCode
+class PostalCode implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private ?string $code;
+    private ?string $code = null;
 
     #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'postalCodes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Department $department;
+    private Department $department;
 
+    /** @var ArrayCollection<int, Town>  */
     #[ORM\OneToMany(mappedBy: 'postalCodes', targetEntity: Town::class)]
     private Collection $towns;
 
@@ -34,7 +35,7 @@ class PostalCode
 
     public function __toString(): string
     {
-        return $this->code;
+        return $this->code ?? '';
     }
 
     public function getId(): ?string
@@ -54,12 +55,12 @@ class PostalCode
         return $this;
     }
 
-    public function getDepartment(): ?Department
+    public function getDepartment(): Department
     {
         return $this->department;
     }
 
-    public function setDepartment(?Department $department): self
+    public function setDepartment(Department $department): self
     {
         $this->department = $department;
 
@@ -67,7 +68,7 @@ class PostalCode
     }
 
     /**
-     * @return Collection|Town[]
+     * @psalm-return ArrayCollection<int, Town>
      */
     public function getTowns(): Collection
     {
@@ -78,7 +79,7 @@ class PostalCode
     {
         if (!$this->towns->contains($town)) {
             $this->towns[] = $town;
-            $town->addPostalCode($this);
+            $town->setPostalCode($this);
         }
 
         return $this;
@@ -86,9 +87,7 @@ class PostalCode
 
     public function removeTown(Town $town): self
     {
-        if ($this->towns->removeElement($town)) {
-            $town->removePostalCode($this);
-        }
+        $this->towns->removeElement($town);
 
         return $this;
     }

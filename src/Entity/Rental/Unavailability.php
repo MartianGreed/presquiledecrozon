@@ -12,10 +12,10 @@ class Unavailability
     use IdentityTrait;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $startAt;
+    private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $endAt;
+    private ?\DateTimeInterface $endAt = null;
 
     #[ORM\ManyToOne(targetEntity: Rental::class, inversedBy: 'unavailabilities')]
     #[ORM\JoinColumn(nullable: false)]
@@ -46,12 +46,12 @@ class Unavailability
         return $this;
     }
 
-    public function getRental(): ?Rental
+    public function getRental(): Rental
     {
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
         $this->rental = $rental;
 

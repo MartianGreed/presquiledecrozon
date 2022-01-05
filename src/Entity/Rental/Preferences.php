@@ -12,82 +12,76 @@ class Preferences
     use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $acceptedLastBooking;
+    private ?string $acceptedLastBooking = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $maxTimeBeforeBooking;
+    private ?string $maxTimeBeforeBooking = null;
 
     #[ORM\Column(type: 'time')]
-    private ?string $beginBookingAt;
+    private ?string $beginBookingAt = null;
 
     #[ORM\Column(type: 'time')]
-    private ?string $endBookingAt;
+    private ?string $endBookingAt = null;
 
     #[ORM\OneToOne(mappedBy: 'preferences', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
 
-    public function getAcceptedLastBooking(): ?string
+    final public function getAcceptedLastBooking(): ?string
     {
         return $this->acceptedLastBooking;
     }
 
-    public function setAcceptedLastBooking(string $acceptedLastBooking): self
+    final public function setAcceptedLastBooking(string $acceptedLastBooking): self
     {
         $this->acceptedLastBooking = $acceptedLastBooking;
 
         return $this;
     }
 
-    public function getMaxTimeBeforeBooking(): ?string
+    final public function getMaxTimeBeforeBooking(): ?string
     {
         return $this->maxTimeBeforeBooking;
     }
 
-    public function setMaxTimeBeforeBooking(string $maxTimeBeforeBooking): self
+    final public function setMaxTimeBeforeBooking(string $maxTimeBeforeBooking): self
     {
         $this->maxTimeBeforeBooking = $maxTimeBeforeBooking;
 
         return $this;
     }
 
-    public function getBeginBookingAt(): ?\DateTimeInterface
+    final public function getBeginBookingAt(): ?string
     {
         return $this->beginBookingAt;
     }
 
-    public function setBeginBookingAt(\DateTimeInterface $beginBookingAt): self
+    final public function setBeginBookingAt(string $beginBookingAt): self
     {
         $this->beginBookingAt = $beginBookingAt;
 
         return $this;
     }
 
-    public function getEndBookingAt(): ?\DateTimeInterface
+    final public function getEndBookingAt(): ?string
     {
         return $this->endBookingAt;
     }
 
-    public function setEndBookingAt(\DateTimeInterface $endBookingAt): self
+    final public function setEndBookingAt(string $endBookingAt): self
     {
         $this->endBookingAt = $endBookingAt;
 
         return $this;
     }
 
-    public function getRental(): ?Rental
+    final public function getRental(): ?Rental
     {
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    final public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setPreferences(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getPreferences() !== $this) {
+        if ($rental->getPreferences() !== $this) {
             $rental->setPreferences($this);
         }
 

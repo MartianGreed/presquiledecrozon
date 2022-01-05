@@ -13,31 +13,31 @@ class Profile
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id;
+    private ?string $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $firstname;
+    private ?string $firstname = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $lastname;
+    private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', length: 10)]
     private ?string $preferredLanguage = 'fr_FR';
 
     #[ORM\Column(type: 'date', nullable: true)]
-    private ?\DateTimeInterface $birthdate;
+    private ?\DateTimeInterface $birthdate = null;
 
     #[ORM\Column(type: 'string', length: 13, nullable: true)]
-    private ?string $cellphone;
+    private ?string $cellphone = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $description;
+    private ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 1, nullable: true)]
-    private ?string $gender;
+    private ?string $gender = null;
 
     #[ORM\OneToOne(mappedBy: 'profile', targetEntity: User::class, cascade: ['persist', 'remove'])]
-    private $account;
+    private ?User $account = null;
 
     public function getId(): ?string
     {

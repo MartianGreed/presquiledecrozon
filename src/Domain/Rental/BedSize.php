@@ -4,7 +4,7 @@ namespace App\Domain\Rental;
 
 use App\Domain\Dimension;
 
-final class BedSize extends Dimension
+final class BedSize extends Dimension implements \Stringable
 {
     public function __toString(): string
     {

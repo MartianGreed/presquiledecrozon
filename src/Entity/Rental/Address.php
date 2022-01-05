@@ -13,14 +13,14 @@ class Address
     use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $address;
+    private ?string $address = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $address2 = null;
 
     #[ORM\ManyToOne(targetEntity: Town::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Town $town;
+    private ?Town $town = null;
 
     #[ORM\OneToOne(mappedBy: 'address', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
@@ -67,15 +67,9 @@ class Address
         return $this->rental;
     }
 
-    public function setRental(?Rental $rental): self
+    public function setRental(Rental $rental): self
     {
-        // unset the owning side of the relation if necessary
-        if ($rental === null && $this->rental !== null) {
-            $this->rental->setAddress(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($rental !== null && $rental->getAddress() !== $this) {
+        if ($rental->getAddress() !== $this) {
             $rental->setAddress($this);
         }
 
