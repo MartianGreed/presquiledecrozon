@@ -1,0 +1,20 @@
+{{ form_start(form, {
+    attr: {
+        'data-controller': 'form-types--map',
+        'data-form-types--map-api-key-value': gmaps_api_key,
+        'data-form-types--map-lat-center-value': form.lat.vars.value,
+        'data-form-types--map-lng-center-value': form.lng.vars.value,
+        'data-action': 'form-types--map#addMetadataToForm',
+    }
+}) }}
+    {{ form_row(form.lat, { attr: { 'data-form-types--map-target': 'lat' }}) }}
+    {{ form_row(form.lng, { attr: { 'data-form-types--map-target': 'lng' }}) }}
+
+    <div data-form-types--map-target="suggestions"></div>
+    <div id="map" data-form-types--map-target="map"></div>
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

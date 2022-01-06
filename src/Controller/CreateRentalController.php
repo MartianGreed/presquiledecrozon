@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Domain\Rental\DTO\ConfigurationDTO;
+use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Domain\Rental\DTO\LocationSuggestion;
 use App\Domain\Rental\Service\RentalConfigurationService;
 use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Address;
@@ -12,6 +14,7 @@ use App\Form\Rental\RentalAddressType;
 use App\Form\Rental\RentalDescriptionType;
 use App\Form\Rental\RentalFurnituresType;
 use App\Form\Rental\RentalInformationsType;
+use App\Form\Rental\RentalMapType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,8 +92,8 @@ class CreateRentalController extends AbstractController
         $form = $this->createForm(RentalDescriptionType::class, $rental->getDescription() ?? new Description());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Description $data */
             $data = $form->getData();
+            assert($data instanceof Description);
             $this->rentalService->saveDescription($rental, $data);
 
             return $this->redirectToRoute('app_create_rental_address');
@@ -113,11 +116,54 @@ class CreateRentalController extends AbstractController
             $data = $form->getData();
             $this->rentalService->saveAddress($rental, $data);
 
-            return $this->redirectToRoute('app_create_rental_description');
+            return $this->redirectToRoute('app_create_rental_map');
         }
 
         return $this->renderForm('create_rental/address.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/carte', name: 'app_create_rental_map')]
+    public function map(Request $request): Response
+    {
+        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+
+        $geolocation = $rental->getGeolocation();
+        if (null === $geolocation) {
+            throw new \LogicException('Geolocation cannot be null');
+        }
+
+        $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), ['allow_extra_fields' => true]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                /** @var GeolocationDTO $geolocationDTO */
+                $geolocationDTO = $form->getData();
+                $this->rentalService->improveLocalisation(
+                    $rental,
+                    $geolocationDTO,
+                    (string) $request->request->get('suggestion', null),
+                    (string) $request->request->get('suggestion_meta', null),
+                );
+
+                return $this->redirectToRoute('app_create_rental_pictures');
+            } catch (\Exception $e) {
+                return $this->renderForm('create_rental/map.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+        }
+
+        return $this->renderForm('create_rental/map.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/photos', name: 'app_create_rental_pictures')]
+    public function pictures(Request $request): Response
+    {
+        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        return $this->renderForm('create_rental/pictures.html.twig');
     }
 }

@@ -3,12 +3,16 @@
 namespace App\MessageHandler;
 
 use App\Domain\Rental\Service\GeocodingServiceInterface;
+use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Entity\Rental\Geolocation;
 use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
+/**
+ * @phpstan-import-type GeolocationDTOArray from GeolocationDTO
+ */
 final class FetchRentalGeolocationHandler implements MessageHandlerInterface
 {
     public function __construct(

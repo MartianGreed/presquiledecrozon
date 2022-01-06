@@ -3,9 +3,13 @@
 namespace App\Entity\Rental;
 
 use App\Entity\IdentityTrait;
+use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Repository\Rental\GeolocationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @phpstan-import-type GeolocationDTOArray from GeolocationDTO
+ */
 #[ORM\Entity(repositoryClass: GeolocationRepository::class)]
 class Geolocation
 {
@@ -14,18 +18,14 @@ class Geolocation
     #[ORM\OneToOne(mappedBy: 'geolocation', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
 
-    /** @param array<string, array<string|int>|float> $coordinates  */
+    /** @param GeolocationDTOArray $coordinates  */
     private function __construct(#[ORM\Column(type: 'json')] private array $coordinates)
     {
     }
 
-    /** @param array<string, array<string|int>|float> $location  */
+    /** @param GeolocationDTOArray $location  */
     final public static function new(array $location): self
     {
-        if (!array_key_exists('lat', $location) || !array_key_exists('lng', $location)) {
-            throw new \LogicException('Cannot create Geolocation without any coordinates');
-        }
-
         return new self($location);
     }
 
@@ -34,13 +34,13 @@ class Geolocation
         return $this->setRental($rental);
     }
 
-    /** @psalm-return array<string, array<string|int>|float> */
-    public function getCoordinates(): ?array
+    /** @psalm-return GeolocationDTOArray */
+    public function getCoordinates(): array
     {
         return $this->coordinates;
     }
 
-    /** @param array<string, array<string|int>|float> $coordinates */
+    /** @param GeolocationDTOArray $coordinates */
     public function setCoordinates(array $coordinates): self
     {
         $this->coordinates = $coordinates;

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\Status;
 use App\Entity\Data\Furniture;
 use App\Entity\IdentityTrait;
@@ -116,6 +117,13 @@ class Rental
             ->setAddress2($address->getAddress2())
             ->setTown($address->getTown())
         ;
+
+        return $this;
+    }
+
+    final public function improveGeolocation(GeolocationDTO $geolocationDTO): self
+    {
+        $this->geolocation = Geolocation::new($geolocationDTO->toArray());
 
         return $this;
     }

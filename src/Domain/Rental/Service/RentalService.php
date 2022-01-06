@@ -3,8 +3,11 @@
 namespace App\Domain\Rental\Service;
 
 use App\Domain\Exception\EntityNotFoundException;
+use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Domain\Rental\DTO\LocationSuggestion;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Description;
+use App\Entity\Rental\Geolocation;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
 use App\Message\FetchRentalGeolocation;
@@ -14,9 +17,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 final class RentalService
 {
-    public function __construct(private readonly EntityManagerInterface $manager, private readonly RentalRepository $rentalRepository, private readonly MessageBusInterface $bus)
-    {
-    }
+    public function __construct(
+        private readonly EntityManagerInterface $manager,
+        private readonly RentalRepository $rentalRepository,
+        private readonly MessageBusInterface $bus,
+        private readonly RentalImproveLocalisationService $improveLocalisationService,
+    ) {}
 
     public function findOrCreateRental(User $user): Rental
     {
@@ -65,5 +71,24 @@ final class RentalService
     public function saveEntity(Rental $rental): void
     {
         $this->manager->flush();
+    }
+
+    public function improveLocalisation(Rental $rental, GeolocationDTO $geolocationDTO, ?string $suggestion = null, ?string $suggestionMetadata = null): Rental
+    {
+        $suggestions = new LocationSuggestion(
+            (string) $suggestion,
+            (string) $suggestionMetadata,
+        );
+
+        $rental = $this->improveLocalisationService->improveLocalisation($rental, $geolocationDTO, $suggestions);
+
+        /** @var Geolocation $geolocation */
+        $geolocation = $rental->getGeolocation();
+
+        $this->manager->persist($geolocation);
+        $this->saveEntity($rental);
+
+
+        return $rental;
     }
 }

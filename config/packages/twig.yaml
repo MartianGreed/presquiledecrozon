@@ -6,6 +6,7 @@ twig:
 
     globals:
         app_locale: '%kernel.default_locale%'
+        gmaps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
 
 when@test:
     twig:
