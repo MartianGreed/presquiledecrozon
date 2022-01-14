@@ -46,6 +46,9 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Geolocation::class, cascade: ['persist', 'remove'])]
     private ?Geolocation $geolocation = null;
 
+    #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Gallery::class, cascade: ['persist', 'remove'])]
+    private ?Gallery $gallery = null;
+
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'])]
     private ?Preferences $preferences = null;
 
@@ -124,6 +127,15 @@ class Rental
     final public function improveGeolocation(GeolocationDTO $geolocationDTO): self
     {
         $this->geolocation = Geolocation::new($geolocationDTO->toArray());
+
+        return $this;
+    }
+
+    final public function createGallery(Gallery $gallery): self
+    {
+        if ($this->gallery !== $gallery) {
+            $this->setGallery($gallery);
+        }
 
         return $this;
     }

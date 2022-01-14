@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 trait TimestampabbleTrait
 {
     #[ORM\Column(type: 'datetime')]
@@ -32,5 +33,15 @@ trait TimestampabbleTrait
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    final public function updatedTimestamps(): void
+    {
+        $this->setUpdatedAt(new \DateTime('now'));
+        if ($this->createdAt === null) {
+            $this->setCreatedAt(new \DateTime('now'));
+        }
     }
 }

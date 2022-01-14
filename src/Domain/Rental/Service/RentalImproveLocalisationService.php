@@ -14,7 +14,9 @@ use App\Repository\Data\TownRepository;
  */
 final class RentalImproveLocalisationService
 {
-    public function __construct(private readonly TownRepository $townRepository, private readonly PostalCodeRepository $postalCodeRepository) {}
+    public function __construct(private readonly TownRepository $townRepository, private readonly PostalCodeRepository $postalCodeRepository)
+    {
+    }
 
     public function improveLocalisation(
         Rental $rental,

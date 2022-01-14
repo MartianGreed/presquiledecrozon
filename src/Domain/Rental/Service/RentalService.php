@@ -7,6 +7,7 @@ use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\DTO\LocationSuggestion;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Description;
+use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Geolocation;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
@@ -22,7 +23,8 @@ final class RentalService
         private readonly RentalRepository $rentalRepository,
         private readonly MessageBusInterface $bus,
         private readonly RentalImproveLocalisationService $improveLocalisationService,
-    ) {}
+    ) {
+    }
 
     public function findOrCreateRental(User $user): Rental
     {
@@ -88,6 +90,19 @@ final class RentalService
         $this->manager->persist($geolocation);
         $this->saveEntity($rental);
 
+
+        return $rental;
+    }
+
+    public function savePictures(Rental $rental, Gallery $gallery): Rental
+    {
+        $rental = $rental->createGallery($gallery);
+
+        /** @var Gallery $gallery */
+        $gallery = $rental->getGallery();
+
+        $this->manager->persist($gallery);
+        $this->manager->flush();
 
         return $rental;
     }

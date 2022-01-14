@@ -1,0 +1,16 @@
+vich_uploader:
+    db_driver: orm
+    storage: flysystem
+    metadata:
+        type: attribute
+
+    mappings:
+        rental:
+            uri_prefix: '/rental'
+            upload_destination: rental.storage
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            directory_namer:
+                service: Vich\UploaderBundle\Naming\CurrentDateTimeDirectoryNamer
+                options:
+                    date_time_format: 'Y/d/m'
+                    date_time_property: createdAt

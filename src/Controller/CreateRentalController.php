@@ -5,16 +5,19 @@ namespace App\Controller;
 use App\Domain\Rental\DTO\ConfigurationDTO;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\DTO\LocationSuggestion;
+use App\Domain\Rental\DTO\Pictures;
 use App\Domain\Rental\Service\RentalConfigurationService;
 use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Description;
+use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Rental;
 use App\Form\Rental\RentalAddressType;
 use App\Form\Rental\RentalDescriptionType;
 use App\Form\Rental\RentalFurnituresType;
 use App\Form\Rental\RentalInformationsType;
 use App\Form\Rental\RentalMapType;
+use App\Form\Rental\RentalPicturesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -148,7 +151,7 @@ class CreateRentalController extends AbstractController
                 );
 
                 return $this->redirectToRoute('app_create_rental_pictures');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return $this->renderForm('create_rental/map.html.twig', [
                     'form' => $form,
                 ]);
@@ -164,6 +167,33 @@ class CreateRentalController extends AbstractController
     public function pictures(Request $request): Response
     {
         $rental = $this->rentalService->findOrCreateRental($this->getUser());
-        return $this->renderForm('create_rental/pictures.html.twig');
+
+        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Gallery $gallery */
+            $gallery = $form->getData();
+
+            try {
+                $rental = $this->rentalService->savePictures($rental, $gallery);
+            } catch (\Exception) {
+                return $this->renderForm('create_rental/pictures.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+
+            return $this->redirectToRoute('app_create_rental_availabilities');
+        }
+
+        return $this->renderForm('create_rental/pictures.html.twig', [
+            'form' => $form,
+            'rental' => $rental,
+        ]);
+    }
+
+    #[Route('/disponibilites', name: 'app_create_rental_availabilities')]
+    public function availabilities(Request $request): Response
+    {
+        return $this->render('create_rental/availabilities.html.twig');
     }
 }

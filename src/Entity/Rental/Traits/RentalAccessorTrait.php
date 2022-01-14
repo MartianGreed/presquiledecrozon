@@ -8,9 +8,11 @@ use App\Entity\Rental\Address;
 use App\Entity\Rental\Condition;
 use App\Entity\Rental\Configuration;
 use App\Entity\Rental\Description;
+use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Geolocation;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Price;
+use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
 use App\Entity\User;
@@ -245,6 +247,17 @@ trait RentalAccessorTrait
     {
         $this->owner = $owner;
 
+        return $this;
+    }
+
+    final public function getGallery(): ?Gallery
+    {
+        return $this->gallery;
+    }
+
+    final public function setGallery(?Gallery $gallery): Rental
+    {
+        $this->gallery = $gallery;
         return $this;
     }
 }

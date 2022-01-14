@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    cdn_host: '%env(CDN_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -28,3 +29,18 @@ services:
         arguments:
             $apiUrl: '%env(GOOGLE_MAPS_API_URL)%'
             $apiKey: '%env(GOOGLE_MAPS_API_KEY)%'
+
+    App\Infrastructure\BunnyCDN\Storage:
+        arguments:
+            $storageZoneName: '%env(BUNNYCDN_BUCKET)%'
+            $apiAccessKey: '%env(BUNNYCDN_API_KEY)%'
+            $storageZoneRegion: '%env(BUNNYCDN_REGION)%'
+
+    App\Infrastructure\VichUploader\VichUploaderMappingExtractor:
+        arguments:
+            $container: '@service_container'
+            $parameterBag: '@parameter_bag'
+
+    App\Twig\AssetHelperExtension:
+        arguments:
+            $cdnHost: '%cdn_host%'

@@ -33,8 +33,8 @@ final class GeolocationDTO
     public function toArray(): array
     {
         return [
-            'lat'  => $this->lat,
-            'lng'  => $this->lng,
+            'lat' => $this->lat,
+            'lng' => $this->lng,
             'meta' => $this->filterMeta(),
         ];
     }

@@ -13,4 +13,26 @@
         Validez-vous cette position de votre logement? Si oui, continuez.
         Si ce n'est pas le cas, vous pouvez déplacer le curseur pour indiquer la position exacte de votre logement.
     </p>
+
+{#    <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 300, w: 200 }) }}" alt="">#}
+
+    {{ form_start(form, { attr: {
+        id: 'rental_pictures',
+        'data-controller': 'form-types--pictures',
+    } }) }}
+        {{ form_row(form.cover, { label: 'Photo de couverture de votre logement'}) }}
+
+        <label class="col-span-3">Photos supplémentaires</label>
+        {{ form_row(form.pictures, {
+            attr: {
+                'data-form-types--pictures-target': 'container',
+            }
+        }) }}
+
+
+        <div class="flex justify-end gap-4 mt-6 col-span-3">
+            <button class="button button__outlined__grey">Retour</button>
+            <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+        </div>
+    {{ form_end(form) }}
 {% endblock %}

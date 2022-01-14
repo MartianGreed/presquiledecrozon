@@ -1,0 +1,39 @@
+#rental_pictures {
+    @apply grid grid-cols-3 gap-6 items-center w-3/4;
+
+    .dropzone-item {
+        &.last {
+            @apply col-span-3;
+        }
+
+        .dropzone-container {
+            height: 150px;
+            width: 150px;
+
+            @apply border-blue/50 p-0;
+
+            input[type="file"] {
+
+            }
+
+            .dropzone-placeholder {
+                @apply text-3xl text-blue/60 -ml-3 -mt-2 font-bold;
+            }
+
+            .dropzone-preview {
+                @apply h-full w-full;
+
+                .dropzone-preview-button {
+                    @apply text-white;
+                }
+
+                .dropzone-preview-image {
+                    @apply w-full h-full min-w-full max-w-full object-cover bg-cover;
+                }
+                .dropzone-preview-filename {
+                    @apply hidden;
+                }
+            }
+        }
+    }
+}

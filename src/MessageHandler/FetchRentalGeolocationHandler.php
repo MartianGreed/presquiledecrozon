@@ -2,8 +2,8 @@
 
 namespace App\MessageHandler;
 
-use App\Domain\Rental\Service\GeocodingServiceInterface;
 use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Domain\Rental\Service\GeocodingServiceInterface;
 use App\Entity\Rental\Geolocation;
 use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;

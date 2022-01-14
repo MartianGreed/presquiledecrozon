@@ -12,7 +12,7 @@ coverage:
 	vendor/bin/phpunit --coverage-html coverage
 
 phpstan:
-	vendor/bin/phpstan analyse src tests --level max
+	vendor/bin/phpstan analyse -c phpstan.neon
 
 lint:
 	vendor/bin/rector process src tests

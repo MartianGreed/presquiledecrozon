@@ -2,8 +2,8 @@
 
 namespace App\Entity\Rental;
 
-use App\Entity\IdentityTrait;
 use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Entity\IdentityTrait;
 use App\Repository\Rental\GeolocationRepository;
 use Doctrine\ORM\Mapping as ORM;
 

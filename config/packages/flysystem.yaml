@@ -1,0 +1,20 @@
+services:
+    bunnycdn_adapter.default:
+        class: App\Infrastructure\BunnyCDN\BunnyCDNAdapter
+        public: true
+        arguments:
+            $storage: '@App\Infrastructure\BunnyCDN\Storage'
+
+    bunnycdn_adapter.rental:
+        class: App\Infrastructure\BunnyCDN\BunnyCDNAdapter
+        public: true
+        arguments:
+            $storage: '@App\Infrastructure\BunnyCDN\Storage'
+            $prefix: '/rental'
+
+flysystem:
+    storages:
+        default.storage:
+            adapter: 'bunnycdn_adapter.default'
+        rental.storage:
+            adapter: 'bunnycdn_adapter.rental'

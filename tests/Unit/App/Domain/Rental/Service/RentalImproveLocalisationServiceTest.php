@@ -91,9 +91,10 @@ class RentalImproveLocalisationServiceTest extends TestCase
 
         AddressFactory::createAddress('3 place Marchais', TownFactory::argol(), $rental);
 
-        $geolocation = Geolocation::new([
-                'lat'  => 48.4444,
-                'lng'  => 4.444,
+        $geolocation = Geolocation::new(
+            [
+                'lat' => 48.4444,
+                'lng' => 4.444,
                 'meta' => [
                     'viewport' => [
                         'northeast' => [
@@ -106,7 +107,7 @@ class RentalImproveLocalisationServiceTest extends TestCase
                         ],
                     ],
                     'formatted_address' => 'Lézargol, 29560 Argol, France',
-                    'place_id'          => 'ChIJG5Dfm-zOFkgRLR1kI7XTyJk',
+                    'place_id' => 'ChIJG5Dfm-zOFkgRLR1kI7XTyJk',
                 ],
             ]
         );
@@ -130,7 +131,7 @@ class RentalImproveLocalisationServiceTest extends TestCase
                 ],
             ],
             'formatted_address' => 'Lézargol, 29560 Argol, France',
-            'place_id'          => 'ChIJG5Dfm-zOFkgRLR1kI7XTyJk',
+            'place_id' => 'ChIJG5Dfm-zOFkgRLR1kI7XTyJk',
         ]);
     }
 
