@@ -9,6 +9,7 @@ use App\Entity\Rental\Address;
 use App\Entity\Rental\Description;
 use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Geolocation;
+use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
 use App\Message\FetchRentalGeolocation;
@@ -102,6 +103,16 @@ final class RentalService
         $gallery = $rental->getGallery();
 
         $this->manager->persist($gallery);
+        $this->manager->flush();
+
+        return $rental;
+    }
+
+    public function savePreferences(Rental $rental, Preferences $preferences): Rental
+    {
+        $rental->setPreferences($preferences);
+
+        $this->manager->persist($preferences);
         $this->manager->flush();
 
         return $rental;

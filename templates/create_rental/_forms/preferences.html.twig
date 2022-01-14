@@ -1,0 +1,21 @@
+{{ form_start(form) }}
+    {{ form_row(form.acceptedLastBooking, { label: 'Jusqu\'à quand prenez-vous les dernières réservations ?' }) }}
+    {{ form_row(form.maxTimeBeforeBooking, { label: 'Combien de temps à l’avance les locataires peuvent-ils réserver ?' }) }}
+
+    <label>Vos préférences</label>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+            {{ form_row(form.beginBookingAt, { label: false }) }}
+        </div>
+        <div>
+            {{ form_row(form.endBookingAt, { label: false }) }}
+        </div>
+    </div>
+
+
+
+<div class="flex justify-end gap-4 mt-6">
+    <button class="button button__outlined__grey">Retour</button>
+    <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+</div>
+{{ form_end(form) }}

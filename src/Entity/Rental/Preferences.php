@@ -17,10 +17,10 @@ class Preferences
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $maxTimeBeforeBooking = null;
 
-    #[ORM\Column(type: 'time')]
+    #[ORM\Column(type: 'string')]
     private ?string $beginBookingAt = null;
 
-    #[ORM\Column(type: 'time')]
+    #[ORM\Column(type: 'string')]
     private ?string $endBookingAt = null;
 
     #[ORM\OneToOne(mappedBy: 'preferences', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
