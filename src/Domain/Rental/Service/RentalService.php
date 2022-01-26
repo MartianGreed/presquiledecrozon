@@ -11,6 +11,7 @@ use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Geolocation;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
+use App\Entity\Rental\Unavailability;
 use App\Entity\User;
 use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;
@@ -67,6 +68,15 @@ final class RentalService
         $this->bus->dispatch(
             new FetchRentalGeolocation((string) $rental->getId())
         );
+
+        return $rental;
+    }
+
+    /** @param array<Unavailability> $unavailabilities */
+    public function saveUnavailabilities(Rental $rental, array $unavailabilities): Rental
+    {
+        $rental->saveUnavailabilities($unavailabilities);
+        $this->saveEntity($rental);
 
         return $rental;
     }

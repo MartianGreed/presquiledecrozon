@@ -1,0 +1,43 @@
+.calendar__container {
+    .calendar__top {
+        @apply text-center;
+    }
+
+    .calendar__content {
+        @apply grid md:grid-cols-2 md:gap-6;
+         .calendar__month__container {
+
+             .calendar__month__name {
+                 @apply text-center;
+             }
+
+             .calendar__month__days {
+                 @apply flex justify-center;
+
+                 .calendar__month__day-col {
+                     @apply text-center;
+
+                     .calendar__month__day-header {
+
+                     }
+
+                     .calendar__month__day-item {
+                         @apply p-2 cursor-pointer hover:bg-gray-100;
+
+                         &.is-edge {
+                             @apply text-white bg-blue/90;
+                         }
+
+                         &.in-range {
+                             @apply text-white bg-blue/60;
+                         }
+
+                         &.not-in-month {
+                             @apply text-gray-500 cursor-not-allowed bg-white;
+                         }
+                     }
+                 }
+             }
+         }
+    }
+}

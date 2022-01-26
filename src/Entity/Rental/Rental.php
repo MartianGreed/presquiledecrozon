@@ -53,7 +53,7 @@ class Rental
     private ?Preferences $preferences = null;
 
     /** @var ArrayCollection<int, Unavailability>  */
-    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private Collection $unavailabilities;
 
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Tax::class, cascade: ['persist', 'remove'])]
@@ -135,6 +135,16 @@ class Rental
     {
         if ($this->gallery !== $gallery) {
             $this->setGallery($gallery);
+        }
+
+        return $this;
+    }
+
+    /** @param array<Unavailability>$unavailabilities */
+    final public function saveUnavailabilities(array $unavailabilities): self
+    {
+        foreach ($unavailabilities as $unavailability) {
+            $unavailability->setRental($this);
         }
 
         return $this;

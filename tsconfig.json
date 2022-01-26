@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -21,6 +22,12 @@
       "@crozon/animation-utils": [
         "assets/src/animation-utils/index.ts"
       ],
+      "@crozon/calendar": [
+        "assets/src/calendar/index.ts"
+      ],
+      "@crozon/utils": [
+        "assets/src/utils/index.ts"
+      ]
     }
   },
   "exclude": [

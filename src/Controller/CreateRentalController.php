@@ -21,6 +21,7 @@ use App\Form\Rental\RentalInformationsType;
 use App\Form\Rental\RentalMapType;
 use App\Form\Rental\RentalPicturesType;
 use App\Form\Rental\RentalPreferencesType;
+use App\Form\Rental\RentalUnavailabilitiesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -220,7 +221,31 @@ class CreateRentalController extends AbstractController
     {
         $rental = $this->rentalService->findOrCreateRental($this->getUser());
 
+        $form = $this->createForm(RentalUnavailabilitiesType::class, $rental);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->rentalService->saveUnavailabilities($rental, $rental->getUnavailabilities()->toArray());
+            return $this->redirectToRoute('app_create_rental_taxes');
+        }
+
         return $this->renderForm('create_rental/calendar.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/taxes', name: 'app_create_rental_taxes')]
+    public function taxes(Request $request): Response
+    {
+        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+//        $form = $this->createForm(RentalUnavailabilitiesType::class, $rental);
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $this->rentalService->saveEntity($rental);
+//            return $this->redirectToRoute('app_create_rental_taxes');
+//        }
+
+        return $this->renderForm('create_rental/taxes.html.twig', [
+//            'form' => $form,
         ]);
     }
 }

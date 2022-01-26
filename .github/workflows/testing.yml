@@ -28,3 +28,12 @@ jobs:
         run: vendor/bin/phpunit
       - name: Run php static analysis
         run: vendor/bin/phpstan analyse src tests --level 9
+
+  npm-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm install
+      - name: Run tests
+        run: npm run test

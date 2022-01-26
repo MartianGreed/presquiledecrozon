@@ -1,0 +1,23 @@
+{{ form_start(form, {
+    attr: {
+        'data-controller': 'form-types--calendar'
+    }
+}) }}
+
+    {{ form_row(form.unavailabilities, {
+        attr: {
+            'data-form-types--calendar-target': 'input',
+            style: 'display: none;'
+        }
+    }) }}
+
+    <div id="calendar-container"
+        data-form-types--calendar-target="container"
+    >
+    </div>
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

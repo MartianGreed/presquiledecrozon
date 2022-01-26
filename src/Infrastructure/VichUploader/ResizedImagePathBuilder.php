@@ -31,8 +31,8 @@ final class ResizedImagePathBuilder
 
         return sprintf(
             '%d_%d.png',
-            $options['h'],
-            $options['w']
+            (int) $options['h']/** @phpstan-ignore-line */,
+            (int) $options['w']/** @phpstan-ignore-line */,
         );
     }
 

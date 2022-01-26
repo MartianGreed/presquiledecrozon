@@ -5,6 +5,7 @@ namespace App\Repository\Rental;
 use App\Domain\Exception\EntityNotFoundException;
 use App\Domain\Rental\Status;
 use App\Entity\Rental\Rental;
+use App\Entity\Rental\Unavailability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
