@@ -33,7 +33,8 @@ class RentalRepository extends ServiceEntityRepository
 
         /** @var ?Rental $rental */
         $rental = $qb
-            ->select('r')
+            ->select('r', 'p')
+            ->join('r.preferences', 'p')
             ->where($qb->expr()->neq('r.status', "'" . Status::PUBLISHED->value . "'"))
             ->andWhere($qb->expr()->eq('r.owner', "'$userId'"))
             ->orderBy('r.createdAt', 'DESC')
@@ -45,7 +46,6 @@ class RentalRepository extends ServiceEntityRepository
         if (null === $rental) {
             throw new EntityNotFoundException('No unpublished rental found for user :' . $userId);
         }
-
 
         return $rental;
     }

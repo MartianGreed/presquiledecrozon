@@ -2,8 +2,11 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Data\Linens;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\TaxRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaxRepository::class)]
@@ -20,8 +23,18 @@ class Tax
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $linensTax = null;
 
+    /** @var ArrayCollection<int, Linens> */
+    #[ORM\ManyToMany(targetEntity: Linens::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'tax_id')]
+    private Collection $linens;
+
     #[ORM\OneToOne(mappedBy: 'tax', targetEntity: Rental::class)]
     private Rental $rental;
+
+    public function __construct()
+    {
+        $this->linens = new ArrayCollection();
+    }
 
     public function getLocalTax(): ?string
     {
@@ -57,6 +70,30 @@ class Tax
         $this->linensTax = $linensTax;
 
         return $this;
+    }
+
+    public function addLinen(Linens $linen): self
+    {
+        if (!$this->linens->contains($linen)) {
+            $this->linens[] = $linen;
+        }
+
+        return $this;
+    }
+
+    public function removeLinen(Linens $linens): self
+    {
+        if ($this->linens->contains($linens)) {
+            $this->linens->removeElement($linens);
+        }
+
+        return $this;
+    }
+
+    /** @return ArrayCollection<int, Linens> */
+    public function getLinens(): Collection
+    {
+        return $this->linens;
     }
 
     public function getRental(): Rental

@@ -1,26 +1,29 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Rental;
 
+use App\Controller\WithUserTrait;
 use App\Domain\Rental\DTO\ConfigurationDTO;
 use App\Domain\Rental\DTO\GeolocationDTO;
-use App\Domain\Rental\DTO\LocationSuggestion;
-use App\Domain\Rental\DTO\Pictures;
-use App\Domain\Rental\RentalPreferences;
 use App\Domain\Rental\Service\RentalConfigurationService;
 use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Address;
+use App\Entity\Rental\Condition;
 use App\Entity\Rental\Description;
 use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
+use App\Entity\Rental\Tax;
 use App\Form\Rental\RentalAddressType;
+use App\Form\Rental\RentalConditionsType;
 use App\Form\Rental\RentalDescriptionType;
 use App\Form\Rental\RentalFurnituresType;
 use App\Form\Rental\RentalInformationsType;
 use App\Form\Rental\RentalMapType;
 use App\Form\Rental\RentalPicturesType;
 use App\Form\Rental\RentalPreferencesType;
+use App\Form\Rental\RentalPricesType;
+use App\Form\Rental\RentalTaxType;
 use App\Form\Rental\RentalUnavailabilitiesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -29,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/deposez-votre-annonce')]
-class CreateRentalController extends AbstractController
+final class CreateRentalController extends AbstractController
 {
     use WithUserTrait;
 
@@ -237,15 +240,54 @@ class CreateRentalController extends AbstractController
     public function taxes(Request $request): Response
     {
         $rental = $this->rentalService->findOrCreateRental($this->getUser());
-//        $form = $this->createForm(RentalUnavailabilitiesType::class, $rental);
-//        $form->handleRequest($request);
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $this->rentalService->saveEntity($rental);
-//            return $this->redirectToRoute('app_create_rental_taxes');
-//        }
+        $form = $this->createForm(RentalTaxType::class, $rental->getTax());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Tax $tax */
+            $tax = $form->getData();
+            $this->rentalService->saveTax($rental, $tax);
+            return $this->redirectToRoute('app_create_rental_prices');
+        }
 
         return $this->renderForm('create_rental/taxes.html.twig', [
-//            'form' => $form,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/tarifs', name: 'app_create_rental_prices')]
+    public function prices(Request $request): Response
+    {
+        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        $form = $this->createForm(RentalPricesType::class, $rental);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Rental $rental */
+            $rental = $form->getData();
+            $rental->savePrices($rental->getPrices());
+            $this->rentalService->saveEntity($rental);
+            return $this->redirectToRoute('app_create_rental_conditions');
+        }
+
+        return $this->renderForm('create_rental/prices.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/conditions', name: 'app_create_rental_conditions')]
+    public function conditions(Request $request): Response
+    {
+        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        $form = $this->createForm(RentalConditionsType::class, $rental->getCondition());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Condition $condition */
+            $condition = $form->getData();
+            $this->rentalService->saveConditions($rental, $condition);
+            return $this->redirectToRoute('app_rental_created');
+        }
+
+        return $this->renderForm('create_rental/conditions.html.twig', [
+            'form' => $form,
         ]);
     }
 }

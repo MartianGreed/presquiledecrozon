@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    {{ form_row(form.dailyRate, { label: 'Tarif à la nuitée' }) }}
+    {{ form_row(form.weeklyRate, { label: 'Tarif à la semaine' }) }}
+    {{ form_row(form.prices, {
+        label: 'Tarifs par période',
+        attr: {
+            'data-controller': 'form-types--collection',
+        }
+    }) }}
+
+<div class="flex justify-end gap-4 mt-6">
+    <button class="button button__outlined__grey">Retour</button>
+    <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+</div>
+{{ form_end(form) }}

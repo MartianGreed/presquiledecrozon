@@ -88,3 +88,23 @@
         {{- block('form_widget') -}}
     </div>
 {%- endblock -%}
+
+{%- block collection_form_widget -%}
+    <div {{ block('widget_container_attributes') }}>
+        <div class="buttons">
+            <button type="button" data-action="form-types--collection#addPrototype"><i class="fas fa-plus"></i> Ajouter</button>
+        </div>
+        {%- if form is rootform -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{- block('form_rows') -}}
+        {{- form_rest(form) -}}
+    </div>
+{%- endblock collection_form_widget -%}
+
+{%- block collection_widget -%}
+    {% if prototype is defined and not prototype.rendered %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+    {% endif %}
+    {{- block('collection_form_widget') -}}
+{%- endblock collection_widget -%}

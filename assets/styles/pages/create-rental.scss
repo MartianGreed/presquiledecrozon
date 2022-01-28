@@ -13,3 +13,35 @@
         @apply col-span-4;
     }
 }
+
+.create__rental__finished {
+    .create__rental__container {
+        @apply mt-0;
+
+        .create__rental__main {
+            @apply col-span-3;
+
+            .create__rental__main__container {
+                @apply p-14 bg-yellow text-white;
+
+                h1 {
+                    @apply text-2xl mb-6;
+                }
+
+
+                .link__container {
+                    @apply mt-14 text-right;
+
+                    a {
+                        @extend .button;
+                        @apply rounded-full bg-white text-blue font-semibold hover:shadow-lg transition-shadow;
+                    }
+                }
+            }
+        }
+
+        .create__rental__preview {
+            @apply col-span-3;
+        }
+    }
+}

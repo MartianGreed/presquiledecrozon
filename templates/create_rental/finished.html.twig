@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déposez votre annonce{% endblock %}
+{% set content_class = 'create__rental__finished' %}
+
+{% block body %}
+    <div class="create__rental__container">
+        <aside class="create__rental__main">
+            <div class="create__rental__main__container">
+                <h1>Félicitations, l'annonce est complète !</h1>
+
+                <p>
+                    Vous pourrez accueillir votre premier locataire à partir du {{ first_booking_at }}. Si vous souhaitez mettre à
+                    jour votre calendrier ou votre règlement intérieur, vous pourrez facilement le faire après avoir publié
+                    votre annonce.
+                    <br/><br/>
+                    Retrouvez votre annonce dans votre espace personnel dans la rubrique Annonces.
+                </p>
+
+                <div class="link__container">
+                    <a href="{{ url('app_get_subscription', { rental_id: rental.id }) }}">Publier l'annonce</a>
+                </div>
+            </div>
+        </aside>
+        <div class="create__rental__preview">
+
+        </div>
+    </div>
+{% endblock %}

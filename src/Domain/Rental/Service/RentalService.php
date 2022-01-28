@@ -3,14 +3,17 @@
 namespace App\Domain\Rental\Service;
 
 use App\Domain\Exception\EntityNotFoundException;
+use App\Domain\Exception\RentalNotFoundException;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\DTO\LocationSuggestion;
 use App\Entity\Rental\Address;
+use App\Entity\Rental\Condition;
 use App\Entity\Rental\Description;
 use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Geolocation;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
+use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
 use App\Entity\User;
 use App\Message\FetchRentalGeolocation;
@@ -40,6 +43,11 @@ final class RentalService
 
             return $rental;
         }
+    }
+
+    public function findLatestDraftRental(User $user): Rental
+    {
+        return $this->rentalRepository->findLatestDraftRentalForUser((string) $user->getId());
     }
 
     public function saveDescription(Rental $rental, Description $description): Rental
@@ -126,5 +134,38 @@ final class RentalService
         $this->manager->flush();
 
         return $rental;
+    }
+
+    public function saveTax(Rental $rental, Tax $tax): Rental
+    {
+        $rental = $rental->saveTax($tax);
+
+        $this->manager->persist($tax);
+        $this->saveEntity($rental);
+
+        return $rental;
+    }
+
+    public function saveConditions(Rental $rental, Condition $condition): Rental
+    {
+        $rental = $rental->setCondition($condition);
+
+        $this->manager->persist($condition);
+        $this->saveEntity($rental);
+
+        return $rental;
+    }
+
+    public function findRental(string $rentalId): Rental
+    {
+        try {
+            $rental = $this->rentalRepository->find($rentalId);
+            if (null === $rental) {
+                throw new RentalNotFoundException($rentalId);
+            }
+            return $rental;
+        } catch (\Exception $e) {
+            throw new RentalNotFoundException($rentalId);
+        }
     }
 }

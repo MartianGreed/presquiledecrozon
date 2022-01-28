@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    {{ form_row(form.localTax, { label: 'Afficher votre taxe' }) }}
+    <a href="https://crozonaulnemaritime.taxesejour.fr/#step-one" target="_blank">
+        Consulter les tarifs de la taxe de séjour
+    </a>
+    {{ form_row(form.cleaningTax, { label: 'Frais de nettoyage' }) }}
+    {{ form_row(form.linensTax, { label: 'Linge de maison' }) }}
+
+    {{ form_row(form.linens) }}
+
+    <div class="flex justify-end gap-4 mt-6">
+        <button class="button button__outlined__grey">Retour</button>
+        <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
+    </div>
+{{ form_end(form) }}

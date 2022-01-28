@@ -26,11 +26,11 @@ class Rental
     #[ORM\OneToOne(mappedBy: 'rental', targetEntity: Configuration::class, cascade: ['persist', 'remove'])]
     private ?Configuration $configuration = null;
 
-    /** @var ArrayCollection<int, Furniture>  */
+    /** @var ArrayCollection<int, Furniture> */
     #[ORM\ManyToMany(targetEntity: Furniture::class)]
     private Collection $furnitures;
 
-    /** @var array<int, string>  */
+    /** @var array<int, string> */
     #[ORM\Column(type: 'array')]
     private array $customFurnitures = [];
 
@@ -52,8 +52,11 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'])]
     private ?Preferences $preferences = null;
 
-    /** @var ArrayCollection<int, Unavailability>  */
-    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true, cascade: ['persist', 'remove'], fetch: 'EAGER')]
+    /** @var ArrayCollection<int, Unavailability> */
+    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true, cascade: [
+        'persist',
+        'remove',
+    ], fetch: 'EAGER')]
     private Collection $unavailabilities;
 
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Tax::class, cascade: ['persist', 'remove'])]
@@ -62,8 +65,11 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Condition::class, cascade: ['persist', 'remove'])]
     private ?Condition $condition = null;
 
-    /** @var ArrayCollection<int, Price>  */
-    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Price::class, orphanRemoval: true)]
+    /** @var ArrayCollection<int, Price> */
+    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Price::class, orphanRemoval: true, cascade: [
+        'persist',
+        'remove',
+    ])]
     private Collection $prices;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -101,8 +107,8 @@ class Rental
         }
 
         $this->description
-             ->setTitle((string) $description->getTitle())
-             ->setDescription((string) $description->getDescription())
+            ->setTitle((string)$description->getTitle())
+            ->setDescription((string)$description->getDescription())
         ;
 
         return $this;
@@ -116,7 +122,7 @@ class Rental
         }
 
         $this->address
-            ->setAddress((string) $address->getAddress())
+            ->setAddress((string)$address->getAddress())
             ->setAddress2($address->getAddress2())
             ->setTown($address->getTown())
         ;
@@ -140,11 +146,28 @@ class Rental
         return $this;
     }
 
-    /** @param array<Unavailability>$unavailabilities */
+    /** @param array<Unavailability> $unavailabilities */
     final public function saveUnavailabilities(array $unavailabilities): self
     {
         foreach ($unavailabilities as $unavailability) {
             $unavailability->setRental($this);
+        }
+
+        return $this;
+    }
+
+    final public function saveTax(Tax $tax): self
+    {
+        $this->tax = $tax;
+        return $this;
+    }
+
+    /** @param ArrayCollection<int, Price> $prices */
+    final public function savePrices(Collection $prices): self
+    {
+        /** @var Price $price */
+        foreach ($prices as $price) {
+            $price->setRental($this);
         }
 
         return $this;
