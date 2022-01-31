@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Rental\Rental;
+use App\Entity\Subscription\Discount;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -35,16 +36,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    /** @var ArrayCollection<int, Rental>  */
+    /** @var ArrayCollection<int, Rental> */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Rental::class)]
     private Collection $rentals;
 
     #[ORM\OneToOne(inversedBy: 'account', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
+    /** @var ArrayCollection<int, Discount> */
+    #[ORM\OneToMany(mappedBy: 'payee', targetEntity: Discount::class)]
+    private Collection $discounts;
+
     public function __construct()
     {
         $this->rentals = new ArrayCollection();
+        $this->discounts = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -155,6 +161,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfile(?Profile $profile): self
     {
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    /** @psalm-return ArrayCollection<int, Discount>  */
+    public function getDiscounts(): Collection
+    {
+        return $this->discounts;
+    }
+
+    public function addDiscount(Discount $discount): self
+    {
+        if (!$this->discounts->contains($discount)) {
+            $this->discounts[] = $discount;
+            $discount->setPayee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDiscount(Discount $discount): self
+    {
+        if ($this->discounts->removeElement($discount)) {
+            // set the owning side to null (unless already changed)
+            if ($discount->getPayee() === $this) {
+                $discount->setPayee(null);
+            }
+        }
 
         return $this;
     }

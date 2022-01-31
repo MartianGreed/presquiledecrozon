@@ -7,6 +7,7 @@ twig:
     globals:
         app_locale: '%kernel.default_locale%'
         gmaps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
+        stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
 
 when@test:
     twig:

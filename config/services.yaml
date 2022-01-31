@@ -44,3 +44,7 @@ services:
     App\Twig\AssetHelperExtension:
         arguments:
             $cdnHost: '%cdn_host%'
+
+    Stripe\StripeClient:
+        arguments:
+            - '%env(STRIPE_SECRET_KEY)%'

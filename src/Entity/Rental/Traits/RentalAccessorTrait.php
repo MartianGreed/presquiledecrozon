@@ -15,6 +15,7 @@ use App\Entity\Rental\Price;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
+use App\Entity\Subscription\Subscription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -145,7 +146,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @psalm-return ArrayCollection<int, Unavailability>  */
+    /** @return ArrayCollection<int, Unavailability>  */
     final public function getUnavailabilities(): Collection
     {
         return $this->unavailabilities;
@@ -259,5 +260,29 @@ trait RentalAccessorTrait
     {
         $this->gallery = $gallery;
         return $this;
+    }
+
+    final public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+        }
+
+        return $this;
+    }
+
+    final public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->contains($subscription)) {
+            $this->subscriptions->removeElement($subscription);
+        }
+
+        return $this;
+    }
+
+    /** @return ArrayCollection<int, Subscription> */
+    final public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
     }
 }

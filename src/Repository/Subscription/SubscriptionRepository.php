@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Repository\Subscription;
+
+use App\Domain\Exception\DefaultSubscriptionNotFound;
+use App\Domain\Subscription\Repository\SubscriptionRepository as SubscriptionRepositoryInterface;
+use App\Entity\Subscription\Subscription;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @method Subscription|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Subscription|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Subscription[]    findAll()
+ * @method Subscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<Subscription>
+ */
+class SubscriptionRepository extends ServiceEntityRepository implements SubscriptionRepositoryInterface
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Subscription::class);
+    }
+
+    final public function findDefaultSubscription(): Subscription
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        $res = $qb->select('s')
+            ->where($qb->expr()->eq('s.name', "'default'"))
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult()
+        ;
+
+        if (null === $res) {
+            throw new DefaultSubscriptionNotFound();
+        }
+
+        /** @var Subscription $res */
+        return $res;
+    }
+}
