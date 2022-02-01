@@ -2,6 +2,7 @@
 
 namespace App\Entity\Subscription;
 
+use App\Domain\Price;
 use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Repository\Subscription\SubscriptionRepository;
@@ -13,7 +14,7 @@ class Subscription
     use IdentityTrait, TimestampabbleTrait;
 
     #[ORM\Column(type: 'price')]
-    private int $amount;
+    private Price $amount;
 
     #[ORM\Column(type: 'string', length: 10)]
     private string $validityDuration;
@@ -21,12 +22,12 @@ class Subscription
     #[ORM\Column(type: 'string')]
     private string $name;
 
-    final public function getAmount(): ?int
+    final public function getAmount(): Price
     {
         return $this->amount;
     }
 
-    final public function setAmount(int $amount): self
+    final public function setAmount(Price $amount): self
     {
         $this->amount = $amount;
 

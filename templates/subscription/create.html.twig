@@ -5,14 +5,32 @@
 
 {% block body %}
     <div class="create__subscription__container">
-        <h1>Abonnement</h1>
-        <p>
+        <h1 class="create__subscription__title">Abonnement</h1>
+        <p class="create__subscription__explanation">
             Validité d'un an, pas de renouvellement automatique pour l'année suivante.
             <br />
-            L'abonnement sera valable du {{ 'now' | date('d/m/Y') }} au {{ expirationDate | date('d/m/Y') }} pour un montant de {{ subscription.amount | price }}
+            L'abonnement sera valable du {{ 'now' | date('d/m/Y') }} au {{ expirationDate | date('d/m/Y') }} pour un montant de <strong>{{ rental_subscription.amount | price }}</strong>
         </p>
 
-        <h2>Adresse de facturation</h2>
+        <div class="discount__form">
+            <h2 class="create__subscription__subtitle">Code promo / parrainage</h2>
+            {{ form_start(discount_form) }}
+            <div class="grid grid-cols-4 gap-3 items-center">
+                <div class="col-span-3">
+                    <div class="form__row">
+                        {{ form_row(discount_form.discount, { label: false, attr: {
+                            placeholder: 'Code promo',
+                        }}) }}
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="button button__blue">Appliquer le code promo</button>
+                </div>
+            </div>
+            {{ form_end(discount_form) }}
+        </div>
+
+        <h2 class="create__subscription__subtitle">Adresse de facturation</h2>
         {{ form_start(form, {
             attr: {
                 'data-controller': 'form-types--stripe',
@@ -22,24 +40,31 @@
                 'data-action': 'submit->form-types--stripe#confirmPayment'
             }
         }) }}
-            <div>
-                <div>{{ form_row(form.civility) }}</div>
-                <div>{{ form_row(form.firstname) }}</div>
-                <div>{{ form_row(form.lastname) }}</div>
+            <div class="col-3 mb-6">
+                <div class="form__row">{{ form_row(form.civility, { label: 'Civilité' }) }}</div>
+                <div class="form__row">{{ form_row(form.firstname, { label: 'Prénom' }) }}</div>
+                <div class="form__row">{{ form_row(form.lastname, { label: 'Nom' }) }}</div>
             </div>
-            <div>
-                <div>{{ form_row(form.email) }}</div>
-                <div>{{ form_row(form.phoneNumber) }}</div>
+            <div class="col-2 mb-6">
+                <div class="form__row">{{ form_row(form.email, { label: 'Email' }) }}</div>
+                <div class="form__row">{{ form_row(form.phoneNumber, { label: 'Numéro de téléphone' }) }}</div>
             </div>
-            <div>
-                <div>{{ form_row(form.address) }}</div>
-                <div>{{ form_row(form.address2) }}</div>
+            <div class="col-2 mb-6">
+                <div class="form__row">{{ form_row(form.address, { label: 'Adresse' }) }}</div>
+                <div class="form__row">{{ form_row(form.address2, { label: 'Complément d\'adresse' }) }}</div>
             </div>
-            <div>
-                <div>{{ form_row(form.town) }}</div>
-                <div>{{ form_row(form.postalCode) }}</div>
+            <div class="col-2 mb-6">
+                <div class="form__row">{{ form_row(form.town, { label: 'Commune' }) }}</div>
+                <div class="form__row">{{ form_row(form.postalCode, { label: 'Code postal' }) }}</div>
             </div>
-            <div id="error-message"data-form-types--stripe-target="error">
+
+
+
+            <h2 class="create__subscription__subtitle">Carte bleue</h2>
+            <p class="create__subscription__explanation">
+                Aucunes données bancaires ne sont sauvegardées dans nos bases de données.
+            </p>
+            <div id="error-message" data-form-types--stripe-target="error">
 
             </div>
             <div id="card-elements"

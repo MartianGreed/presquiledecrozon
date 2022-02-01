@@ -6,6 +6,7 @@ doctrine:
         types:
             bed_size: App\Doctrine\Types\BedSizeType
             rental_status: App\Doctrine\Types\RentalStatusType
+            subscription_status: App\Doctrine\Types\SubscriptionStatusType
             discount_type: App\Doctrine\Types\DiscountTypeType
             price: App\Doctrine\Types\PriceType
 

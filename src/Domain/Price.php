@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Domain;
+
+final class Price
+{
+    public function __construct(
+        private float $value,
+        private Currency $currency = new Euro(),
+    )
+    {
+    }
+
+    public function getAmount(): float
+    {
+        return $this->value;
+    }
+
+    public function getValue(): int
+    {
+        return (int)($this->value * 100);
+    }
+
+    public function getCurrency(): Currency
+    {
+        return $this->currency;
+    }
+
+    public function __toString(): string
+    {
+        return (\NumberFormatter::create('fr', \NumberFormatter::CURRENCY))
+            ->formatCurrency($this->getValue() / 100, $this->currency->getValue())
+        ;
+    }
+
+    public function add(float $add): Price
+    {
+        return new Price($this->value + $add, $this->currency);
+    }
+
+    public function minus(float $minus): Price
+    {
+        return new Price($this->value - $minus, $this->currency);
+    }
+}

@@ -15,6 +15,7 @@ use App\Entity\Rental\Price;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
+use App\Entity\Subscription\RentalSubscription;
 use App\Entity\Subscription\Subscription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -262,7 +263,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    final public function addSubscription(Subscription $subscription): self
+    final public function addSubscription(RentalSubscription $subscription): self
     {
         if (!$this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
@@ -271,7 +272,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    final public function removeSubscription(Subscription $subscription): self
+    final public function removeSubscription(RentalSubscription $subscription): self
     {
         if ($this->subscriptions->contains($subscription)) {
             $this->subscriptions->removeElement($subscription);
@@ -280,7 +281,7 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @return ArrayCollection<int, Subscription> */
+    /** @return ArrayCollection<int, RentalSubscription> */
     final public function getSubscriptions(): Collection
     {
         return $this->subscriptions;

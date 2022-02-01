@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Subscription\Subscription;
+use App\Entity\Subscription\RentalSubscription;
 use Stripe\PaymentIntent;
 use Stripe\StripeClient;
 
@@ -12,11 +12,12 @@ final class StripeService
     {
     }
 
-    public function createSubscriptionPaymentIntent(Subscription $subscription): PaymentIntent
+    public function createSubscriptionPaymentIntent(RentalSubscription $subscription): PaymentIntent
     {
+        $price = $subscription->getAmount();
         return $this->stripeClient->paymentIntents->create([
-            'amount' => $subscription->getAmount(),
-            'currency' => 'eur',
+            'amount' => $price->getValue(),
+            'currency' => $price->getCurrency()->getValue(),
             'payment_method_types' => ['card'],
         ]);
     }

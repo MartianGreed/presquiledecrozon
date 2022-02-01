@@ -2,6 +2,7 @@
 
 namespace App\Entity\Subscription;
 
+use App\Domain\Price;
 use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
@@ -17,7 +18,7 @@ class Discount
     private string $type;
 
     #[ORM\Column(type: 'price')]
-    private int $amount;
+    private Price $amount;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $code;
@@ -27,6 +28,11 @@ class Discount
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'discounts')]
     private ?User $payee;
+
+    public function __toString(): string
+    {
+        return $this->code;
+    }
 
     final public function getType(): ?string
     {
@@ -40,12 +46,12 @@ class Discount
         return $this;
     }
 
-    final public function getAmount(): ?int
+    final public function getAmount(): Price
     {
         return $this->amount;
     }
 
-    final public function setAmount(int $amount): self
+    final public function setAmount(Price $amount): self
     {
         $this->amount = $amount;
 

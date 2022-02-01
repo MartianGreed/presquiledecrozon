@@ -2,6 +2,7 @@
 
 namespace App\Doctrine\Types;
 
+use App\Domain\Price;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\IntegerType;
 
@@ -17,11 +18,17 @@ final class PriceType extends IntegerType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return $value === null ? null : intval($value) / 100;
+        return $value === null ? null : new Price(intval($value) / 100);
     }
 
+    /** @param Price $value */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return parent::convertToDatabaseValue($value * 100, $platform);
+        return parent::convertToDatabaseValue($value->getValue(), $platform);
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
     }
 }

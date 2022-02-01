@@ -7,6 +7,7 @@ use App\Domain\Rental\Status;
 use App\Entity\Data\Furniture;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Traits\RentalAccessorTrait;
+use App\Entity\Subscription\RentalSubscription;
 use App\Entity\Subscription\Subscription;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
@@ -83,8 +84,8 @@ class Rental
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    /** @var ArrayCollection<int, Subscription> */
-    #[ORM\ManyToMany(targetEntity: Subscription::class)]
+    /** @var ArrayCollection<int, RentalSubscription> */
+    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: RentalSubscription::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $subscriptions;
 

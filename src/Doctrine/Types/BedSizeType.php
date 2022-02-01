@@ -45,4 +45,9 @@ final class BedSizeType extends JsonType
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }
     }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
+    }
 }
