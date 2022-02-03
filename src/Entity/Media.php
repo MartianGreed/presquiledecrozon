@@ -16,7 +16,7 @@ class Media
     use IdentityTrait, TimestampabbleTrait;
 
     #[Vich\UploadableField(mapping: 'rental', fileNameProperty: 'name', size: 'size')]
-    private File|UploadedFile $file;
+    private File|UploadedFile|null $file = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
@@ -51,7 +51,7 @@ class Media
         return $this;
     }
 
-    public function getFile(): File|UploadedFile
+    public function getFile(): File|UploadedFile|null
     {
         return $this->file;
     }

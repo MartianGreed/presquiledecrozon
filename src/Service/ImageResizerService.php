@@ -32,8 +32,11 @@ final class ImageResizerService implements ImageResizerServiceInterface
         $stream = $this->storage->readStream($img);
 
         $image = $this->imageManager->make($stream);
-        /** @phpstan-ignore-next-line */
-        $image->resize((int) $options['w'], (int) $options['h']);
+        if ($options['crop']) {
+            $image->crop(intval($options['w']), intval($options['h']));
+        } else {
+            $image->resize(intval($options['w']), intval($options['h']));
+        }
 
         $this->storage->write($cachePath, $image->encode('jpeg')->stream(), (new Config())->withDefaults([]));
     }

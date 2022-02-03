@@ -21,6 +21,11 @@ class Unavailability
     #[ORM\JoinColumn(nullable: false)]
     private Rental $rental;
 
+    public function __toString(): string
+    {
+        return sprintf('du %s au %s', $this->startAt?->format('d/m/Y'), $this->endAt?->format('d/m/Y'));
+    }
+
 
     public function getStartAt(): ?\DateTimeInterface
     {

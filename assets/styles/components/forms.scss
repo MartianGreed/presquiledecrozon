@@ -8,6 +8,27 @@ input[type="checkbox"] {
     @apply mr-2;
 }
 
+.form__row {
+    > div {
+        @apply mb-0 md:mb-6;
+    }
+
+    label {
+        @apply text-gray-600 text-sm;
+    }
+    input[type="text"], input[type="email"], input[type="date"], textarea {
+        @apply border border-gray-200 text-gray-700 px-6 py-2 rounded-md shadow-sm;
+    }
+
+    input[type="radio"] {
+        @apply mr-2;
+    }
+
+    #create_subscription_civility {
+        @apply flex flex-row gap-x-12;
+    }
+}
+
 .counter__type__input {
     .counter__type__widget__action {
         @apply text-blue p-2;

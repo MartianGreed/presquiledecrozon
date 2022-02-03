@@ -3,6 +3,7 @@ doctrine:
         url: '%env(resolve:DATABASE_URL)%'
         mapping_types:
             rental_status: string
+            subscription_status: string
         types:
             bed_size: App\Doctrine\Types\BedSizeType
             rental_status: App\Doctrine\Types\RentalStatusType

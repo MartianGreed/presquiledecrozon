@@ -41,7 +41,7 @@ services:
             $container: '@service_container'
             $parameterBag: '@parameter_bag'
 
-    App\Twig\AssetHelperExtension:
+    App\Service\MediaService:
         arguments:
             $cdnHost: '%cdn_host%'
 

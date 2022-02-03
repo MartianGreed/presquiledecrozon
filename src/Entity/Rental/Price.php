@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Price as PriceVO;
 use App\Entity\IdentityTrait;
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,15 +18,20 @@ class Price
     #[ORM\Column(type: 'date')]
     private ?\DateTimeInterface $rangeEnd = null;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $weeklyRate = null;
+    #[ORM\Column(type: 'price')]
+    private ?PriceVO $weeklyRate = null;
 
-    #[ORM\Column(type: 'integer')]
-    private ?int $dailyRate = null;
+    #[ORM\Column(type: 'price')]
+    private ?PriceVO $dailyRate = null;
 
     #[ORM\ManyToOne(targetEntity: Rental::class, inversedBy: 'prices')]
     #[ORM\JoinColumn(nullable: false)]
     private Rental $rental;
+
+    public function __toString(): string
+    {
+        return sprintf('du %s au %s', $this->rangeStart?->format('d/m/Y'), $this->rangeEnd?->format('d/m/Y'));
+    }
 
     public function getRangeStart(): ?\DateTimeInterface
     {
@@ -51,24 +57,24 @@ class Price
         return $this;
     }
 
-    public function getWeeklyRate(): ?int
+    public function getWeeklyRate(): ?PriceVO
     {
         return $this->weeklyRate;
     }
 
-    public function setWeeklyRate(int $weeklyRate): self
+    public function setWeeklyRate(PriceVO $weeklyRate): self
     {
         $this->weeklyRate = $weeklyRate;
 
         return $this;
     }
 
-    public function getDailyRate(): ?int
+    public function getDailyRate(): ?PriceVO
     {
         return $this->dailyRate;
     }
 
-    public function setDailyRate(int $dailyRate): self
+    public function setDailyRate(PriceVO $dailyRate): self
     {
         $this->dailyRate = $dailyRate;
 

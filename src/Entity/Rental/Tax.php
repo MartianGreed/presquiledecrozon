@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Price;
 use App\Entity\Data\Linens;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\TaxRepository;
@@ -17,11 +18,11 @@ class Tax
     #[ORM\Column(type: 'string', length: 20)]
     private string $localTax;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
-    private ?int $cleaningTax = null;
+    #[ORM\Column(type: 'price', options: ['default' => 0])]
+    private ?Price $cleaningTax = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $linensTax = null;
+    #[ORM\Column(type: 'price', nullable: true)]
+    private ?Price $linensTax = null;
 
     /** @var ArrayCollection<int, Linens> */
     #[ORM\ManyToMany(targetEntity: Linens::class, cascade: ['persist', 'remove'])]
@@ -48,24 +49,24 @@ class Tax
         return $this;
     }
 
-    public function getCleaningTax(): ?int
+    public function getCleaningTax(): ?Price
     {
         return $this->cleaningTax;
     }
 
-    public function setCleaningTax(int $cleaningTax): self
+    public function setCleaningTax(Price $cleaningTax): self
     {
         $this->cleaningTax = $cleaningTax;
 
         return $this;
     }
 
-    public function getLinensTax(): ?int
+    public function getLinensTax(): ?Price
     {
         return $this->linensTax;
     }
 
-    public function setLinensTax(int $linensTax): self
+    public function setLinensTax(Price $linensTax): self
     {
         $this->linensTax = $linensTax;
 

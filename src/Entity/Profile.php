@@ -9,11 +9,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname = null;
@@ -39,10 +35,8 @@ class Profile
     #[ORM\OneToOne(mappedBy: 'profile', targetEntity: User::class, cascade: ['persist', 'remove'])]
     private ?User $account = null;
 
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
+    #[ORM\ManyToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    private ?Media $picture = null;
 
     public function getFirstname(): ?string
     {
@@ -147,6 +141,17 @@ class Profile
 
         $this->account = $account;
 
+        return $this;
+    }
+
+    public function getPicture(): ?Media
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(Media $media): self
+    {
+        $this->picture = $media;
         return $this;
     }
 }

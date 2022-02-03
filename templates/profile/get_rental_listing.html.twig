@@ -1,0 +1,36 @@
+{% extends 'profile/profile_layout.html.twig' %}
+
+{% block title %}Locations{% endblock %}
+{% block page_title 'Liste des locations' %}
+
+{% block profile_main %}
+    <div class="rental__container">
+        <h1>Mes locations</h1>
+        
+        <div class="flex justify-end">
+            <a class="button button__blue" href="{{ url('app_create_rental') }}"><i class="fas fa-plus"></i> Ajouter une location</a>
+        </div>
+
+        <div class="rental__list">
+            {% for rental in rentals %}
+                <div class="rental__list__item">
+                    <div class="rental__list__item__inner">
+                        <div class="rental__list__item__inner__picture">
+                            <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 150, w: 150, crop: true }) }}" alt="">
+                        </div>
+                        <div class="rental__list__item__inner__content">
+                            <div class="title">{{ rental.description.title }}</div>
+                            <div class="type">{{ rental.configuration.type.label }}</div>
+                        </div>
+                        <div class="rental__list__item__inner__actions">
+                            <div><i class="far fa-edit"></i></div>
+                            <div>
+                                Publier l'annonce
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+.profile {
+    .rental__list {
+        @apply my-12;
+
+        &__item {
+            @apply rounded bg-blue/10 mb-6 last:mb-0;
+
+            &__inner {
+                @apply p-4 flex gap-3;
+
+                &__picture {
+
+                }
+
+                &__content {
+                    @apply grow;
+
+                    .title {
+                        @apply text-blue text-lg;
+                    }
+
+                    .type {
+                        @apply mt-6 text-gray-700 uppercase text-xs;
+                    }
+                }
+
+                &__actions {
+                    @apply flex flex-col items-end justify-between;
+                }
+            }
+        }
+    }
+}

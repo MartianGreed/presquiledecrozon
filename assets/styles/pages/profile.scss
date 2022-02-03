@@ -1,0 +1,32 @@
+.profile {
+    &__container {
+        @apply grid md:grid-cols-12 gap-4;
+    }
+
+    &__sidebar {
+        @apply md:col-span-3 bg-blue text-white;
+
+        &__inner {
+            @apply px-4 py-3;
+
+            &__header {
+
+            }
+
+            &__menu {
+
+                &-item {
+
+                }
+            }
+        }
+    }
+
+    &__main {
+        @apply md:col-span-9 px-4 py-3;
+
+        #update_profile_informations_gender {
+            @apply flex gap-6;
+        }
+    }
+}

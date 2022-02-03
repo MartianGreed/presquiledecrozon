@@ -2,18 +2,14 @@
 
 namespace App\Entity\Data;
 
+use App\Entity\IdentityTrait;
 use App\Repository\Data\RentalTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: RentalTypeRepository::class)]
 class RentalType
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $label = null;
@@ -21,9 +17,9 @@ class RentalType
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $value = null;
 
-    public function getId(): ?string
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->label ?? '';
     }
 
     public function getLabel(): ?string

@@ -2,13 +2,13 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Price as PriceVO;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\Status;
 use App\Entity\Data\Furniture;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Traits\RentalAccessorTrait;
 use App\Entity\Subscription\RentalSubscription;
-use App\Entity\Subscription\Subscription;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
 use App\Repository\Rental\RentalRepository;
@@ -25,7 +25,7 @@ class Rental
     #[ORM\Column(type: 'rental_status')]
     private Status $status = Status::DRAFT;
 
-    #[ORM\OneToOne(mappedBy: 'rental', targetEntity: Configuration::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'rental', targetEntity: Configuration::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?Configuration $configuration = null;
 
     /** @var ArrayCollection<int, Furniture> */
@@ -51,7 +51,7 @@ class Rental
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Gallery::class, cascade: ['persist', 'remove'])]
     private ?Gallery $gallery = null;
 
-    #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?Preferences $preferences = null;
 
     /** @var ArrayCollection<int, Unavailability> */
@@ -74,11 +74,11 @@ class Rental
     ])]
     private Collection $prices;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $weeklyRate = null;
+    #[ORM\Column(type: 'price', nullable: true)]
+    private ?PriceVO $weeklyRate = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $dailyRate = null;
+    #[ORM\Column(type: 'price', nullable: true)]
+    private ?PriceVO $dailyRate = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'rentals')]
     #[ORM\JoinColumn(nullable: false)]

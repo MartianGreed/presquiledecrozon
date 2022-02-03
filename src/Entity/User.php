@@ -8,6 +8,8 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -17,13 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait, TimestampabbleTrait;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\Email]
@@ -51,11 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->rentals = new ArrayCollection();
         $this->discounts = new ArrayCollection();
-    }
 
-    public function getId(): ?string
-    {
-        return $this->id;
+        $this->createdAt = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
     }
 
     public function getEmail(): ?string
@@ -68,6 +64,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email;
     }
 
     /**
@@ -191,5 +192,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function serialize(): ?string
+    {
+        return serialize([
+            $this->id,
+            $this->email,
+            $this->password,
+            $this->roles,
+        ]);
+    }
+
+    public function unserialize(string $data)
+    {
+        /** @phpstan-ignore-next-line */
+        [
+            /** @phpstan-ignore-next-line */
+            $this->id,
+            /** @phpstan-ignore-next-line */
+            $this->email,
+            /** @phpstan-ignore-next-line */
+            $this->password,
+            /** @phpstan-ignore-next-line */
+            $this->roles,
+        ] = unserialize($data);
     }
 }

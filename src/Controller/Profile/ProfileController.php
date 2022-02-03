@@ -14,4 +14,10 @@ final class ProfileController extends AbstractController
     {
         return $this->render('profile/index.html.twig');
     }
+
+    // /mon-compte/informations
+    // /mon-compte/locations
+    // /mon-compte/messagerie
+    // /mon-compte/reservations
+    // /mon-compte/coup-de-coeur
 }

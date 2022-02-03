@@ -1,0 +1,32 @@
+{% extends 'profile/profile_layout.html.twig' %}
+
+{% block title %}Informations{% endblock %}
+{% block page_title 'Informations' %}
+
+{% block profile_main %}
+    <div class="update_profile">
+        <h1>Modifier mon profil</h1>
+        <h2>Informations</h2>
+        {{ form_start(form) }}
+            <div class="col-3">
+                <div>{{ form_row(form.gender, { label: 'Civilité' }) }}</div>
+                <div>{{ form_row(form.firstname, { label: 'Prénom' }) }}</div>
+                <div>{{ form_row(form.lastname, { label: 'Nom' }) }}</div>
+            </div>
+            <div class="col-2">
+                <div>{{ form_row(form.cellphone, { label: 'Téléphone' }) }}</div>
+                <div>{{ form_row(form.birthdate, { label: 'Date de naissance' }) }}</div>
+            </div>
+            <div>
+                <div>{{ form_row(form.description, { label: 'Dites nous-en un peu plus sur vous !' }) }}</div>
+            </div>
+            <div>
+                <div>{{ form_row(form.picture, { label: 'Photo de profil' }) }}</div>
+            </div>
+
+            <div class="flex justify-end gap-4 mt-6">
+                <button type="submit" class="button button__blue">Sauvegarder</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

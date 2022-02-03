@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\Subscription\DiscountRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
 class Discount
 {

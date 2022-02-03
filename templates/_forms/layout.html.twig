@@ -108,3 +108,8 @@
     {% endif %}
     {{- block('collection_form_widget') -}}
 {%- endblock collection_widget -%}
+
+{%- block form_row -%}
+    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('mb-6 form__row')) }) -%}
+    {{- parent() -}}
+{%- endblock form_row -%}

@@ -3,6 +3,7 @@
 namespace App\Form\Types;
 
 use App\Entity\Rental\Price;
+use App\Infrastructure\Admin\Form\PriceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -20,8 +21,8 @@ final class PricesType extends AbstractType
             ->add('rangeEnd', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('dailyRate', MoneyType::class)
-            ->add('weeklyRate', MoneyType::class)
+            ->add('dailyRate', PriceType::class)
+            ->add('weeklyRate', PriceType::class)
         ;
     }
 

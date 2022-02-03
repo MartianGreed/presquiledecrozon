@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental\Traits;
 
+use App\Domain\Price as PriceVO;
 use App\Domain\Rental\Status;
 use App\Entity\Data\Furniture;
 use App\Entity\Rental\Address;
@@ -216,24 +217,24 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    final public function getWeeklyRate(): ?int
+    final public function getWeeklyRate(): ?PriceVO
     {
         return $this->weeklyRate;
     }
 
-    final public function setWeeklyRate(?int $weeklyRate): self
+    final public function setWeeklyRate(?PriceVO $weeklyRate): self
     {
         $this->weeklyRate = $weeklyRate;
 
         return $this;
     }
 
-    final public function getDailyRate(): ?int
+    final public function getDailyRate(): ?PriceVO
     {
         return $this->dailyRate;
     }
 
-    final public function setDailyRate(int $dailyRate): self
+    final public function setDailyRate(PriceVO $dailyRate): self
     {
         $this->dailyRate = $dailyRate;
 

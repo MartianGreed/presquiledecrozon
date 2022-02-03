@@ -3,6 +3,7 @@
 namespace App\Entity\Data;
 
 use App\Domain\Rental\BedSize;
+use App\Entity\IdentityTrait;
 use App\Repository\Data\BedRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -10,11 +11,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 #[ORM\Entity(repositoryClass: BedRepository::class)]
 class Bed
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $label = null;
@@ -25,9 +22,9 @@ class Bed
     #[ORM\Column(type: 'bed_size', nullable: true)]
     private ?BedSize $size = null;
 
-    public function getId(): ?string
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->label ?? '';
     }
 
     public function getLabel(): ?string
