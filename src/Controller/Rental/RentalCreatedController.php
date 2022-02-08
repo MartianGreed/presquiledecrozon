@@ -4,6 +4,7 @@ namespace App\Controller\Rental;
 
 use App\Controller\WithUserTrait;
 use App\Domain\Rental\Service\RentalService;
+use App\Entity\Rental\Rental;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +19,15 @@ final class RentalCreatedController extends AbstractController
     }
 
     #[Route('/deposez-votre-annonce/termine', name: 'app_rental_created')]
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findLatestDraftRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
+        if ($rental->isPublished()) {
+            return $this->redirectToRoute('app_profile_rental');
+        }
 
         return $this->render('create_rental/finished.html.twig', [
             'rental' => $rental,

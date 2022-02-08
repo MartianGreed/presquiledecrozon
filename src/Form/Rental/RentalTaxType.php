@@ -4,7 +4,8 @@ namespace App\Form\Rental;
 
 use App\Entity\Data\Linens;
 use App\Entity\Rental\Tax;
-use App\Validator\LocalTaxConstraint;
+use App\Infrastructure\Admin\Form\PriceType;
+use App\Infrastructure\Symfony\Validator\LocalTaxConstraint;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,8 +22,8 @@ final class RentalTaxType extends AbstractType
                     new LocalTaxConstraint()
                 ],
             ])
-            ->add('cleaningTax')
-            ->add('linensTax')
+            ->add('cleaningTax', PriceType::class)
+            ->add('linensTax', PriceType::class)
             ->add('linens', EntityType::class, [
                 'class' => Linens::class,
                 'expanded' => true,

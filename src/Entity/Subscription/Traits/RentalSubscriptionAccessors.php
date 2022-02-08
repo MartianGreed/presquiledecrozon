@@ -105,4 +105,25 @@ trait RentalSubscriptionAccessors
         return $this;
     }
 
+    final public function isConsumed(): bool
+    {
+        return $this->isConsumed;
+    }
+
+    final public function setIsConsumed(bool $isConsumed): self
+    {
+        $this->isConsumed = $isConsumed;
+        return $this;
+    }
+
+    final public function getActiveRental(): ?Rental
+    {
+        return $this->activeRental;
+    }
+
+    final public function setActiveRental(?Rental $rental): self
+    {
+        $this->activeRental = $rental;
+        return $this;
+    }
 }

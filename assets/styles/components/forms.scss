@@ -16,7 +16,7 @@ input[type="checkbox"] {
     label {
         @apply text-gray-600 text-sm;
     }
-    input[type="text"], input[type="email"], input[type="date"], textarea {
+    input[type="text"], input[type="email"], input[type="date"], textarea, select {
         @apply border border-gray-200 text-gray-700 px-6 py-2 rounded-md shadow-sm;
     }
 

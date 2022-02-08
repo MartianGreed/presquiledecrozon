@@ -53,8 +53,19 @@
                     </div>
                 </div>
             </li>
-            <li class="nav-item"><a class="px-3 button button__blue" href="{{ url('app_create_rental') }}">Déposer une
-                    annonce</a></li>
+            <li class="nav-item">
+                <a class="px-3 button button__blue" href="{{ url('app_create_rental') }}">Déposer une
+                    annonce</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url('app_profile_informations') }}">
+                    {% if app.user.profile.firstname is null %}
+                        {{ app.user.email }}
+                    {% else %}
+                        {{ app.user.profile.firstname }}
+                    {% endif %}
+                </a>
+            </li>
             <li class="nav-item">
                 <button type="button" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></button>
             </li>

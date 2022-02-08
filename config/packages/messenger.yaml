@@ -21,6 +21,7 @@ framework:
             Symfony\Component\Notifier\Message\SmsMessage: async
             App\Message\FetchRentalGeolocation: async
             App\Message\ResizeRentalPictures: async
+            App\Message\RentalHasBeenPublished: async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

@@ -83,6 +83,11 @@ class Configuration
         return $this;
     }
 
+    public function clearBedrooms(): void
+    {
+        $this->bedrooms = new ArrayCollection();
+    }
+
     public function getRental(): ?Rental
     {
         return $this->rental;

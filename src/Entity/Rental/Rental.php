@@ -2,9 +2,11 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Exception\NoSubscriptionsFoundForRentalException;
 use App\Domain\Price as PriceVO;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\Status;
+use App\Domain\Subscription\SubscriptionStatus;
 use App\Entity\Data\Furniture;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Traits\RentalAccessorTrait;
@@ -88,6 +90,9 @@ class Rental
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: RentalSubscription::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $subscriptions;
+
+    #[ORM\OneToOne(mappedBy: 'activeRental', targetEntity: RentalSubscription::class)]
+    private ?RentalSubscription $activeSubscription = null;
 
     public function __construct()
     {
@@ -179,5 +184,61 @@ class Rental
         }
 
         return $this;
+    }
+
+    final public function isPublished(): bool
+    {
+        return Status::PUBLISHED === $this->status;
+    }
+
+    final public function isPublishable(): bool
+    {
+        $paidSubscriptions = $this->getPaidSubscriptions();
+
+        return (!$this->isPublished() && 0 < count($paidSubscriptions)) || (!$this->isPublished() && null !== $this->activeSubscription);
+    }
+
+    final public function publish(): self
+    {
+        $publishedAt = new \DateTime('now');
+
+        if (null === $this->activeSubscription) {
+            $paidSubscriptions = $this->getPaidSubscriptions();
+            if (0 === count($paidSubscriptions)) {
+                throw new NoSubscriptionsFoundForRentalException((string) $this->id);
+            }
+
+            $firstPaidSubscription = $paidSubscriptions->first();
+            assert($firstPaidSubscription instanceof RentalSubscription);
+
+            $this->activeSubscription = $firstPaidSubscription;
+            $this->activeSubscription->setExpiresAt($this->activeSubscription->getSubscription()->getSubscriptionExpirationDate(clone $publishedAt));
+            $this->activeSubscription->setIsConsumed(true);
+            $this->activeSubscription->setUpdatedAt(clone $publishedAt);
+            $this->activeSubscription->setActiveRental($this);
+        }
+
+        if (null !== $this->activeSubscription && $publishedAt < $this->activeSubscription->getExpiresAt()) {
+            $this->status = Status::PUBLISHED;
+            $this->updatedAt = $publishedAt;
+        }
+
+        return $this;
+    }
+
+    final public function disable(): self
+    {
+        $this->status = Status::DISABLED;
+        $this->updatedAt = new \DateTime('now');
+
+        return $this;
+    }
+
+    /** @return ArrayCollection<int, RentalSubscription> */
+    private function getPaidSubscriptions(): Collection
+    {
+        return $this->subscriptions->filter(function (RentalSubscription $rs) {
+            return null !== $rs->getProviderChargeId() && null === $rs->getExpiresAt() && !$rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus();
+        });
     }
 }

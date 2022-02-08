@@ -64,6 +64,7 @@ class RentalRepository extends ServiceEntityRepository
         /** @var array<Rental> $rentals */
         $rentals = $qb
             ->where($qb->expr()->eq('r.owner', "'$userId'"))
+            ->andWhere($qb->expr()->neq('r.status', "'" . Status::DRAFT->value . "'"))
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult()

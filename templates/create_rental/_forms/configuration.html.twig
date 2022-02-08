@@ -3,7 +3,8 @@
     {{ form_row(form.peopleCount, { label: 'Nombre de personnes' }) }}
     {{ form_row(form.bedroomCount, {
         label: 'Nombre de chambres',
-        row_attr: { 'data-form-types--counter-update-field-value': '#bedroom-count'
+        row_attr: {
+            'data-form-types--counter-update-field-value': '#bedroom-count'
         }
     }) }}
     {{ form_row(form.bedrooms, { label: 'Nombre de couchages', id: 'bedroom-count' }) }}

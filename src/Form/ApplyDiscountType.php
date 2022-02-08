@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Validator\DiscountCodeConstraint;
+use App\Infrastructure\Symfony\Validator\DiscountCodeConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;

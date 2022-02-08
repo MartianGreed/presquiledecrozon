@@ -226,6 +226,7 @@ ${days.values.map(this.printDayItem).join('')}
         let inputs = this.inputTarget.children;
         Array.from(inputs).forEach((i: Element) => {
             let fields = i.querySelectorAll('input');
+            if (0 === fields.length) return;
             this.rangeList = [...this.rangeList, {
                 start: fields[0].getAttribute('value'),
                 end: fields[1].getAttribute('value'),

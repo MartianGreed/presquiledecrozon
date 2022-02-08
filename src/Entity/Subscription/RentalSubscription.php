@@ -17,7 +17,7 @@ class RentalSubscription
 {
     use IdentityTrait, TimestampabbleTrait, RentalSubscriptionAccessors;
 
-    #[ORM\ManyToOne(targetEntity: Subscription::class)]
+    #[ORM\ManyToOne(targetEntity: Subscription::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private Subscription $subscription;
 
@@ -41,7 +41,13 @@ class RentalSubscription
     private \DateTimeInterface $paidAt;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    private \DateTimeInterface $expiresAt;
+    private ?\DateTimeInterface $expiresAt = null;
+
+    #[ORM\OneToOne(inversedBy: 'activeSubscription', targetEntity: Rental::class)]
+    private ?Rental $activeRental = null;
+
+    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+    private bool $isConsumed = false;
 
     final public static function new(Subscription $subscription, Rental $rental): self
     {
@@ -74,7 +80,6 @@ class RentalSubscription
             ->setProviderChargeId($providerChargeId)
             ->setStatus(SubscriptionStatus::ACTIVE)
             ->setPaidAt(new \DateTime('now'))
-            ->setExpiresAt($subscription->getSubscriptionExpirationDate(new \DateTime('now')))
         ;
     }
 

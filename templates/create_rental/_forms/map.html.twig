@@ -7,8 +7,8 @@
         'data-action': 'form-types--map#addMetadataToForm',
     }
 }) }}
-    {{ form_row(form.lat, { attr: { 'data-form-types--map-target': 'lat' }}) }}
-    {{ form_row(form.lng, { attr: { 'data-form-types--map-target': 'lng' }}) }}
+    {{ form_row(form.lat, { attr: { 'data-form-types--map-target': 'lat', style: 'display:none;' }}) }}
+    {{ form_row(form.lng, { attr: { 'data-form-types--map-target': 'lng', style: 'display:none;' }}) }}
 
     <div data-form-types--map-target="suggestions"></div>
     <div id="map" data-form-types--map-target="map"></div>

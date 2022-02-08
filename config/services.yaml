@@ -48,3 +48,8 @@ services:
     Stripe\StripeClient:
         arguments:
             - '%env(STRIPE_SECRET_KEY)%'
+
+
+    App\Service\ApplicationTokenGenerator:
+        arguments:
+            $secret: '%env(APP_SECRET)%'

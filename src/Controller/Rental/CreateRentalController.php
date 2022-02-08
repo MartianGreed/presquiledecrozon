@@ -2,6 +2,7 @@
 
 namespace App\Controller\Rental;
 
+use App\Controller\WithQueryParamsRedirectTrait;
 use App\Controller\WithUserTrait;
 use App\Domain\Rental\DTO\ConfigurationDTO;
 use App\Domain\Rental\DTO\GeolocationDTO;
@@ -34,7 +35,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/deposez-votre-annonce')]
 final class CreateRentalController extends AbstractController
 {
-    use WithUserTrait;
+    use WithUserTrait, WithQueryParamsRedirectTrait;
 
     public function __construct(private readonly RentalService $rentalService)
     {
@@ -43,9 +44,12 @@ final class CreateRentalController extends AbstractController
     #[Route('/configuration', name: 'app_create_rental')]
     public function index(
         Request $request,
-        RentalConfigurationService $configurationService
+        RentalConfigurationService $configurationService,
+        ?Rental $rental,
     ): Response {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(
             RentalInformationsType::class,
@@ -65,7 +69,7 @@ final class CreateRentalController extends AbstractController
                 ]);
             }
 
-            return $this->redirectToRoute('app_create_rental_furnitures');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_furnitures', $request->query->all());
         }
 
         return $this->renderForm('create_rental/configuration.html.twig', [
@@ -75,9 +79,12 @@ final class CreateRentalController extends AbstractController
 
     #[Route('/equipements', name: 'app_create_rental_furnitures')]
     public function furnitures(
-        Request $request
+        Request $request,
+        ?Rental $rental,
     ): Response {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(RentalFurnituresType::class, $rental);
         $form->handleRequest($request);
@@ -86,7 +93,7 @@ final class CreateRentalController extends AbstractController
             $data = $form->getData();
             $this->rentalService->saveEntity($data);
 
-            return $this->redirectToRoute('app_create_rental_description');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_description', $request->query->all());
         }
 
         return $this->renderForm('create_rental/furnitures.html.twig', [
@@ -95,9 +102,11 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/description', name: 'app_create_rental_description')]
-    public function description(Request $request): Response
+    public function description(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(RentalDescriptionType::class, $rental->getDescription() ?? new Description());
         $form->handleRequest($request);
@@ -106,7 +115,7 @@ final class CreateRentalController extends AbstractController
             assert($data instanceof Description);
             $this->rentalService->saveDescription($rental, $data);
 
-            return $this->redirectToRoute('app_create_rental_address');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_address', $request->query->all());
         }
 
         return $this->renderForm('create_rental/description.html.twig', [
@@ -115,9 +124,11 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/adresse', name: 'app_create_rental_address')]
-    public function address(Request $request): Response
+    public function address(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(RentalAddressType::class, $rental->getAddress() ?? new Address());
         $form->handleRequest($request);
@@ -126,7 +137,7 @@ final class CreateRentalController extends AbstractController
             $data = $form->getData();
             $this->rentalService->saveAddress($rental, $data);
 
-            return $this->redirectToRoute('app_create_rental_map');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_map', $request->query->all());
         }
 
         return $this->renderForm('create_rental/address.html.twig', [
@@ -135,9 +146,11 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/carte', name: 'app_create_rental_map')]
-    public function map(Request $request): Response
+    public function map(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $geolocation = $rental->getGeolocation();
         if (null === $geolocation) {
@@ -157,7 +170,7 @@ final class CreateRentalController extends AbstractController
                     (string) $request->request->get('suggestion_meta', null),
                 );
 
-                return $this->redirectToRoute('app_create_rental_pictures');
+                return $this->redirectToRouteWithQueryParams('app_create_rental_pictures', $request->query->all());
             } catch (\Exception) {
                 return $this->renderForm('create_rental/map.html.twig', [
                     'form' => $form,
@@ -171,11 +184,13 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/photos', name: 'app_create_rental_pictures')]
-    public function pictures(Request $request): Response
+    public function pictures(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
-        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery());
+        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Gallery $gallery */
@@ -189,7 +204,7 @@ final class CreateRentalController extends AbstractController
                 ]);
             }
 
-            return $this->redirectToRoute('app_create_rental_availabilities');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
         }
 
         return $this->renderForm('create_rental/pictures.html.twig', [
@@ -199,9 +214,11 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/disponibilites', name: 'app_create_rental_availabilities')]
-    public function availabilities(Request $request): Response
+    public function availabilities(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(RentalPreferencesType::class, $rental->getPreferences() ?? new Preferences());
         $form->handleRequest($request);
@@ -210,7 +227,7 @@ final class CreateRentalController extends AbstractController
             $preferences = $form->getData();
 
             $this->rentalService->savePreferences($rental, $preferences);
-            return $this->redirectToRoute('app_create_rental_calendar');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_calendar', $request->query->all());
         }
 
         return $this->renderForm('create_rental/availabilities.html.twig', [
@@ -220,15 +237,17 @@ final class CreateRentalController extends AbstractController
 
 
     #[Route('/calendrier', name: 'app_create_rental_calendar')]
-    public function calendar(Request $request): Response
+    public function calendar(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
 
         $form = $this->createForm(RentalUnavailabilitiesType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->rentalService->saveUnavailabilities($rental, $rental->getUnavailabilities()->toArray());
-            return $this->redirectToRoute('app_create_rental_taxes');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_taxes', $request->query->all());
         }
 
         return $this->renderForm('create_rental/calendar.html.twig', [
@@ -237,16 +256,19 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/taxes', name: 'app_create_rental_taxes')]
-    public function taxes(Request $request): Response
+    public function taxes(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
         $form = $this->createForm(RentalTaxType::class, $rental->getTax());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Tax $tax */
             $tax = $form->getData();
             $this->rentalService->saveTax($rental, $tax);
-            return $this->redirectToRoute('app_create_rental_prices');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_prices', $request->query->all());
         }
 
         return $this->renderForm('create_rental/taxes.html.twig', [
@@ -255,9 +277,12 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/tarifs', name: 'app_create_rental_prices')]
-    public function prices(Request $request): Response
+    public function prices(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
         $form = $this->createForm(RentalPricesType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -265,7 +290,7 @@ final class CreateRentalController extends AbstractController
             $rental = $form->getData();
             $rental->savePrices($rental->getPrices());
             $this->rentalService->saveEntity($rental);
-            return $this->redirectToRoute('app_create_rental_conditions');
+            return $this->redirectToRouteWithQueryParams('app_create_rental_conditions', $request->query->all());
         }
 
         return $this->renderForm('create_rental/prices.html.twig', [
@@ -274,16 +299,19 @@ final class CreateRentalController extends AbstractController
     }
 
     #[Route('/conditions', name: 'app_create_rental_conditions')]
-    public function conditions(Request $request): Response
+    public function conditions(Request $request, ?Rental $rental): Response
     {
-        $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        if (null === $rental) {
+            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
         $form = $this->createForm(RentalConditionsType::class, $rental->getCondition());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Condition $condition */
             $condition = $form->getData();
             $this->rentalService->saveConditions($rental, $condition);
-            return $this->redirectToRoute('app_rental_created');
+            return $this->redirectToRouteWithQueryParams('app_rental_created', $request->query->all());
         }
 
         return $this->renderForm('create_rental/conditions.html.twig', [

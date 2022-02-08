@@ -13,7 +13,7 @@
 
         <div class="rental__list">
             {% for rental in rentals %}
-                <div class="rental__list__item">
+                <div class="rental__list__item {{ rental.status.value }}">
                     <div class="rental__list__item__inner">
                         <div class="rental__list__item__inner__picture">
                             <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 150, w: 150, crop: true }) }}" alt="">
@@ -23,10 +23,20 @@
                             <div class="type">{{ rental.configuration.type.label }}</div>
                         </div>
                         <div class="rental__list__item__inner__actions">
-                            <div><i class="far fa-edit"></i></div>
-                            <div>
-                                Publier l'annonce
-                            </div>
+                            <div><a href="{{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"><i class="far fa-edit"></i></a></div>
+                            <label
+                                    data-controller="toggle-publish-rental"
+                                    data-toggle-publish-rental-api-uri-value="{{ url('app_rental_toggle_publish', { id: rental.id }) }}"
+                                    for="toggle-publish-rental-{{ rental.id }}"
+                            >
+                                <input
+                                        id="toggle-publish-rental-{{ rental.id }}"
+                                        type="checkbox"
+                                        data-action="change->toggle-publish-rental#togglePublishRental"
+                                        data-toggle-publish-rental-target="input"
+                                        {% if rental.published %}checked{% endif %}
+                                /> Publier l'annonce
+                            </label>
                         </div>
                     </div>
                 </div>

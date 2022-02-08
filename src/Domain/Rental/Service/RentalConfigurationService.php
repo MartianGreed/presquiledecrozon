@@ -49,6 +49,8 @@ final class RentalConfigurationService
 
     private function hydrateConfigurationObjectFromDTO(Configuration $configuration, ConfigurationDTO $configurationDTO): Configuration
     {
+        $configuration->clearBedrooms();
+
         foreach ($configurationDTO->bedrooms as $bedroomItem) {
             $bedroom = new Bedroom();
             foreach ($bedroomItem as $bedId => $bedCount) {

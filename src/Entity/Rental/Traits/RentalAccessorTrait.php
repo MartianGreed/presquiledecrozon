@@ -287,4 +287,9 @@ trait RentalAccessorTrait
     {
         return $this->subscriptions;
     }
+
+    final public function getActiveSubscription(): ?RentalSubscription
+    {
+        return $this->activeSubscription;
+    }
 }

@@ -9,7 +9,7 @@ export default class extends Controller {
     private updateField: HTMLElement;
     private fieldCount: number;
 
-    connect() {
+    async connect() {
         this.hydrateNode = this.hydrateNode.bind(this);
 
         if ("" === this.inputTarget.value) {
@@ -18,12 +18,16 @@ export default class extends Controller {
 
         if ('' !== this.updateFieldValue) {
             let updateField = document.querySelector(this.updateFieldValue);
+
             if (null !== updateField) {
                 this.fieldCount = 0;
                 this.updateField = updateField as HTMLElement;
 
                 if (0 < updateField.children.length) {
-                    this.hydrateNode()
+                    try {
+                        await this.hydrateNode()
+                    } catch (err) {
+                    }
                 }
             }
         }
@@ -43,14 +47,13 @@ export default class extends Controller {
 
     async decrease(e: Event) {
         e.preventDefault();
-        let value = parseInt(this.inputTarget.value)
-        let newValue =  --value
+        let value = parseInt(this.inputTarget.value);
 
-        if (0 > newValue) {
+        if (1 > value) {
             return;
         }
 
-        this.inputTarget.value = newValue.toString();
+        this.inputTarget.value = (value - 1).toString();
         this.dispatchChangeCount(-1);
 
         await this.handleDeleteField();
@@ -78,7 +81,7 @@ export default class extends Controller {
     async handleDeleteField() {
         if (undefined === this.updateField || 0 >= this.fieldCount) return;
 
-        this.updateField.removeChild(this.updateField.childNodes[this.updateField.childElementCount - 1])
+        this.updateField.removeChild(this.updateField.childNodes[this.updateField.childElementCount])
 
         --this.fieldCount;
     }
@@ -92,12 +95,18 @@ export default class extends Controller {
     }
 
     async hydrateNode(): Promise<void> {
-        Array.from(this.updateField.childNodes).forEach((i: HTMLElement) => {
+        let childInputs = this.updateField.querySelectorAll('.bedroom__type__input');
+        for (let i of Array.from(childInputs)) {
+
+            if (undefined === i.querySelector) {
+                continue;
+            }
+
             let label = i.querySelector('label');
 
             label.innerText = label.innerText.replace('__field_index__', (this.fieldCount + 1).toString());
 
             ++this.fieldCount;
-        });
+        }
     }
 }

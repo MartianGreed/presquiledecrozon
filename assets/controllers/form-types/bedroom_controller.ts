@@ -37,8 +37,7 @@ export default class extends Controller {
 
         Array.from(inputs).forEach((input: HTMLInputElement) => {
             let bedCountItem = parseInt(input.value);
-
-            if (0 >= bedCountItem) {
+            if (0 >= bedCountItem || isNaN(bedCountItem)) {
                 return;
             }
 

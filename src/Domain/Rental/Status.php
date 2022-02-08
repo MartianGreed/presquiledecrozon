@@ -9,6 +9,7 @@ enum Status: string
     case VALID = 'valid';
     case PUBLISHED = 'published';
     case DISABLED = 'disabled';
+    case EXPIRED = 'expired';
 
     public function translate(): string
     {
@@ -18,6 +19,7 @@ enum Status: string
             self::VALID => 'Valide',
             self::PUBLISHED => 'Publiée',
             self::DISABLED => 'Désactivée',
+            self::EXPIRED => 'Expirée',
         };
     }
 
@@ -29,6 +31,7 @@ enum Status: string
             self::VALID => 'primary',
             self::PUBLISHED => 'success',
             self::DISABLED => 'danger',
+            self::EXPIRED => 'danger',
         };
     }
 }

@@ -27,6 +27,7 @@ final class MediaType extends AbstractType
             'allow_delete' => true,
             'asset_helper' => true,
             'download_uri' => $imageUri,
+            'image_uri' => $imageUri,
             'required' => $options['required'],
         ]);
     }

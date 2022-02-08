@@ -12,15 +12,23 @@
                         </div>
                     {% endif %}
                     {% if app.user.profile is not null and app.user.profile.firstname is not null and app.user.profile.lastname is not null %}
-                    <div>{{ app.user.profile.firstname }} {{ app.user.profile.lastname }}</div>
+                    <div class="profile__sidebar__inner__header__name">{{ app.user.profile.firstname }} {{ app.user.profile.lastname }}</div>
                     {% endif %}
-                    <div>Membre depuis {{ app.user.createdAt | date('Y') }}</div>
+                    <div class="profile__sidebar__inner__header__since">Membre depuis {{ app.user.createdAt | date('Y') }}</div>
                 </div>
                 <ul class="profile__sidebar__inner__menu">
-                    <li class="profile__sidebar__inner__menu-item">Messagerie</li>
-                    <li class="profile__sidebar__inner__menu-item">Réservations</li>
-                    <li class="profile__sidebar__inner__menu-item">Annonces</li>
-                    <li class="profile__sidebar__inner__menu-item">Informations</li>
+                    <li class="profile__sidebar__inner__menu-item">
+                        <a href="{{ url('app_profile') }}">Messagerie</a>
+                    </li>
+                    <li class="profile__sidebar__inner__menu-item">
+                        <a href="{{ url('app_profile_booking') }}">Réservations</a>
+                    </li>
+                    <li class="profile__sidebar__inner__menu-item">
+                        <a href="{{ url('app_profile_rental') }}">Annonces</a>
+                    </li>
+                    <li class="profile__sidebar__inner__menu-item">
+                        <a href="{{ url('app_profile_informations') }}">Informations</a>
+                    </li>
                 </ul>
             </div>
         </div>

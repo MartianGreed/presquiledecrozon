@@ -6,6 +6,7 @@ use App\Domain\Exception\EntityNotFoundException;
 use App\Domain\Exception\RentalNotFoundException;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\DTO\LocationSuggestion;
+use App\Domain\Rental\Status;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Condition;
 use App\Entity\Rental\Description;
@@ -149,6 +150,8 @@ final class RentalService
     public function saveConditions(Rental $rental, Condition $condition): Rental
     {
         $rental = $rental->setCondition($condition);
+
+        $rental->setStatus(Status::VALID);
 
         $this->manager->persist($condition);
         $this->saveEntity($rental);
