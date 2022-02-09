@@ -4,9 +4,10 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 
 use App\Entity\Data\RentalType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class RentalTypeFixtures extends Fixture
+class RentalTypeFixtures extends Fixture implements FixtureGroupInterface
 {
     final public const RENTAL_TYPE_FLAT = 'rental-type-flat';
     final public const RENTAL_TYPE_HOUSE = 'rental-type-house';
@@ -38,5 +39,10 @@ class RentalTypeFixtures extends Fixture
         $manager->persist($rentalType);
 
         return $rentalType;
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

@@ -120,8 +120,8 @@ class Rental
         }
 
         $this->description
-            ->setTitle((string)$description->getTitle())
-            ->setDescription((string)$description->getDescription())
+            ->setTitle((string) $description->getTitle())
+            ->setDescription((string) $description->getDescription())
         ;
 
         return $this;
@@ -135,7 +135,7 @@ class Rental
         }
 
         $this->address
-            ->setAddress((string)$address->getAddress())
+            ->setAddress((string) $address->getAddress())
             ->setAddress2($address->getAddress2())
             ->setTown($address->getTown())
         ;

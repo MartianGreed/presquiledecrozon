@@ -4,9 +4,10 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 
 use App\Entity\Data\LinensCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class LinensCategoryFixtures extends Fixture
+class LinensCategoryFixtures extends Fixture implements FixtureGroupInterface
 {
     final public const LINENS_BAIN = 'linens-bain';
     final public const LINENS_HOUSE = 'linens-house';
@@ -38,5 +39,10 @@ class LinensCategoryFixtures extends Fixture
         $manager->persist($linensCategory);
 
         return $linensCategory;
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

@@ -97,10 +97,38 @@
     </div>
     <div class="hidden mobile-menu absolute top-full w-full bg-white left-0 drop-shadow-xl" id="mobile-menu">
         <ul class="nav__menu__mobile__container flex-col items-center">
-            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">Portfolio</a></li>
-            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">Process & Methodo</a></li>
-            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}#qui-suis-je" class="block text-sm px-2 py-4 transition duration-300">Qui suis-je ?</a></li>
-            <li class="nav__menu__mobile__item"><a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">MemoMaz ®</a></li>
+            <li class="nav__menu__mobile__item">
+                <a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">
+                    Se loger
+                </a>
+            </li>
+            <li class="nav__menu__mobile__item">
+                <a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">
+                    Se restaurer
+                </a>
+            </li>
+            <li class="nav__menu__mobile__item">
+                <a href="{{ url('app_homepage') }}#qui-suis-je" class="block text-sm px-2 py-4 transition duration-300">
+                    Se divertir
+                </a>
+            </li>
+            <li class="nav__menu__mobile__item">
+                <a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">
+                    Déposer une annonce
+                </a>
+            </li>
+            <li class="nav__menu__mobile__item">
+                <a href="{{ url('app_homepage') }}" class="block text-sm px-2 py-4 transition duration-300">
+                    {% if app.user.profile.firstname is null %}
+                        {{ app.user.email }}
+                    {% else %}
+                        {{ app.user.profile.firstname }}
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav__menu__mobile__item">
+                <button type="button" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></button>
+            </li>
         </ul>
     </div>
 </nav>

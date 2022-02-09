@@ -4,9 +4,10 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 
 use App\Entity\Data\Furniture;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class FurnitureFixtures extends Fixture
+class FurnitureFixtures extends Fixture implements FixtureGroupInterface
 {
     /** @var non-empty-array<string>  */
     private array $furnitures = [
@@ -46,5 +47,10 @@ class FurnitureFixtures extends Fixture
         $furniture->setName($name);
 
         $manager->persist($furniture);
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

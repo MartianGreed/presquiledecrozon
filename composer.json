@@ -112,6 +112,7 @@
         }
     },
     "require-dev": {
+        "fakerphp/faker": "^1.19",
         "infection/infection": "^0.25.5",
         "league/flysystem-adapter-test-utilities": "^2.3",
         "phpstan/phpstan": "^1.3",

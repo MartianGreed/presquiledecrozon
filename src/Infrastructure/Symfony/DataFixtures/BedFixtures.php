@@ -5,9 +5,10 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Domain\Rental\BedSize;
 use App\Entity\Data\Bed;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class BedFixtures extends Fixture
+class BedFixtures extends Fixture implements FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -33,5 +34,10 @@ class BedFixtures extends Fixture
         ;
 
         return $bed;
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

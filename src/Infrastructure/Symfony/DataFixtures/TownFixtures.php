@@ -5,10 +5,11 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Entity\Data\PostalCode;
 use App\Entity\Data\Town;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TownFixtures extends Fixture implements DependentFixtureInterface
+class TownFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -49,5 +50,10 @@ class TownFixtures extends Fixture implements DependentFixtureInterface
         return [
             PostalCodeFixtures::class
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

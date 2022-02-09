@@ -23,7 +23,7 @@ class Profile
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $birthdate = null;
 
-    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $cellphone = null;
 
     #[ORM\Column(type: 'text', nullable: true)]

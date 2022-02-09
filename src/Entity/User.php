@@ -162,6 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     public function setProfile(?Profile $profile): self
     {
         $this->profile = $profile;
+        $profile?->setAccount($this);
 
         return $this;
     }

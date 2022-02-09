@@ -5,10 +5,11 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Entity\Data\Country;
 use App\Entity\Data\Region;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class RegionFixtures extends Fixture implements DependentFixtureInterface
+class RegionFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     final public const REGION_BRETAGNE = 'region-bretagne';
 
@@ -38,5 +39,10 @@ class RegionFixtures extends Fixture implements DependentFixtureInterface
         return [
             CountryFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

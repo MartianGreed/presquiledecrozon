@@ -5,10 +5,11 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Entity\Data\Linens;
 use App\Entity\Data\LinensCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class LinensFixtures extends Fixture implements DependentFixtureInterface
+class LinensFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     /** @var non-empty-array<string> */
     public static array $bathLinens = [
@@ -66,5 +67,10 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [LinensCategoryFixtures::class];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

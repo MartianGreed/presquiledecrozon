@@ -4,9 +4,10 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 
 use App\Entity\Data\Country;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class CountryFixtures extends Fixture
+class CountryFixtures extends Fixture implements FixtureGroupInterface
 {
     final public const COUNTRY_FRANCE = 'country-france';
 
@@ -20,5 +21,10 @@ class CountryFixtures extends Fixture
         $manager->flush();
 
         $this->addReference(self::COUNTRY_FRANCE, $country);
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

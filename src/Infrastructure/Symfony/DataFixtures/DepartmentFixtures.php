@@ -5,10 +5,11 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Entity\Data\Department;
 use App\Entity\Data\Region;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class DepartmentFixtures extends Fixture implements DependentFixtureInterface
+class DepartmentFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     final public const DEPARTMENT_FINISTERE = 'department-finistere';
 
@@ -35,5 +36,10 @@ class DepartmentFixtures extends Fixture implements DependentFixtureInterface
         return [
             RegionFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }

@@ -22,6 +22,8 @@ final class RentalConfigurationService
             : $this->updateConfigurationObjectFromDTO($rental, $configurationDTO)
         ;
 
+        $rental->setConfiguration($configuration);
+
         $this->entityManager->persist($configuration);
         $this->entityManager->flush();
 

@@ -41,7 +41,7 @@ final class Version20211228101107 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_EA98E376AE80F5DF ON postal_code (department_id)');
         $this->addSql('COMMENT ON COLUMN postal_code.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN postal_code.department_id IS \'(DC2Type:uuid)\'');
-        $this->addSql('CREATE TABLE profile (id UUID NOT NULL, firstname VARCHAR(255) NOT NULL, lastname VARCHAR(255) NOT NULL, preferred_language VARCHAR(10) NOT NULL, birthdate DATE DEFAULT NULL, cellphone VARCHAR(13) DEFAULT NULL, description TEXT DEFAULT NULL, gender VARCHAR(1) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE profile (id UUID NOT NULL, firstname VARCHAR(255) NOT NULL, lastname VARCHAR(255) NOT NULL, preferred_language VARCHAR(10) NOT NULL, birthdate DATE DEFAULT NULL, cellphone VARCHAR(20) DEFAULT NULL, description TEXT DEFAULT NULL, gender VARCHAR(1) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN profile.id IS \'(DC2Type:uuid)\'');
         $this->addSql('CREATE TABLE region (id UUID NOT NULL, country_id UUID NOT NULL, name VARCHAR(255) NOT NULL, prefix1 VARCHAR(10) NOT NULL, prefix2 VARCHAR(10) NOT NULL, slug VARCHAR(255) NOT NULL, display_old_name BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_F62F176F92F3E70 ON region (country_id)');

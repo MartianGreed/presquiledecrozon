@@ -5,10 +5,11 @@ namespace App\Infrastructure\Symfony\DataFixtures;
 use App\Entity\Data\Department;
 use App\Entity\Data\PostalCode;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class PostalCodeFixtures extends Fixture implements DependentFixtureInterface
+class PostalCodeFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     final public const POSTAL_29160 = 'postal-29160';
     final public const POSTAL_29560 = 'postal-29560';
@@ -47,5 +48,10 @@ class PostalCodeFixtures extends Fixture implements DependentFixtureInterface
         return [
             DepartmentFixtures::class,
         ];
+    }
+
+    public static function getGroups(): array
+    {
+        return ['data'];
     }
 }
