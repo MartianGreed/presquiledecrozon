@@ -3,6 +3,7 @@
 namespace App\Repository\Rental;
 
 use App\Domain\Exception\EntityNotFoundException;
+use App\Domain\Exception\RentalNotFoundException;
 use App\Domain\Rental\Status;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Unavailability;
@@ -88,5 +89,32 @@ class RentalRepository extends ServiceEntityRepository
         ;
 
         return $rentals;
+    }
+
+    public function getPaginatedList(): QueryBuilder
+    {
+        return $this->getBaseQueryBuilder()->orderBy('r.createdAt', 'DESC');
+    }
+
+
+    public function fetchRentalDetails(string $slug): Rental
+    {
+        $qb = $this->getBaseQueryBuilder();
+
+        /** @var ?Rental $rental */
+        $rental = $qb
+            ->select('r', 'd')
+            ->join('r.description', 'd')
+            ->where($qb->expr()->eq('r.slug', "'" . $slug . "'"))
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        if (null === $rental) {
+            throw new RentalNotFoundException($slug);
+        }
+
+        return $rental;
     }
 }

@@ -22,32 +22,7 @@
 
             <div class="homepage__rental-list__content">
                 {% for rental in rentals %}
-                    <div class="homepage__rental-list__item">
-                        <div class="homepage__rental-list__item__content">
-                            <div class="homepage__rental-list__item__content__image">
-                                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 400, w: 500, crop: true }) }}" alt="Photo de la location de {{ rental.owner.profile.fullname }}" />
-                                <button class="homepage__rental-list__item__content__heart"><i class="fas fa-heart"></i></button>
-                            </div>
-                            <div class="homepage__rental-list__item__content__description">
-                                <div class="homepage__rental-list__item__content__description__container">
-                                    <div class="homepage__rental-list__item__content__description__rental-type">
-                                        {{ rental.configuration.type.label }}
-                                    </div>
-                                    <div class="homepage__rental-list__item__content__description__title">
-                                        {{ rental.description.title }}
-                                    </div>
-                                </div>
-                                <div class="homepage__rental-list__item__content__description__footer">
-                                    <div class="homepage__rental-list__item__content__description__footer__people-count">
-                                        {{ rental.configuration.peopleCount }}
-                                    </div>
-                                    <div class="homepage__rental-list__item__content__description__footer__rate">
-                                        {{ rental.weeklyRate }}/sem
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% include 'includes/rental/list-item.html.twig' with { rental: rental, height: 400, width: 500 } %}
                 {% endfor %}
             </div>
         </div>

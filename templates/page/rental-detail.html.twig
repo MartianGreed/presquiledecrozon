@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block page_title rental.description.title %}
+
+{% block header %}
+    {{ parent() }}
+    <div class="hero">
+
+    </div>
+{% endblock %}
+
+{% set content_class = 'rental_details' %}
+{% block body %}
+    <div class="container mx-auto mx-3 md:mx-auto">
+        <h1>{{ rental.description.title }}</h1>
+    </div>
+{% endblock %}

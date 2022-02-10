@@ -1,0 +1,40 @@
+.rental_list {
+    &__item {
+        @apply bg-light-bg p-3 rounded-md;
+
+        &__content {
+            @apply h-full flex flex-col;
+            &__image {
+                @apply mb-6 relative;
+            }
+
+            &__heart {
+                @apply absolute top-2 right-4;
+            }
+            &__description {
+                @apply flex  flex-col flex-grow;
+
+                &__container {
+                    @apply flex-grow;
+                }
+
+                &__rental-type {
+                    @apply uppercase text-sm;
+                }
+                &__title {
+                    @apply mb-6;
+                }
+
+                &__footer {
+                    @apply flex justify-between;
+                    &__people-count {
+
+                    }
+                    &__rate {
+                        @apply font-semibold text-blue;
+                    }
+                }
+            }
+        }
+    }
+}

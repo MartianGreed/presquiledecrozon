@@ -17,6 +17,7 @@
         "easycorp/easyadmin-bundle": "^4.0",
         "innmind/immutable": "^4.1",
         "intervention/image": "^2.7",
+        "knplabs/knp-paginator-bundle": "^5.8",
         "league/flysystem": "^2.4",
         "league/flysystem-bundle": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.3",

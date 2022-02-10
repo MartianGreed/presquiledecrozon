@@ -1,0 +1,30 @@
+<div class="rental_list__item">
+    <div class="rental_list__item__content">
+        <div class="rental_list__item__content__image">
+            <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
+                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }}" alt="Photo de la location de {{ rental.owner.profile.fullname }}" />
+            </a>
+            <button class="rental_list__item__content__heart"><i class="fas fa-heart"></i></button>
+        </div>
+        <div class="rental_list__item__content__description">
+            <div class="rental_list__item__content__description__container">
+                <div class="rental_list__item__content__description__rental-type">
+                    {{ rental.configuration.type.label }}
+                </div>
+                <div class="rental_list__item__content__description__title">
+                    <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
+                        {{ rental.description.title }}
+                    </a>
+                </div>
+            </div>
+            <div class="rental_list__item__content__description__footer">
+                <div class="rental_list__item__content__description__footer__people-count">
+                    {{ rental.configuration.peopleCount }}
+                </div>
+                <div class="rental_list__item__content__description__footer__rate">
+                    {{ rental.weeklyRate }}/sem
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
