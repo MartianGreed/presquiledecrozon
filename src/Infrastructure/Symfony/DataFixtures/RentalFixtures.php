@@ -28,8 +28,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, DependentFixtureInterface
 {
@@ -45,11 +47,18 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     private array $linens;
 
     private SluggerInterface $slugger;
+    private UploadHandler $uploadHandler;
 
     #[Required]
     public function setSlugger(SluggerInterface $slugger): void
     {
         $this->slugger = $slugger;
+    }
+
+    #[Required]
+    public function setUploadeHandler(UploadHandler $handler): void
+    {
+        $this->uploadHandler = $handler;
     }
 
     public function load(ObjectManager $manager): void
@@ -92,13 +101,11 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $configuration = new Configuration();
 
-        /** @phpstan-ignore-next-line */
-        $count = $this->faker->randomDigit;
+        $count = $this->faker->randomDigit();
 
         $configuration
             ->setType($this->rentalTypes[array_rand($this->rentalTypes)])
-            /** @phpstan-ignore-next-line */
-            ->setPeopleCount($this->faker->randomDigit)
+            ->setPeopleCount($this->faker->randomDigit())
             ->setRental($rental)
         ;
 
@@ -136,8 +143,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         }
 
         /** @var array<int, string> $customFurnitures */
-        /** @phpstan-ignore-next-line */
-        $customFurnitures = $this->faker->sentences($this->faker->randomDigit);
+        $customFurnitures = $this->faker->sentences($this->faker->randomDigit());
         $rental->setCustomFurnitures($customFurnitures);
 
         return $rental;
@@ -230,12 +236,10 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private function createUnavailabilities(Rental $rental, ObjectManager $manager): Rental
     {
-        /** @phpstan-ignore-next-line */
-        $range = $this->faker->randomDigit;
+        $range = $this->faker->randomDigit();
         for ($i = 0; $i < $range; $i++) {
             $startDate = $this->faker->dateTimeBetween('now', '+1 years');
-            /** @phpstan-ignore-next-line */
-            $endDate = $startDate->add(new \DateInterval('P' . $this->faker->randomDigit . 'D'));
+            $endDate = $startDate->add(new \DateInterval('P' . $this->faker->randomDigit() . 'D'));
 
             $unavailability = (new Unavailability())->setStartAt($startDate)->setEndAt($endDate)->setRental($rental);
 
@@ -313,12 +317,16 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private function createMedia(string $name): Media
     {
-        $file = new File(__DIR__ . '/fixtures/rental/' . $name);
-        return (new Media())
+        $file = new UploadedFile(__DIR__ . '/fixtures/rental/' . $name, $name, 'image/jpeg');
+        $media = (new Media())
             ->setFile($file)
             ->setName($file->getFilename())
             ->setSize($file->getSize())
         ;
+
+        $this->uploadHandler->upload($media, 'file');
+
+        return $media;
     }
 
     public static function getGroups(): array

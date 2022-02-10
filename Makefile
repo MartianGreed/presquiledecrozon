@@ -3,7 +3,8 @@ start:
 	symfony serve
 
 fixtures:
-	php bin/console doctrine:fixtures:load --append
+	php bin/console doctrine:fixtures:load --group=data
+	php bin/console doctrine:fixtures:load --group=rental --append
 
 test:
 	vendor/bin/phpunit

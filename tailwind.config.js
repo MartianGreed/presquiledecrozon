@@ -7,6 +7,7 @@ module.exports = {
         'pink': '#f89da4',
         'yellow': '#d8a42e',
         'red': '#e74c3c',
+        'light-bg': '#f7f5f2',
       }
     },
   },

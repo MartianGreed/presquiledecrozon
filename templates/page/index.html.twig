@@ -2,19 +2,54 @@
 
 {% block page_title 'Accueil' %}
 
+{% block header %}
+    {{ parent() }}
+    <div class="hero">
+
+    </div>
+{% endblock %}
+
+{% set content_class = 'homepage' %}
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="homepage__rental-list">
+        <div class="container mx-auto mx-3 md:mx-auto">
+            <h1 class="homepage__rental-list__title">
+                Se loger
+                <small>
+                    Trouvez votre logement saisonnier pour profiter pleinement de la presqu'île de Crozon
+                </small>
+            </h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/valentindosimont/www/presquiledecrozon/src/Controller/PageController.php'|file_link(0) }}">src/Controller/PageController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/valentindosimont/www/presquiledecrozon/templates/page/index.html.twig'|file_link(0) }}">templates/page/index.html.twig</a></code></li>
-    </ul>
-</div>
+            <div class="homepage__rental-list__content">
+                {% for rental in rentals %}
+                    <div class="homepage__rental-list__item">
+                        <div class="homepage__rental-list__item__content">
+                            <div class="homepage__rental-list__item__content__image">
+                                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 400, w: 500, crop: true }) }}" alt="Photo de la location de {{ rental.owner.profile.fullname }}" />
+                                <button class="homepage__rental-list__item__content__heart"><i class="fas fa-heart"></i></button>
+                            </div>
+                            <div class="homepage__rental-list__item__content__description">
+                                <div class="homepage__rental-list__item__content__description__container">
+                                    <div class="homepage__rental-list__item__content__description__rental-type">
+                                        {{ rental.configuration.type.label }}
+                                    </div>
+                                    <div class="homepage__rental-list__item__content__description__title">
+                                        {{ rental.description.title }}
+                                    </div>
+                                </div>
+                                <div class="homepage__rental-list__item__content__description__footer">
+                                    <div class="homepage__rental-list__item__content__description__footer__people-count">
+                                        {{ rental.configuration.peopleCount }}
+                                    </div>
+                                    <div class="homepage__rental-list__item__content__description__footer__rate">
+                                        {{ rental.weeklyRate }}/sem
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

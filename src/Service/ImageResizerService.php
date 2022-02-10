@@ -33,7 +33,7 @@ final class ImageResizerService implements ImageResizerServiceInterface
 
         $image = $this->imageManager->make($stream);
         if ($options['crop']) {
-            $image->crop(intval($options['w']), intval($options['h']));
+            $image->fit(intval($options['w']), intval($options['h']));
         } else {
             $image->resize(intval($options['w']), intval($options['h']));
         }

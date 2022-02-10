@@ -154,4 +154,9 @@ class Profile
         $this->picture = $media;
         return $this;
     }
+
+    final public function getFullName(): string
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 }

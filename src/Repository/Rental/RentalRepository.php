@@ -72,4 +72,21 @@ class RentalRepository extends ServiceEntityRepository
 
         return $rentals;
     }
+
+    // TODO: Improve logic here to get more pertinent results.
+    /** @return array<Rental> */
+    public function findFeatured(int $max = 3): array
+    {
+        $qb = $this->getBaseQueryBuilder();
+
+        /** @var array<Rental> $rentals */
+        $rentals = $qb
+            ->orderBy('r.createdAt', 'DESC')
+            ->setMaxResults($max)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $rentals;
+    }
 }
