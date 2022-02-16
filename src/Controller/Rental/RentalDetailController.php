@@ -3,6 +3,8 @@
 namespace App\Controller\Rental;
 
 use App\Domain\Exception\RentalNotFoundException;
+use App\Entity\Booking\Booking;
+use App\Form\BookRentalType;
 use App\Repository\Rental\RentalRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +26,18 @@ final class RentalDetailController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->render('page/rental-detail.html.twig', [
+        $form = $this->createForm(BookRentalType::class, null, [
+            'rental' => $rental
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            dd($form->getData());
+        }
+
+        return $this->renderForm('page/rental-detail.html.twig', [
             'rental' => $rental,
+            'form' => $form,
         ]);
     }
 }

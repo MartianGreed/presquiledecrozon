@@ -13,7 +13,7 @@ coverage:
 	vendor/bin/phpunit --coverage-html coverage
 
 phpstan:
-	vendor/bin/phpstan analyse -c phpstan.neon
+	vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M
 
 lint:
 	vendor/bin/rector process src tests

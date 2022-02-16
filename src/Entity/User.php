@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Booking\Booking;
 use App\Entity\Rental\Rental;
 use App\Entity\Subscription\Discount;
 use App\Repository\UserRepository;
@@ -45,6 +46,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[ORM\OneToMany(mappedBy: 'payee', targetEntity: Discount::class)]
     private Collection $discounts;
 
+    /** @var ArrayCollection<int, Booking> */
+    #[ORM\OneToMany(mappedBy: 'booker', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->rentals = new ArrayCollection();
@@ -52,6 +57,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
         $this->createdAt = new \DateTime('now');
         $this->updatedAt = new \DateTime('now');
+        $this->bookings = new ArrayCollection();
     }
 
     public function getEmail(): ?string
@@ -218,5 +224,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
             /** @phpstan-ignore-next-line */
             $this->roles,
         ] = unserialize($data);
+    }
+
+    /** @return ArrayCollection<int, Booking>  */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setBooker($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        $this->bookings->removeElement($booking);
+
+        return $this;
     }
 }

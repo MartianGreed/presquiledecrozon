@@ -1,4 +1,6 @@
 import { DateTime, Settings } from 'luxon';
+export * from './printer';
+
 Settings.defaultLocale = 'fr';
 
 export type DayItem = {
@@ -26,6 +28,11 @@ export type CalendarView = {
 
 export type CalendarOptions = {
     months: number,
+}
+
+export type Range = {
+    start: string,
+    end: string,
 }
 
 const DATE_SHORT = 'dd/MM/yyyy';
@@ -145,4 +152,23 @@ export default class Calendar {
     private copyDateTime(date: DateTime): DateTime {
         return DateTime.fromISO(date.toISO()).setLocale('fr-FR');
     }
+}
+
+export function isInRange(rangeList: Array<Range>, date: string): boolean {
+    let dateObj = DateTime.fromFormat(date, 'dd/MM/yyyy');
+    for (let i = 0; i < rangeList.length; i++) {
+        let range = rangeList[i];
+        if (
+            dateObj > DateTime.fromFormat(range.start, 'dd/MM/yyyy')
+            && dateObj < DateTime.fromFormat(range.end, 'dd/MM/yyyy')
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+export function isEdge(rangeList: Array<Range>, date: string): boolean {
+    return undefined !== rangeList.find(i => i.start === date || i.end === date);
 }

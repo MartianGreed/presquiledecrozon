@@ -1,0 +1,81 @@
+.rental_details {
+    &__slideshow__container {
+        @apply grid grid-cols-8 gap-2;
+
+        .slideshow__cover {
+            @apply row-span-2 col-span-3;
+
+            img {
+                @apply object-cover h-full w-full;
+            }
+        }
+
+        .slideshow__image {
+            @apply col-span-2;
+
+            img {
+                @apply object-cover h-full w-full;
+            }
+        }
+
+        .slideshow__details {
+            @apply row-span-2 bg-blue flex flex-col justify-between items-center py-12;
+
+            .item {
+                @apply text-white border-b-2 border-b-white text-center min-w-[50%];
+                .count {
+                    @apply text-6xl font-bold;
+                }
+
+                .text {
+                    @apply text-lg;
+                }
+            }
+        }
+    }
+
+    &__content {
+        &__container {
+            @apply container mx-3 md:mx-auto mt-16 grid grid-cols-12 gap-6;
+        }
+
+        &__sidebar {
+            @apply col-span-4;
+
+            .sidebar__menu {
+                .sidebar__menu__item {
+                    @apply text-gray-700 my-6 list-disc;
+                    &.active {
+                        @apply text-blue;
+                    }
+                }
+            }
+        }
+
+        &__content {
+            @apply col-span-8;
+
+            .content__title {
+                @apply text-3xl text-blue mb-6;
+            }
+
+            .content__subtitle {
+                @apply text-xl text-blue mb-4;
+            }
+
+            .content__furnitures__list {
+                @apply grid grid-cols-4 gap-6;
+            }
+
+            .content_item {
+                @apply mb-20 last:mb-0;
+            }
+
+            #rental_details_map_display {
+                height: 400px;
+            }
+        }
+
+
+    }
+}

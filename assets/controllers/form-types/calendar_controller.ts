@@ -1,12 +1,6 @@
-import {Controller} from '@hotwired/stimulus';
-import Calendar, {CalendarDay, CalendarMonth, CalendarView} from "@crozon/calendar";
-import { removeItemAtIndex } from "@crozon/utils";
-import {DateTime} from "luxon";
-
-type Range = {
-    start: string,
-    end: string,
-}
+import { Controller } from '@hotwired/stimulus';
+import Calendar, { CalendarView, Range, computeCalendar } from '@crozon/calendar';
+import { removeItemAtIndex } from '@crozon/utils';
 
 export default class extends Controller {
     static targets = ['container', 'input'];
@@ -23,9 +17,6 @@ export default class extends Controller {
 
     public connect() {
         this.printCalendar = this.printCalendar.bind(this);
-        this.printMonth = this.printMonth.bind(this);
-        this.printDays = this.printDays.bind(this);
-        this.printDayItem = this.printDayItem.bind(this);
 
         if (0 < this.inputTarget.childElementCount) {
             this.initRanges();
@@ -43,7 +34,7 @@ export default class extends Controller {
         let calendar = this.calendar.getPrev();
         let calendarView = calendar.getCalendarView();
 
-        this.containerTarget.innerHTML = this.computeCalendar(calendarView);
+        this.containerTarget.innerHTML = computeCalendar(calendarView, this.rangeList, 'form-types--calendar');
         this.calendar = calendar;
         this.calendarView = calendarView;
     }
@@ -53,7 +44,7 @@ export default class extends Controller {
         let calendar = this.calendar.getNext();
         let calendarView = calendar.getCalendarView();
 
-        this.containerTarget.innerHTML = this.computeCalendar(calendarView);
+        this.containerTarget.innerHTML = computeCalendar(calendarView, this.rangeList, 'form-types--calendar');
         this.calendar = calendar;
         this.calendarView = calendarView;
     }
@@ -99,106 +90,15 @@ export default class extends Controller {
         this.printCalendar();
     }
 
-
-
     private initCalendar() {
         this.calendar = new Calendar(null, { months: 4 });
         this.calendarView = this.calendar.getCalendarView();
     }
 
-    private computeCalendar(target: CalendarView): string {
-        return `
-<div class="calendar__container">
-<div class="calendar__top">
-    <button 
-        type="button" 
-        data-action="form-types--calendar#getPrev"
-    >
-        <i class="fas fa-chevron-left"></i>
-    </button>
-    <span>${target.year}</span>
-    <button 
-        type="button"
-        data-action="form-types--calendar#getNext"
-    >
-        <i class="fas fa-chevron-right"></i>
-    </button>
-</div>
-<div class="calendar__content">
-    ${target.months.map(this.printMonth).join('')}
-</div>
-</div>
-`;
-    }
-
     private printCalendar(): void {
-        this.containerTarget.innerHTML = this.computeCalendar(this.calendarView);
+        this.containerTarget.innerHTML = computeCalendar(this.calendarView, this.rangeList, 'form-types--calendar');
 
         this.syncForm();
-    }
-
-    private printMonth(month: CalendarMonth): string {
-        return `
-<div class="calendar__month__container">
-    <div class="calendar__month__name">${month.label}</div>
-    <div class="calendar__month__days">${month.days.map(this.printDays).join('')}</div>
-</div>
-        `;
-    }
-
-    private printDays(days: CalendarDay): string {
-        return `
-<div class="calendar__month__day-col">
-    <div class="calendar__month__day-header">${days.label.toUpperCase()}</div>
-${days.values.map(this.printDayItem).join('')}
-</div>
-        `;
-    }
-
-    private printDayItem(day): string {
-        let classList = ['calendar__month__day-item'];
-        if (!day.inMonth) {
-            classList = [...classList, 'not-in-month'];
-        }
-
-        if(this.isInRange(day.formattedValue)) {
-            classList = [...classList, 'in-range'];
-        }
-
-        if (this.isEdge(day.formattedValue)) {
-            classList = [...classList, 'is-edge'];
-        }
-
-        return `
-<div
-    class="${classList.join(' ')}"
-    data-action="click->form-types--calendar#updateRange"
-    data-date="${day.formattedValue}"
->
-    ${day.label}
-</div>
-`;
-    }
-
-    private isInRange(date: string): boolean {
-        let dateObj = DateTime.fromFormat(date, 'dd/MM/yyyy');
-        for (let i = 0; i < this.rangeList.length; i++) {
-            let range = this.rangeList[i];
-            if (
-                dateObj > DateTime.fromFormat(range.start, 'dd/MM/yyyy')
-                && dateObj < DateTime.fromFormat(range.end, 'dd/MM/yyyy')
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private isEdge(date: string): boolean {
-        if (date === this.rangeStart) return true;
-
-        return undefined !== this.rangeList.find(i => i.start === date || i.end === date);
     }
 
     private async syncForm(): Promise<void> {

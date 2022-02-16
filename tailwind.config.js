@@ -8,6 +8,7 @@ module.exports = {
         'yellow': '#d8a42e',
         'red': '#e74c3c',
         'light-bg': '#f7f5f2',
+        'greeny': '#3FD0B8C7',
       }
     },
   },

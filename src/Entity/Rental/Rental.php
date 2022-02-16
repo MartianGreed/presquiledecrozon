@@ -7,6 +7,7 @@ use App\Domain\Price as PriceVO;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\Status;
 use App\Domain\Subscription\SubscriptionStatus;
+use App\Entity\Booking\Booking;
 use App\Entity\Data\Furniture;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Traits\RentalAccessorTrait;
@@ -94,12 +95,17 @@ class Rental
     #[ORM\OneToOne(mappedBy: 'activeRental', targetEntity: RentalSubscription::class)]
     private ?RentalSubscription $activeSubscription = null;
 
+    /** @var ArrayCollection<int, Booking> */
+    #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->furnitures = new ArrayCollection();
         $this->unavailabilities = new ArrayCollection();
         $this->prices = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
 
     public static function new(User $owner): Rental

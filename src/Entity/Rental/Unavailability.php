@@ -26,7 +26,6 @@ class Unavailability
         return sprintf('du %s au %s', $this->startAt?->format('d/m/Y'), $this->endAt?->format('d/m/Y'));
     }
 
-
     public function getStartAt(): ?\DateTimeInterface
     {
         return $this->startAt;
@@ -61,5 +60,14 @@ class Unavailability
         $this->rental = $rental;
 
         return $this;
+    }
+
+    /** @return array{start: string, end: string} */
+    final function toArray(): array
+    {
+        return [
+            'start' => (string) $this->startAt?->format('d/m/Y'),
+            'end' => (string) $this->endAt?->format('d/m/Y'),
+        ];
     }
 }

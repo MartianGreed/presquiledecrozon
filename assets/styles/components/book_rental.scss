@@ -1,0 +1,40 @@
+#book_rental {
+    --tw-shadow: 0 -10px 15px -3px rgb(0 0 0 / 0.1), 0 -4px 6px -4px rgb(0 0 0 / 0.1);
+
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t-4 border-greeny shadow-lg px-6 py-4;
+
+    form {
+        @apply grid grid-cols-8;
+
+        .book_rental {
+            &__avatar {
+
+            }
+
+            &__description {
+                .name {
+                    @apply text-blue;
+                }
+                .town {
+                    @apply text-gray-700 uppercase;
+                }
+            }
+
+            &__price {
+
+            }
+
+            &__contact {
+
+            }
+
+            &__form {
+                @apply flex justify-between col-span-3;
+
+                input[type="date"], select {
+                    @apply border-0 border-b-4 border-greeny rounded-b-none shadow-none focus:outline-none cursor-pointer;
+                }
+            }
+        }
+    }
+}

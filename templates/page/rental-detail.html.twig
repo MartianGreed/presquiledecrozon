@@ -11,7 +11,179 @@
 
 {% set content_class = 'rental_details' %}
 {% block body %}
-    <div class="container mx-auto mx-3 md:mx-auto">
-        <h1>{{ rental.description.title }}</h1>
+    <div class="rental_details__slideshow__container">
+        <div class="slideshow__cover">
+            <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true }) }}" alt="" />
+        </div>
+        {% for i in 0..3 %}
+            <div class="slideshow__image">
+                <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', null, { h: 400, w: 700, crop: true }) }}" alt="" />
+            </div>
+            {% if i == 1 %}
+                <div class="slideshow__details">
+                    <div class="item">
+                        <div class="count">
+                            {{ rental.configuration.peopleCount }}
+                        </div>
+                        <div class="text">
+                            personnes
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="count">
+                            {{ rental.configuration.bedrooms.count }}
+                        </div>
+                        <div class="text">
+                            chambres
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="count">
+                            {{ rental.configuration.bedCount }}
+                        </div>
+                        <div class="text">
+                            lits
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="rental_details__content__container">
+        <div class="rental_details__content__sidebar">
+            <ul class="sidebar__menu">
+                <li class="sidebar__menu__item">Description</li>
+                <li class="sidebar__menu__item">Géolocalisation</li>
+                <li class="sidebar__menu__item">Disponibilité</li>
+                <li class="sidebar__menu__item">Conditions/règlement</li>
+            </ul>
+        </div>
+        <div class="rental_details__content__content">
+            <div id="rental_details_description" class="content_item">
+                <h2 class="content__title">
+                    Description
+                </h2>
+                <p class="mb-12">
+                    {{ rental.description.description }}
+                </p>
+
+                <h3 class="content__subtitle">
+                    Équipements
+                </h3>
+                <div class="content__furnitures__list">
+                    {% for furniture in rental.furnitures %}
+                        <div class="content__furnitures__item">
+                            {{ furniture }}
+                        </div>
+                    {% endfor %}
+                    {% for furniture in rental.customFurnitures %}
+                        <div class="content__furnitures__item">
+                            {{ furniture }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div id="rental_details_map" class="content_item">
+                <script src="https://maps.google.com/maps/api/js?key={{ gmaps_api_key }}" type="text/javascript"></script>
+                <script async type="text/javascript">
+                  var position = new google.maps.LatLng({{ rental.geolocation.coordinates.lat }}, {{ rental.geolocation.coordinates.lng }});
+                  var map = null;
+
+                  function initMap() {
+
+                    map = new google.maps.Map(document.getElementById('rental_details_map_display'), {
+                      center: position,
+                      zoom: 11,
+                    });
+
+                    new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: 'Votre logement',
+                    });
+                  }
+
+                  window.onload = function(){
+                    initMap();
+                  };
+                </script>
+
+                <h2 class="content__title">
+                    Géolocalisation
+                </h2>
+                <div>
+                    {{ rental.address.address }}<br>
+                    {% if rental.address.address2 is not null %}
+                        {{ rental.address.address2 }}<br>
+                    {% endif %}
+                    {{ rental.address.town.postalCode.code }} - {{ rental.address.town }}
+                </div>
+                <div id="rental_details_map_display"></div>
+            </div>
+
+            <div id="rental_details_availability" class="content_item">
+                <h2 class="content__title">
+                    Disponibilités
+                </h2>
+                <p>Toutes les dates n'étant pas marquées sont disponibles.</p>
+                <div data-controller="calendar-read" data-calendar-read-dates-value="{{ rental.displayUnavailabilities | json_encode }}">
+                    <div data-calendar-read-target="container"></div>
+                </div>
+            </div>
+
+            <div id="rental_conditions" class="content_item">
+                <h2 class="content__title">
+                    Conditions & Règlement
+                </h2>
+                <p>Veuillez bien prendre en compte les règles suivantes :</p>
+                <ul>
+                    <li>Logement {{ (rental.condition.smokingAllowed) ? '' : 'non' }} fumeur</li>
+                    <li>Les animaux {{ (rental.condition.animalsAccepted) ? 'sont' : 'ne sont pas' }} acceptés</li>
+                    {% for rule in rental.condition.additionnalRules %}
+                        <li>{{ rule }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="book_rental">
+        {{ form_start(form, {
+            attr: {
+                'data-controller': 'form-types--booking-rental',
+                'data-action': 'change->form-types--booking-rental#updateTotalPrice',
+            }
+        }) }}
+            <div class="book_rental__avatar">
+
+            </div>
+            <div class="book_rental__description">
+                <div class="name">
+                    {{ rental.configuration.type.label }} de {{ rental.owner.profile.firstname }}
+                </div>
+                <div class="town">
+                    {{ rental.address.town.name }}
+                </div>
+            </div>
+            <div class="book_rental__form">
+                {{ form_row(form.startAt, { label: false }) }}
+                {{ form_row(form.endAt, { label: false }) }}
+                {{ form_row(form.peopleCount, { label: false }) }}
+            </div>
+            <div
+                    class="book_rental__price"
+                    data-controller="booking--total-price"
+                    data-booking--total-price-api-value="{{ url('app_booking_price', { id: rental.id }) }}"
+                    data-form-types--booking-rental-target="price"
+            >
+                Veuillez sélectionner les dates pour connaître le montant de la location.
+            </div>
+            <div class="book_rental__contact">
+                <a href="#">Contacter {{ rental.owner.profile.firstname }}</a>
+            </div>
+            <div class="book_rental__submit">
+                <button type="submit" class="button button__blue">Réserver</button>
+            </div>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

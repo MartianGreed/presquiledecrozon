@@ -99,4 +99,14 @@ class Configuration
 
         return $this;
     }
+
+    final public function getBedCount(): int
+    {
+        $count = 0;
+        foreach ($this->bedrooms as $bedroom) {
+            $count += $bedroom->getBeds()->count();
+        }
+
+        return $count;
+    }
 }

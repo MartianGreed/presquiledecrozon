@@ -4,6 +4,7 @@ namespace App\Entity\Rental\Traits;
 
 use App\Domain\Price as PriceVO;
 use App\Domain\Rental\Status;
+use App\Entity\Booking\Booking;
 use App\Entity\Data\Furniture;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Condition;
@@ -291,5 +292,34 @@ trait RentalAccessorTrait
     final public function getActiveSubscription(): ?RentalSubscription
     {
         return $this->activeSubscription;
+    }
+
+    /** @return array<array{start: string, end: string}> */
+    final public function displayUnavailabilities(): array
+    {
+        return $this->unavailabilities->map(fn (Unavailability $u) => $u->toArray())->toArray();
+    }
+
+    /** @return ArrayCollection<int, Booking> */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings[] = $booking;
+            $booking->setRental($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        $this->bookings->removeElement($booking);
+
+        return $this;
     }
 }
