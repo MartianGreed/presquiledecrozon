@@ -42,4 +42,14 @@ final class Price
     {
         return new Price($this->value - $minus, $this->currency);
     }
+
+    public function times(float $times): Price
+    {
+        return new Price($this->value * $times, $this->currency);
+    }
+
+    public function equals(Price $other): bool
+    {
+        return $this->getValue() === $other->getValue() && $this->currency->getICUValue() === $other->getCurrency()->getICUValue();
+    }
 }

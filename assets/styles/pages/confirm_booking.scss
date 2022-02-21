@@ -1,0 +1,81 @@
+.confirm_booking {
+    @apply my-6;
+
+    .separator {
+        @apply flex items-center whitespace-nowrap text-gray-600 font-semibold mb-16;
+
+        &:after {
+            @apply flex w-full border-b-2 border-gray-200 ml-6;
+            content: '';
+        }
+
+        &.only {
+            @apply mb-3;
+            &:after {
+                @apply ml-0;
+            }
+        }
+
+        &.no-mb {
+            @apply mb-3
+        }
+    }
+
+    &__title {
+        @apply text-3xl text-gray-500 mb-6;
+    }
+
+    &__duration {
+        @apply mb-3 ;
+    }
+
+    &__recap {
+        @apply flex justify-between mb-6;
+
+        .dates {
+            @apply flex items-center;
+            .date-item {
+                .days {
+                    @apply text-xl text-black font-semibold;
+                }
+                @apply flex flex-col border border-gray-300 px-3 py-1 text-center leading-none mx-3 text-gray-700;
+            }
+        }
+
+        .separator {
+            @apply flex-grow mx-6;
+        }
+        .rental {
+            @apply flex items-center;
+            .title {
+                @apply mx-6;
+                .owner {
+                    @apply text-blue font-semibold;
+                }
+                .location {
+                    @apply text-gray-700 uppercase;
+                }
+            }
+        }
+        .picture {
+            @apply rounded-full border-8 border-blue;
+            img {
+                @apply rounded-full;
+            }
+        }
+    }
+
+    &__total {
+        @apply mb-12 flex justify-around text-blue font-semibold;
+    }
+
+    &__cgv {
+        span {
+            @apply font-semibold text-gray-700 mb-3 block;
+        }
+
+        p {
+            @apply text-gray-600;
+        }
+    }
+}

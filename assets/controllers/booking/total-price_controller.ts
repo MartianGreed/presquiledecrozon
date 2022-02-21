@@ -12,12 +12,22 @@ export default class extends Controller {
 
 
     async connect() {
-        let res = await axios.post(this.apiValue);
+        this.totalContent = this.totalContent.bind(this);
+        this.defaultContent = this.defaultContent.bind(this);
     }
 
     async formValueChanged(): Promise<void> {
-        let { data, status, statusText } = await axios.post(this.apiValue, this.formValue);
-        console.log(data, status, statusText)
+        try {
+            let { data, status, statusText } = await axios.post(this.apiValue, this.formValue);
+
+            if (200 !== status) {
+                return;
+            }
+
+            this.element.innerHTML = this.totalContent();
+            this.priceTarget.innerText = data.booking_price;
+
+        } catch (err) {}
     }
 
     private defaultContent(): string {

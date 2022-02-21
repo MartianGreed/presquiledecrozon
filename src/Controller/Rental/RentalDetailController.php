@@ -4,8 +4,11 @@ namespace App\Controller\Rental;
 
 use App\Domain\Exception\RentalNotFoundException;
 use App\Entity\Booking\Booking;
-use App\Form\BookRentalType;
+use App\Entity\User;
+use App\Form\Booking\BookRentalType;
+use App\Repository\Booking\BookingRepository;
 use App\Repository\Rental\RentalRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class RentalDetailController extends AbstractController
 {
-    public function __construct(private readonly RentalRepository $rentalRepository)
+    public function __construct(
+        private readonly RentalRepository $rentalRepository,
+        private readonly BookingRepository $bookingRepository,
+        private readonly EntityManagerInterface $manager,
+    )
     {
     }
 
@@ -32,12 +39,36 @@ final class RentalDetailController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($form->getData());
+            /** @var ?User $booker */
+            $booker = $this->getUser();
+            if (null === $booker) {
+                $request->getSession()->set('_security.main.target_path', $request->getRequestUri());
+                return $this->redirectToRoute('app_login');
+            }
+
+            /** @var \DateTimeInterface $startAt */
+            $startAt = $form->get('startAt')->getData();
+            /** @var \DateTimeInterface $endAt */
+            $endAt = $form->get('endAt')->getData();
+
+            $booking = Booking::init(
+                $rental,
+                $booker,
+                $startAt,
+                $endAt,
+                intval($form->get('peopleCount')->getData()),
+            );
+
+            $this->manager->persist($booking);
+            $this->manager->flush();
+
+            return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }
 
         return $this->renderForm('page/rental-detail.html.twig', [
             'rental' => $rental,
             'form' => $form,
+            'bookings' => $this->bookingRepository->getBookingRanges((string) $rental->getId()),
         ]);
     }
 }

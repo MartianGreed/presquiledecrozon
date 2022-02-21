@@ -21,32 +21,47 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
-    // /**
-    //  * @return Booking[] Returns an array of Booking objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /** @return Booking[] */
+    public function findBookingsForPeriod(string $rentalId, string $bookingId, string $startAt, string $endAt): array
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
+        $qb = $this->createQueryBuilder('b');
+
+        /** @var Booking[] $bookings */
+        $bookings = $qb
+            ->where($qb->expr()->eq('b.rental', ':rentalId'))
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->between('b.endAt', ':from', ':to'),
+                    $qb->expr()->between('b.startAt', ':from', ':to')
+                )
+            )
+            ->andWhere($qb->expr()->neq('b.id', ':bookingId'))
+            ->setParameters([
+                'rentalId' => $rentalId,
+                'bookingId' => $bookingId,
+                'from' => $startAt,
+                'to' => $endAt,
+            ])
             ->getQuery()
             ->getResult()
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Booking
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $bookings;
     }
-    */
+
+    /** @return array<array{start: string, end: string}> */
+    public function getBookingRanges(string $rentalId): array
+    {
+        $qb = $this->createQueryBuilder('b');
+        /** @var array<array{start_at: \DateTimeInterface, end_at: \DateTimeInterface}> $ranges */
+        $ranges = $qb
+            ->select('b.startAt as start_at', 'b.endAt as end_at')
+            ->where($qb->expr()->eq('b.rental', ':rentalId'))
+            ->setParameter('rentalId', $rentalId)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+
+        return array_map(static fn ($range) => ['start' => $range['start_at']->format('d/m/Y'), 'end' => $range['end_at']->format('d/m/Y')], $ranges);
+    }
 }

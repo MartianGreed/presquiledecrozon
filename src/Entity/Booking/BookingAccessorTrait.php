@@ -2,6 +2,8 @@
 
 namespace App\Entity\Booking;
 
+use App\Domain\Booking\BookingPrices;
+use App\Domain\Booking\Status;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
 
@@ -64,6 +66,28 @@ trait BookingAccessorTrait
     {
         $this->booker = $booker;
 
+        return $this;
+    }
+
+    final public function getPrices(): BookingPrices
+    {
+        return $this->prices;
+    }
+
+    final public function setPrices(BookingPrices $prices): self
+    {
+        $this->prices = $prices;
+        return $this;
+    }
+
+    final public function getStatus(): Status
+    {
+        return $this->status;
+    }
+
+    final public function setStatus(Status $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 }

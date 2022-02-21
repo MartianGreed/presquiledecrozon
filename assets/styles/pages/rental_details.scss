@@ -74,6 +74,16 @@
             #rental_details_map_display {
                 height: 400px;
             }
+
+            #rental_details_availability {
+                .calendar__container {
+                    .is-edge, .in-range {
+                        &:not(.not-in-month) {
+                            @apply bg-white text-gray-400 line-through cursor-default;
+                        }
+                    }
+                }
+            }
         }
 
 

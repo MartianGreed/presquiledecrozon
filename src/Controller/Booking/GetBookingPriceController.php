@@ -2,6 +2,8 @@
 
 namespace App\Controller\Booking;
 
+use App\Domain\Booking\BookingPriceSimulatorService;
+use App\Domain\Booking\BookingRequest;
 use App\Entity\Rental\Rental;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class GetBookingPriceController extends AbstractController
 {
+    public function __construct(private readonly BookingPriceSimulatorService $simulatorService) {}
+
     #[Route('/booking/price/{id}', name: 'app_booking_price', methods: [Request::METHOD_POST])]
     #[ParamConverter('rental', Rental::class)]
     public function __invoke(Request $request, Rental $rental): Response
@@ -23,13 +27,15 @@ final class GetBookingPriceController extends AbstractController
             return new JsonResponse(['message' => 'JSON incorrectly formatted'], Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        $data = [
+        $data = BookingRequest::fromArray([
             'start_at' => $content['startAt'],
             'end_at' => $content['endAt'],
             'people_count' => (int) $content['peopleCount'],
+            'rental' => $rental,
+        ]);
 
-        ];
+        $bookingPrice = $this->simulatorService->simulate($data);
 
-        return new JsonResponse($data);
+        return new JsonResponse(['booking_price' => (string) $bookingPrice]);
     }
 }

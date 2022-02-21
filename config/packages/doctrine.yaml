@@ -4,12 +4,15 @@ doctrine:
         mapping_types:
             rental_status: string
             subscription_status: string
+            booking_status: string
         types:
             bed_size: App\Infrastructure\Doctrine\Types\BedSizeType
             rental_status: App\Infrastructure\Doctrine\Types\RentalStatusType
             subscription_status: App\Infrastructure\Doctrine\Types\SubscriptionStatusType
             discount_type: App\Infrastructure\Doctrine\Types\DiscountTypeType
             price: App\Infrastructure\Doctrine\Types\PriceType
+            booking_status: App\Infrastructure\Doctrine\Types\BookingStatusType
+            booking_prices: App\Infrastructure\Doctrine\Types\BookingPricesType
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)

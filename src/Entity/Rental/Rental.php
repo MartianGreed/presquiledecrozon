@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental;
 
+use App\Domain\Booking\BookingPrices;
 use App\Domain\Exception\NoSubscriptionsFoundForRentalException;
 use App\Domain\Price as PriceVO;
 use App\Domain\Rental\DTO\GeolocationDTO;
@@ -15,6 +16,7 @@ use App\Entity\Subscription\RentalSubscription;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
 use App\Repository\Rental\RentalRepository;
+use App\Util\Type;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -246,5 +248,59 @@ class Rental
         return $this->subscriptions->filter(function (RentalSubscription $rs) {
             return null !== $rs->getProviderChargeId() && null === $rs->getExpiresAt() && !$rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus();
         });
+    }
+
+    /** @return array{0: PriceVO, 1: PriceVO} */
+    private function getDayPrice(\DateTimeInterface $date): array
+    {
+        foreach ($this->prices as $priceRange) {
+            if ($date >= $priceRange->getRangeStart() && $date <= $priceRange->getRangeEnd()) {
+                return [Type::assertNotNull($priceRange->getWeeklyRate()), Type::assertNotNull($priceRange->getDailyRate())];
+            }
+        }
+
+        return [Type::assertNotNull($this->weeklyRate), Type::assertNotNull($this->dailyRate)];
+    }
+
+    final public function getPricesForRange(\DateTimeInterface $startAt, \DateTimeInterface $endAt): BookingPrices
+    {
+        $bookingPrices = new BookingPrices();
+
+        $dateReference = \DateTime::createFromInterface($startAt);
+        $nextDateReference = \DateTime::createFromInterface($dateReference)->add(new \DateInterval('P1D'));
+        $periodDiff = $startAt->diff($endAt)->d - 1;
+
+        $currentPrices = null;
+        $count = 1;
+
+        for ($i = 0; $i <= $periodDiff; $i++) {
+            [$weeklyRate, $dailyRate] = $this->getDayPrice($dateReference);
+            [$nextWeeklyRate, $nextDailyRate] = $this->getDayPrice($nextDateReference);
+
+            if (null === $currentPrices) {
+                $currentPrices = [$weeklyRate, $dailyRate];
+            }
+
+            $dateReference->add(new \DateInterval('P1D'));
+            $nextDateReference->add(new \DateInterval('P1D'));
+
+            [$currentWeeklyRate, $currentDailyRate] = $currentPrices;
+
+            if (
+                $currentWeeklyRate->equals($nextWeeklyRate)
+                && $currentDailyRate->equals($nextDailyRate)
+                && $i < $periodDiff
+            ) {
+                ++$count;
+                continue;
+            }
+
+            $bookingPrices = $bookingPrices->addPrice($currentWeeklyRate, $currentDailyRate, $count);
+
+            $count = 1;
+            $currentPrices = null;
+        }
+
+        return $bookingPrices;
     }
 }

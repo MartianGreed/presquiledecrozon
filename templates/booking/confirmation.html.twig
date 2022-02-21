@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmer la réservation{% endblock %}
+{% set content_class = 'confirm_booking' %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="container mx-auto">
+        <h1 class="confirm_booking__title">Récapitulatif de réservation</h1>
+
+        <div class="separator confirm_booking__duration">
+            <span>
+                {{ vm.bookingDuration }}
+            </span>
+        </div>
+
+        <div class="confirm_booking__recap">
+            <div class="dates">
+                Du <span class="date-item">{{ vm.startAt | raw }}</span> au <span class="date-item">{{ vm.endAt | raw }}</span>
+            </div>
+            <div class="separator only"></div>
+            <div class="rental">
+                <div class="title">
+                    <div class="owner">{{ vm.rentalTitle }}</div>
+                    <div class="location">{{ vm.rentalLocation }}</div>
+                </div>
+            </div>
+            {% if vm.rental.owner.profile.picture is not null %}
+                <div class="picture">
+                    <img src="{{ uploaded_asset(app.user.profile.picture, 'file', null, { h: 100, w: 100, crop: true }) }}" alt="">
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="separator no-mb">
+            Nombre de personnes
+        </div>
+        {{ form_row(form.peopleCount) }}
+
+        <div class="separator no-mb">
+            Message pour le propriétaire
+        </div>
+        {{ form_row(form.ownerMessage) }}
+
+        <div class="separator">
+            A régler auprès du propriétaire
+        </div>
+
+        <div class="confirm_booking__total">
+            <span>Total</span><span>{{ vm.totalPrice }}</span>
+        </div>
+
+        <div class="separator only"></div>
+
+        <div class="confirm_booking__cgv">
+            <span>En cas d'annulation</span>
+            <p>
+                Le propriétaire a un temps de 72h pour répondre à votre demande réservation. Sans réponse de sa part,
+                l’annonce sera à nouveau disponible sur le site.
+            </p>
+        </div>
+
+        <div class="flex justify-center gap-4 mt-6">
+            <button class="button button__outlined__grey">Annuler</button>
+            <button type="submit" class="button button__blue">
+                Confirmer la réservation
+            </button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

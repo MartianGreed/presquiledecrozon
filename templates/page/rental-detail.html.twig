@@ -127,7 +127,7 @@
                     Disponibilités
                 </h2>
                 <p>Toutes les dates n'étant pas marquées sont disponibles.</p>
-                <div data-controller="calendar-read" data-calendar-read-dates-value="{{ rental.displayUnavailabilities | json_encode }}">
+                <div data-controller="calendar-read" data-calendar-read-dates-value="{{ rental.displayUnavailabilities | merge(bookings) | json_encode }}">
                     <div data-calendar-read-target="container"></div>
                 </div>
             </div>
