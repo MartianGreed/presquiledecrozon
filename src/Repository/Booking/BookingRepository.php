@@ -31,8 +31,8 @@ class BookingRepository extends ServiceEntityRepository
             ->where($qb->expr()->eq('b.rental', ':rentalId'))
             ->andWhere(
                 $qb->expr()->orX(
-                    $qb->expr()->between('b.endAt', ':from', ':to'),
-                    $qb->expr()->between('b.startAt', ':from', ':to')
+                    $qb->expr()->between('b.startAt', ':from', ':to'),
+                    $qb->expr()->between('b.endAt', ':from', ':to')
                 )
             )
             ->andWhere($qb->expr()->neq('b.id', ':bookingId'))

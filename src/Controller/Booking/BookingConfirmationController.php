@@ -7,7 +7,10 @@ use App\Domain\Booking\BookingService;
 use App\Domain\Booking\Status;
 use App\Domain\Booking\ViewModel\Confirmation;
 use App\Entity\Booking\Booking;
+use App\Entity\Conversation\Conversation;
+use App\Entity\Conversation\Message;
 use App\Form\Booking\ConfirmBookingType;
+use App\Util\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,8 +59,13 @@ final class BookingConfirmationController extends AbstractController
 
             $booking->confirm(intval($form->get('peopleCount')->getData()));
             // Create conversation between two users.
+            $conversation = Conversation::initWithMessage(
+                $booking,
+                Message::create($booking->getBooker(), strval($form->get('ownerMessage')->getData()))
+            );
 
             // Save data and redirect to conversation.
+            $this->manager->persist($conversation);
             $this->manager->flush();
 
             return $this->redirectToRoute('app_profile_conversation');

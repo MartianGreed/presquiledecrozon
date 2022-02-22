@@ -1,7 +1,62 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/profile_layout.html.twig' %}
 
 {% block page_title 'Messagerie' %}
+{% set content_class = 'conversation' %}
 
-{% block body %}
-    <h1>Profil {{ app.user.userIdentifier }}</h1>
+{% block profile_main %}
+    <div class="container mx-auto">
+        <h1 class="main__title">Messagerie</h1>
+        <div
+                class="conversation__container"
+                data-controller="conversation--list"
+        >
+            <div class="conversation__list">
+                <ul>
+                    {% for conversation in conversations %}
+                        {% set contact = conversation.receiver.id == app.user.id ? conversation.sender : conversation.receiver %}
+                        <li class="conversation__list__item">
+                            <div class="conversation__list__item__picture">
+                                {% if contact.profile.picture is not null %}
+                                    <img src="{{ uploaded_asset(contact.profile.picture, 'file', null, { h: 50, w: 50, crop: true}) }}" alt="Photo de profil {{ contact.profile.fullname }}">
+                                {% endif %}
+                            </div>
+                            <div class="conversation__list__item__content">
+                                <div class="top">
+                                    <span class="name">{{ contact.profile.fullName }}</span>
+                                    <span class="date">{{ conversation.updatedAt | date('d/m/Y') }}</span>
+                                </div>
+                                <div class="excerpt{% if conversation.lastMessage.readAt is null and conversation.lastMessage.sender.id == contact.id %} not-read{% endif %}">
+                                    {{ conversation.lastMessage.message | excerpt(5) }}
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div
+                    class="conversation__detail"
+                    data-controller="conversation--detail"
+                    data-conversation--detail-current-id-value="{{ conversations[0].id }}"
+                    data-conversation--detail-user-id-value="{{ app.user.id }}"
+                    data-conversation--detail-api-url-value="{{ url('api_get_conversation', { id: '__id__' }) }}"
+            >
+                <div class="conversation__detail__description">
+                    <div class="name" data-conversation--detail-target="name"></div>
+                    <div class="content">
+                        <div class="period" data-conversation--detail-target="period"></div>
+                        <div class="people_count" data-conversation--detail-target="peopleCount"></div>
+                        <div class="total_price" data-conversation--detail-target="price"></div>
+                    </div>
+                </div>
+                <div class="conversation__detail__messages" data-conversation--detail-target="messages">
+                    {% for message in conversations[0].messages %}
+                        <div class="conversation__detail__messages__item{% if message.sender.id == app.user.id %} me{% endif %}">
+                            {{ message.message }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

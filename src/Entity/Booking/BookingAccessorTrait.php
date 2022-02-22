@@ -90,4 +90,13 @@ trait BookingAccessorTrait
         $this->status = $status;
         return $this;
     }
+
+    final public function getPeriod(): string
+    {
+        return sprintf(
+            'Du %s au %s',
+            $this->startAt->format('d/m/Y'),
+            $this->endAt->format('d/m/Y')
+        );
+    }
 }
