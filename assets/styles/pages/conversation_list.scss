@@ -4,9 +4,9 @@
     }
 
     &__list {
-        @apply col-span-4 border-r border-gray-400;
+        @apply col-span-12 md:col-span-4 border-r-0 md:border-r border-gray-400;
         &__item {
-            @apply flex mb-3;
+            @apply flex mb-3 hover:bg-gray-50 cursor-pointer px-2 py-1;
             &__picture {
                 @apply rounded-full border-2 border-blue bg-gray-200 mr-3 w-[50px] h-[50px];
                 img {
@@ -37,7 +37,7 @@
     }
 
     &__detail {
-        @apply col-span-8 px-3;
+        @apply col-span-12 md:col-span-8 px-3;
 
         &__description {
             @apply border-b border-gray-300 pb-3;
@@ -66,6 +66,27 @@
 
                 &.me {
                     @apply ml-auto bg-blue/20 text-blue border-blue/20;
+                }
+            }
+        }
+
+        &__form {
+            .form__displayed {
+                @apply flex items-center border-t border-gray-300;
+                .input {
+                    @apply flex-1;
+
+                    .mb-6 {
+                        margin-bottom: 0;
+                    }
+
+                    textarea {
+                        @apply border-none shadow-none appearance-none focus:outline-none;
+                    }
+                }
+
+                .submit {
+
                 }
             }
         }

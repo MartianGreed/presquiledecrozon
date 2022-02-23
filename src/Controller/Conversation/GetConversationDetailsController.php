@@ -20,7 +20,7 @@ final class GetConversationDetailsController extends AbstractController
     {
     }
 
-    #[Route('/api/conversation/{id}', name: 'api_get_conversation')]
+    #[Route('/api/conversation/{id}', name: 'api_get_conversation', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request, string $id): Response
     {
         try {

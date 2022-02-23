@@ -41,8 +41,7 @@ class ConversationRepository extends ServiceEntityRepository
             ->orderBy('c.updatedAt', 'DESC')
             ->setParameter('userId', $userId)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
 
         return $res;
     }
@@ -63,13 +62,24 @@ class ConversationRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
 
         if (null === $conversation) {
             throw new ConversationNotFoundException($id);
         }
 
         return $conversation;
+    }
+
+    public function exists(string $conversationId): bool
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        return null !== $qb->where($qb->expr()->eq('c.id', ':conversationId'))
+            ->setParameter('conversationId', $conversationId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 }
