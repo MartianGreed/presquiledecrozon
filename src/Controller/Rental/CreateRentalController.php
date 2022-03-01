@@ -171,7 +171,7 @@ final class CreateRentalController extends AbstractController
                 );
 
                 return $this->redirectToRouteWithQueryParams('app_create_rental_pictures', $request->query->all());
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 return $this->renderForm('create_rental/map.html.twig', [
                     'form' => $form,
                 ]);

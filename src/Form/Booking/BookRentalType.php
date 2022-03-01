@@ -51,6 +51,8 @@ final class BookRentalType extends AbstractType
                 'constraints' => [new Range(min: 1, max: $peopleCount)]
             ])
         ;
+
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

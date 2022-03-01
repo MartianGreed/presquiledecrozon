@@ -41,9 +41,13 @@ class RentalRepository extends ServiceEntityRepository
         /** @var ?Rental $rental */
         $rental = $qb
             ->select('r', 'p')
-            ->join('r.preferences', 'p')
-            ->where($qb->expr()->neq('r.status', "'" . Status::PUBLISHED->value . "'"))
-            ->andWhere($qb->expr()->eq('r.owner', "'$userId'"))
+            ->leftJoin('r.preferences', 'p')
+            ->where($qb->expr()->neq('r.status', ':published'))
+            ->andWhere($qb->expr()->eq('r.owner', ':userId'))
+            ->setParameters([
+                'published' => Status::PUBLISHED->value,
+                'userId' => $userId,
+            ])
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->setMaxResults(1)
@@ -82,7 +86,9 @@ class RentalRepository extends ServiceEntityRepository
 
         /** @var array<Rental> $rentals */
         $rentals = $qb
+            ->andWhere($qb->expr()->eq('r.status', ':published'))
             ->orderBy('r.createdAt', 'DESC')
+            ->setParameter('published', Status::PUBLISHED->value)
             ->setMaxResults($max)
             ->getQuery()
             ->getResult()
@@ -116,5 +122,51 @@ class RentalRepository extends ServiceEntityRepository
         }
 
         return $rental;
+    }
+
+    public function userHasRental(string $userId): bool
+    {
+        $qb = $this->getBaseQueryBuilder();
+
+        /** @var int $rentalCount */
+        $rentalCount = $qb
+            ->select('count(r)')
+            ->where($qb->expr()->eq('r.status', ':published'))
+            ->andWhere($qb->expr()->eq('r.owner', ':userId'))
+            ->setParameters([
+                'published' => Status::PUBLISHED->value,
+                'userId' => $userId,
+            ])
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return 0 < $rentalCount;
+    }
+
+    public function hasUnavailabilitiesForPeriod(string $rentalId, \DateTimeInterface $startAt, \DateTimeInterface $endAt): bool
+    {
+        $qb = $this->getBaseQueryBuilder();
+
+        $unavailabilites = $qb
+            ->select('count(u.id)')
+            ->leftJoin('r.unavailabilities', 'u')
+            ->where($qb->expr()->eq('r.id', ':rentalId'))
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->between('u.startAt', ':from', ':to'),
+                    $qb->expr()->between('u.endAt', ':from', ':to'),
+                )
+            )
+            ->setParameters([
+                'rentalId' => $rentalId,
+                'from' => $startAt->format('Y-m-d'),
+                'to' => $endAt->format('Y-m-d'),
+            ])
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return 0 < $unavailabilites;
     }
 }

@@ -36,7 +36,7 @@ final class RentalService
     {
         try {
             return $this->rentalRepository->findLatestDraftRentalForUser((string) $user->getId());
-        } catch (EntityNotFoundException) {
+        } catch (EntityNotFoundException $e) {
             $rental = Rental::new($user);
 
             $this->manager->persist($rental);
@@ -102,12 +102,15 @@ final class RentalService
             (string) $suggestionMetadata,
         );
 
-        $rental = $this->improveLocalisationService->improveLocalisation($rental, $geolocationDTO, $suggestions);
+        if ($suggestions->hasSuggestions()) {
+            $rental = $this->improveLocalisationService->improveLocalisation($rental, $geolocationDTO, $suggestions);
 
-        /** @var Geolocation $geolocation */
-        $geolocation = $rental->getGeolocation();
+            /** @var Geolocation $geolocation */
+            $geolocation = $rental->getGeolocation();
 
-        $this->manager->persist($geolocation);
+            $this->manager->persist($geolocation);
+        }
+
         $this->saveEntity($rental);
 
 

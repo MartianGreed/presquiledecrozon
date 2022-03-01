@@ -47,7 +47,7 @@ final class PostMessageController extends AbstractController
                     'message' => $message->getMessage(),
                     'read_at' => $message->getReadAt()?->getTimestamp(),
                     'send_at' => $message->getSendAt()?->getTimestamp(),
-                    'sender_id' => $message->getSender()->getId(),
+                    'sender_id' => $message->getSender()?->getId(),
                 ], Response::HTTP_CREATED);
             } catch (ConversationNotFoundException $e) {
                 return new JsonResponse(['message' => 'invalid conversation'], Response::HTTP_NOT_FOUND);

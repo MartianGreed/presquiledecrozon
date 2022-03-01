@@ -23,7 +23,7 @@ final class RentalImproveLocalisationService
         GeolocationDTO $geolocationDTO,
         LocationSuggestion $suggestedLocalisation
     ): Rental {
-        if (null === $suggestedLocalisation->suggestions) {
+        if ('' === $suggestedLocalisation->suggestions || null === $suggestedLocalisation->suggestions) {
             throw new \DomainException('No need to improve localisation if no suggestion has been chosen');
         }
 

@@ -1,7 +1,61 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/profile_layout.html.twig' %}
 
-{% block page_title 'Liste des réservations' %}
+{% block page_title 'Réservations' %}
+{% set content_class = 'bookings_list' %}
 
-{% block body %}
-    <h1>Profil {{ app.user.userIdentifier }}</h1>
+{% block profile_main %}
+    <div class="container mx-auto">
+        <h1 class="main__title">Réservations</h1>
+        <div
+                class="tab__container"
+                data-controller="tabs"
+        >
+            <div class="tab__header">
+                <ul data-tabs-target="selector">
+                    {% if is_owner %}
+                        <li
+                                class="active"
+                                data-action="click->tabs#setCurrent"
+                                data-toggle="to-confirm"
+                        >
+                            A valider
+                        </li>
+                    {% endif %}
+                    <li
+                            {% if not is_owner %}class="active"{% endif %}
+                            data-action="click->tabs#setCurrent"
+                            data-toggle="forthcoming"
+                    >
+                        En cours
+                    </li>
+                    <li
+                            data-action="click->tabs#setCurrent"
+                            data-toggle="history"
+                    >
+                        Historique
+                    </li>
+                </ul>
+            </div>
+            <div
+                    class="tab__content bookings_list__container"
+                    data-tabs-target="tabs"
+            >
+                <div class="tab__content__item" id="forthcoming">
+                    {% for booking in forthcoming_bookings %}
+                        {% include 'includes/rental/booking-rental-item.html.twig' with { booking: booking } %}
+                    {% endfor %}
+                </div>
+                <div class="tab__content__item" id="history">
+                    {% for booking in past_bookings %}
+                        {% include 'includes/rental/booking-rental-item.html.twig' with { booking: booking } %}
+                    {% endfor %}
+                </div>
+                <div class="tab__content__item" id="to-confirm">
+                    {% for booking in to_confirm_bookings %}
+                        {% include 'includes/rental/booking-to-confirm-rental-item.html.twig' with { booking: booking } %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

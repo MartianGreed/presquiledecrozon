@@ -13,15 +13,28 @@ use App\Domain\Rental\DTO\GeolocationDTO;
  */
 final class LocationSuggestion
 {
-    /** @var Meta  */
-    public readonly array $meta;
+    /** @var Meta|null $meta*/
+    private ?array $meta;
 
     public function __construct(public ?string $suggestions, ?string $meta)
     {
-        if (null !== $meta) {
+        if ('' !== $meta && null !== $meta) {
             /** @var Meta $metaArray */
             $metaArray = json_decode($meta, true, 512, JSON_THROW_ON_ERROR);
             $this->meta = $metaArray;
+        } else {
+            $this->meta = null;
         }
+    }
+
+    public function hasSuggestions(): bool
+    {
+        return null !== $this->meta;
+    }
+
+    /** @return ?Meta */
+    public function getMeta(): ?array
+    {
+        return $this->meta;
     }
 }

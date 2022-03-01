@@ -91,6 +91,16 @@ trait BookingAccessorTrait
         return $this;
     }
 
+    final public function getConfirmedAt(): ?\DateTimeInterface
+    {
+        return $this->confirmedAt;
+    }
+
+    final public function getBookedAt(): ?\DateTimeInterface
+    {
+        return $this->bookedAt;
+    }
+
     final public function getPeriod(): string
     {
         return sprintf(

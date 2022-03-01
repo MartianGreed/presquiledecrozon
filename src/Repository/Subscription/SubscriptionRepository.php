@@ -28,7 +28,8 @@ class SubscriptionRepository extends ServiceEntityRepository implements Subscrip
         $qb = $this->createQueryBuilder('s');
 
         $res = $qb->select('s')
-            ->where($qb->expr()->eq('s.name', "'default'"))
+            ->where($qb->expr()->eq('s.name', ':defaultSubscription'))
+            ->setParameter('defaultSubscription', 'default')
             ->getQuery()
             ->setMaxResults(1)
             ->getOneOrNullResult()

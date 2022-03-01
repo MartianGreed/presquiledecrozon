@@ -2,6 +2,7 @@
 
 namespace App\Controller\Rental;
 
+use App\Domain\Booking\BookingValidator;
 use App\Domain\Exception\RentalNotFoundException;
 use App\Entity\Booking\Booking;
 use App\Entity\User;
@@ -20,6 +21,7 @@ final class RentalDetailController extends AbstractController
         private readonly RentalRepository $rentalRepository,
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
+        private readonly BookingValidator $bookingValidator,
     )
     {
     }
@@ -52,12 +54,14 @@ final class RentalDetailController extends AbstractController
             $endAt = $form->get('endAt')->getData();
 
             $booking = Booking::init(
+                $this->bookingValidator,
                 $rental,
                 $booker,
                 $startAt,
                 $endAt,
                 intval($form->get('peopleCount')->getData()),
             );
+
 
             $this->manager->persist($booking);
             $this->manager->flush();

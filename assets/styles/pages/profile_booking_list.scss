@@ -1,0 +1,63 @@
+.bookings_list {
+    .bookings_list__item {
+        @apply px-3 py-2 border border-gray-300 mb-6 flex gap-3;
+        &__picture {
+            img {
+                @apply flex-grow min-h-[250px] min-w-[250px];
+            }
+        }
+
+        &__content {
+            @apply flex flex-col flex-grow gap-3 justify-between;
+            .title {
+                @apply flex justify-between;
+
+                .confirmed-at {
+                    .date {
+                        @apply text-blue font-semibold;
+                    }
+                    .period {
+                        @apply text-gray-500 font-light;
+                    }
+                }
+
+                .owner-picture {
+                    @apply flex items-center gap-3;
+                    .picture {
+                        @apply rounded-full border-2 border-blue bg-gray-200 mr-3 w-[50px] h-[50px];
+                        img {
+                            @apply rounded-full border-2 border-blue;
+                        }
+                    }
+                    .name {
+                    }
+                }
+            }
+
+            .description {
+                .type {
+                    @apply uppercase font-light text-gray-700;
+                }
+
+                .title {
+                    @apply font-semibold text-gray-700;
+                }
+            }
+
+
+            .details {
+                @apply flex justify-between;
+
+                .people-count {
+                    @apply text-gray-700 font-light;
+                }
+                .price {
+                    @apply text-blue font-semibold;
+                }
+                .see-details {
+                    @apply text-xs text-blue hover:underline;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+.tab {
+    &__container {
+
+    }
+
+    &__header {
+        @apply mb-3;
+        ul {
+            @apply flex gap-3;
+            li {
+                @apply p-3 cursor-pointer hover:bg-gray-50;
+                &.active {
+                    @apply text-blue border-b-2 border-blue;
+                }
+            }
+        }
+    }
+
+    &__content {
+        &__item {
+            @apply hidden;
+
+            &.active {
+                @apply block;
+            }
+        }
+    }
+}

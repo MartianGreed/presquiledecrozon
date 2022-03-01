@@ -8,6 +8,7 @@ use App\Entity\TimestampabbleTrait;
 use App\Repository\Subscription\SubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 class Subscription
 {

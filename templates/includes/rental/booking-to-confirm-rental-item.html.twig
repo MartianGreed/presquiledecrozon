@@ -1,0 +1,50 @@
+<div class="bookings_list__item">
+    <div class="bookings_list__item__picture">
+        <img src="{{ uploaded_asset(booking.rental.gallery.cover, 'file', null, { h: 250, w: 250, crop: true}) }}" alt="" />
+    </div>
+    <div class="bookings_list__item__content">
+        <div class="title">
+            <div class="confirmed-at">
+                <div class="date">
+                    {% if booking.confirmedAt is not null %}
+                        Réservation confirmée le {{ booking.confirmedAt | date('d/m/Y H:i:s') }}
+                    {% else %}
+                        Réservation en attente de confirmation
+                    {% endif %}
+                </div>
+                <div class="period">
+                    {{ booking.period }}
+                </div>
+            </div>
+            <div class="owner-picture">
+                <div class="name">
+                    {{ booking.booker.profile.fullname }}
+                </div>
+                <div class="picture">
+                    {% if booking.booker.profile.picture is not null %}
+                        <img src="{{ uploaded_asset(booking.booker.profile.picture, 'file', null, { h: 50, w: 50, crop: true}) }}" alt="Photo de profil {{ booking.booker.profile.fullname }}">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="description">
+            <div class="type">
+                {{ booking.rental.configuration.type.label }}
+            </div>
+            <div class="title">
+                {{ booking.rental.description.title }}
+            </div>
+        </div>
+        <div class="details">
+            <div class="people-count">
+                {{ booking.peopleCount }}
+            </div>
+            <div class="price">
+                {{ booking.prices.totalPrice }}
+            </div>
+            <div class="see-details">
+                <a href="#">Voir les détails de la réservation</a>
+            </div>
+        </div>
+    </div>
+</div>

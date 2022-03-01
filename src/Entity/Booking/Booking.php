@@ -3,6 +3,7 @@
 namespace App\Entity\Booking;
 
 use App\Domain\Booking\BookingPrices;
+use App\Domain\Booking\BookingValidator;
 use App\Domain\Booking\Status;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Rental;
@@ -40,14 +41,23 @@ class Booking
     #[ORM\JoinColumn(nullable: false)]
     private User $booker;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $bookedAt = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $confirmedAt = null;
+
     public static function init(
+        BookingValidator $bookingValidator,
         Rental $rental,
         User $booker,
         \DateTimeInterface $startAt,
         \DateTimeInterface $endAt,
         int $peopleCount
-    ): self
-    {
+    ): self {
+        // Let error bubble to the upper layer.
+        $bookingValidator->validateBooking($rental, $startAt, $endAt, $peopleCount);
+
         return (new self())->setRental($rental)
             ->setBooker($booker)
             ->setStartAt($startAt)
@@ -57,10 +67,20 @@ class Booking
         ;
     }
 
+
     final public function confirm(int $peopleCount): self
     {
         $this->peopleCount = $peopleCount;
         $this->status = Status::CONFIRMED;
+        $this->confirmedAt = new \DateTime();
+
+        return $this;
+    }
+
+    final public function confirmBooking(): self
+    {
+        $this->status = Status::BOOKED;
+        $this->bookedAt = new \DateTime();
 
         return $this;
     }

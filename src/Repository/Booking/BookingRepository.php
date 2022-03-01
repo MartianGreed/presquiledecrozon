@@ -2,8 +2,10 @@
 
 namespace App\Repository\Booking;
 
+use App\Domain\Booking\Status;
 use App\Entity\Booking\Booking;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,5 +65,155 @@ class BookingRepository extends ServiceEntityRepository
         ;
 
         return array_map(static fn ($range) => ['start' => $range['start_at']->format('d/m/Y'), 'end' => $range['end_at']->format('d/m/Y')], $ranges);
+    }
+
+    /** @return array<Booking> */
+    public function getUserBookings(string $userId): array
+    {
+        $qb = $this->getUserBookingsQueryBuilder($userId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb->getQuery()->getResult();
+
+        return $bookings;
+    }
+
+    /** @return array<Booking> */
+    public function getUserPastBookings(string $userId): array
+    {
+        $qb = $this->getUserBookingsQueryBuilder($userId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->andWhere($qb->expr()->lt('b.endAt', ':now'))
+            ->setParameter('now', (new \DateTime())->format('Y-m-d'))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
+    }
+
+    /** @return array<Booking> */
+    public function getUserForthcomingBookings(string $userId): array
+    {
+        $now = (new \DateTime())->format('Y-m-d');
+        $qb = $this->getUserBookingsQueryBuilder($userId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->gt('b.startAt', ':now')),
+                    $qb->expr()->gt('b.endAt', ':then')
+                )
+            ->setParameter('now', $now)
+            ->setParameter('then', $now)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
+    }
+
+    /** @return array<Booking> */
+    public function getOwnerForthcomingBookings(string $ownerId): array
+    {
+        $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->andWhere($qb->expr()->eq('b.status', ':bookedStatus'))
+            ->setParameter('bookedStatus', Status::BOOKED->value)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
+    }
+
+    /** @return array<Booking> */
+    public function getOwnerBookingsToValidate(string $ownerId): array
+    {
+        $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->andWhere($qb->expr()->eq('b.status', ':toConfirmStatus'))
+            ->setParameter('toConfirmStatus', Status::CONFIRMED->value)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
+    }
+
+    /** @return array<Booking> */
+    public function getOwnerBookingsHistory(string $ownerId): array
+    {
+        $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->andWhere($qb->expr()->lt('b.endAt', ':now'))
+            ->setParameter('now', (new \DateTime())->format('Y-m-d'))
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
+    }
+
+    private function getUserBookingsQueryBuilder(string $userId): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        return $qb
+            ->select('b', 'r', 'o', 'p')
+            ->join('b.rental', 'r')
+            ->join('r.owner', 'o')
+            ->join('o.profile', 'p')
+            ->where($qb->expr()->eq('b.booker', ':userId'))
+            ->setParameter('userId', $userId)
+        ;
+    }
+
+    private function getOwnerBookingsQueryBuilder(string $ownerId): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        return $qb
+            ->select('b', 'r', 'o', 'p')
+            ->join('b.rental', 'r')
+            ->join('b.booker', 'o')
+            ->join('o.profile', 'p')
+            ->where($qb->expr()->eq('r.owner', ':ownerId'))
+            ->setParameter('ownerId', $ownerId)
+        ;
+    }
+
+    public function isBookingAvailableForPeriod(string $rentalId, \DateTimeInterface $startAt, \DateTimeInterface $endAt): bool
+    {
+        $qb = $this->createQueryBuilder('b');
+
+        $available = $qb
+            ->select('count(b.id)')
+            ->where($qb->expr()->eq('b.rental', ':rentalId'))
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->between('b.startAt', ':from', ':to'),
+                    $qb->expr()->between('b.endAt', ':from', ':to'),
+                )
+            )
+            ->setParameters([
+                'rentalId' => $rentalId,
+                'from' => $startAt->format('Y-m-d'),
+                'to' => $endAt->format('Y-m-d'),
+            ])
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return 0 === $available;
     }
 }
