@@ -4,6 +4,8 @@ namespace App\Entity\Booking;
 
 use App\Domain\Booking\BookingPrices;
 use App\Domain\Booking\BookingValidator;
+use App\Domain\Booking\Exception\CannotBookOwnRentalException;
+use App\Domain\Booking\Exception\CannotManagerOtherOwnersRentalException;
 use App\Domain\Booking\Status;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Rental;
@@ -55,6 +57,9 @@ class Booking
         \DateTimeInterface $endAt,
         int $peopleCount
     ): self {
+        if ($booker->getId() === $rental->getOwner()?->getId()) {
+            throw new CannotBookOwnRentalException();
+        }
         // Let error bubble to the upper layer.
         $bookingValidator->validateBooking($rental, $startAt, $endAt, $peopleCount);
 
@@ -77,10 +82,13 @@ class Booking
         return $this;
     }
 
-    final public function confirmBooking(): self
+    final public function confirmBooking(User $owner, \DateTime $bookedAt): self
     {
+        if ($owner->getId() !== $this->rental->getOwner()?->getId()) {
+            throw new CannotManagerOtherOwnersRentalException();
+        }
         $this->status = Status::BOOKED;
-        $this->bookedAt = new \DateTime();
+        $this->bookedAt = $bookedAt;
 
         return $this;
     }

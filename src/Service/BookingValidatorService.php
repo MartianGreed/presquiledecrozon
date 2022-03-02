@@ -22,26 +22,26 @@ final class BookingValidatorService implements BookingValidator
     public function validateBooking(Rental $rental, \DateTimeInterface $startAt, \DateTimeInterface $endAt, int $peopleCount): bool
     {
         if (!$this->bookingRepository->isBookingAvailableForPeriod((string) $rental->getId(), $startAt, $endAt)) {
-            throw new RentalNotAvailableForPeriodException();
+            throw new RentalNotAvailableForPeriodException($startAt, $endAt);
         }
 
         if ($rental->getConfiguration()?->getPeopleCount() < $peopleCount) {
-            throw new TooManyPeopleInBookingException();
+            throw new TooManyPeopleInBookingException($peopleCount);
         }
 
         if ($this->rentalRepository->hasUnavailabilitiesForPeriod((string) $rental->getId(), $startAt, $endAt)) {
-            throw new RentalNotAvailableForPeriodException();
+            throw new RentalNotAvailableForPeriodException($startAt, $endAt);
         }
 
         // Check reservation preferences for rental
-        $acceptedLastBookingInterval = $rental->getPreferences()?->getAcceptedLastBooking();
-        $maxTimeInterval = $rental->getPreferences()?->getMaxTimeBeforeBooking();
+        $acceptedLastBookingInterval = (string) $rental->getPreferences()?->getAcceptedLastBooking();
+        $maxTimeInterval = (string) $rental->getPreferences()?->getMaxTimeBeforeBooking();
         $now = new \DateTimeImmutable('now');
         if (
-            $startAt <= $now->sub(new \DateInterval((string) $acceptedLastBookingInterval))
-            || $startAt <= $now->sub(new \DateInterval((string) $maxTimeInterval))
+            $startAt <= $now->sub(new \DateInterval($acceptedLastBookingInterval))
+            || $startAt <= $now->sub(new \DateInterval($maxTimeInterval))
         ) {
-            throw new BookingDoesNotFullfillOwnerPreferencesException();
+            throw new BookingDoesNotFullfillOwnerPreferencesException($acceptedLastBookingInterval, $maxTimeInterval);
         }
 
         // If everything is ok, return true;

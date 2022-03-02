@@ -17,12 +17,14 @@
                 </div>
             </div>
             <div class="owner-picture">
+                {% set contact = app.user.id == booking.rental.owner.id ? booking.booker : booking.rental.owner %}
                 <div class="name">
-                    {{ booking.rental.owner.profile.fullname }}
+                    {{ contact.profile.fullname }}
                 </div>
                 <div class="picture">
-                    {% if booking.rental.owner.profile.picture is not null %}
-                        <img src="{{ uploaded_asset(booking.rental.owner.profile.picture, 'file', null, { h: 50, w: 50, crop: true}) }}" alt="Photo de profil {{ booking.rental.owner.profile.fullname }}">
+
+                    {% if contact.profile.picture is not null %}
+                        <img src="{{ uploaded_asset(contact.profile.picture, 'file', null, { h: 50, w: 50, crop: true}) }}" alt="Photo de profil {{ contact.profile.fullname }}">
                     {% endif %}
                 </div>
             </div>

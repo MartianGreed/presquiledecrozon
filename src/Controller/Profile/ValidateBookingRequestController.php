@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Controller\Profile;
+
+use App\Controller\WithUserTrait;
+use App\Domain\Booking\Exception\CannotManagerOtherOwnersRentalException;
+use App\Repository\Booking\BookingRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+final class ValidateBookingRequestController extends AbstractController
+{
+    use WithUserTrait;
+
+    public function __construct(
+        private readonly BookingRepository $bookingRepository,
+        private readonly EntityManagerInterface $manager,
+    )
+    {
+    }
+
+    #[Route('/mon-compte/reservation/{id}/valider', name: 'app_profile_validate_booking_request')]
+    public function __invoke(Request $request, string $id): Response
+    {
+        $booking = $this->bookingRepository->find($id);
+        if (null === $booking) {
+            throw $this->createNotFoundException('Booking not found');
+        }
+
+        try {
+            $booking->confirmBooking($this->getUser(), new \DateTime('now'));
+
+            $this->manager->flush();
+        } catch (CannotManagerOtherOwnersRentalException $e) {
+            $this->addFlash('error', $e->getMessage());
+        } finally {
+            return $this->redirectToRoute('app_profile_booking');
+        }
+    }
+}

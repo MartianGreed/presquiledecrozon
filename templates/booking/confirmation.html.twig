@@ -27,7 +27,7 @@
             </div>
             {% if vm.rental.owner.profile.picture is not null %}
                 <div class="picture">
-                    <img src="{{ uploaded_asset(app.user.profile.picture, 'file', null, { h: 100, w: 100, crop: true }) }}" alt="">
+                    <img src="{{ uploaded_asset(vm.rental.owner.profile.picture, 'file', null, { h: 100, w: 100, crop: true }) }}" alt="">
                 </div>
             {% endif %}
         </div>

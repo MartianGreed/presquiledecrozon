@@ -3,14 +3,21 @@
 namespace App\Controller\Rental;
 
 use App\Domain\Booking\BookingValidator;
+use App\Domain\Booking\Exception\BookingDoesNotFullfillOwnerPreferencesException;
+use App\Domain\Booking\Exception\CannotBookOwnRentalException;
+use App\Domain\Booking\Exception\RentalNotAvailableForPeriodException;
+use App\Domain\Booking\Exception\TooManyPeopleInBookingException;
 use App\Domain\Exception\RentalNotFoundException;
 use App\Entity\Booking\Booking;
+use App\Entity\Rental\Rental;
 use App\Entity\User;
 use App\Form\Booking\BookRentalType;
 use App\Repository\Booking\BookingRepository;
 use App\Repository\Rental\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,15 +60,20 @@ final class RentalDetailController extends AbstractController
             /** @var \DateTimeInterface $endAt */
             $endAt = $form->get('endAt')->getData();
 
-            $booking = Booking::init(
-                $this->bookingValidator,
-                $rental,
-                $booker,
-                $startAt,
-                $endAt,
-                intval($form->get('peopleCount')->getData()),
-            );
-
+            try {
+                $booking = Booking::init(
+                    $this->bookingValidator ,
+                    $rental,
+                    $booker,
+                    $startAt,
+                    $endAt,
+                    intval($form->get('peopleCount')->getData()),
+                );
+            } catch (RentalNotAvailableForPeriodException | BookingDoesNotFullfillOwnerPreferencesException | CannotBookOwnRentalException $e) {
+                return $this->handleBookingDomainErrors($rental, $form, new FormError($e->getMessage()), 'startAt');
+            } catch (TooManyPeopleInBookingException $e) {
+                return $this->handleBookingDomainErrors($rental, $form, new FormError($e->getMessage()), 'peopleCount');
+            }
 
             $this->manager->persist($booking);
             $this->manager->flush();
@@ -69,6 +81,22 @@ final class RentalDetailController extends AbstractController
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }
 
+        return $this->renderForm('page/rental-detail.html.twig', [
+            'rental' => $rental,
+            'form' => $form,
+            'bookings' => $this->bookingRepository->getBookingRanges((string) $rental->getId()),
+        ]);
+    }
+
+    private function handleBookingDomainErrors(
+        Rental $rental,
+        FormInterface $form,
+        ?FormError $error = null,
+        ?string $field = null
+    ): Response {
+        if (null !== $error && null !== $field) {
+            $form->get($field)->addError($error);
+        }
         return $this->renderForm('page/rental-detail.html.twig', [
             'rental' => $rental,
             'form' => $form,

@@ -104,8 +104,8 @@ class BookingRepository extends ServiceEntityRepository
         $bookings = $qb
             ->andWhere(
                 $qb->expr()->orX(
-                    $qb->expr()->gt('b.startAt', ':now')),
-                    $qb->expr()->gt('b.endAt', ':then')
+                    $qb->expr()->gte('b.startAt', ':now')),
+                    $qb->expr()->gte('b.endAt', ':then')
                 )
             ->setParameter('now', $now)
             ->setParameter('then', $now)
@@ -174,6 +174,7 @@ class BookingRepository extends ServiceEntityRepository
             ->join('r.owner', 'o')
             ->join('o.profile', 'p')
             ->where($qb->expr()->eq('b.booker', ':userId'))
+            ->addOrderBy('b.startAt')
             ->setParameter('userId', $userId)
         ;
     }
@@ -188,6 +189,7 @@ class BookingRepository extends ServiceEntityRepository
             ->join('b.booker', 'o')
             ->join('o.profile', 'p')
             ->where($qb->expr()->eq('r.owner', ':ownerId'))
+            ->addOrderBy('b.startAt')
             ->setParameter('ownerId', $ownerId)
         ;
     }

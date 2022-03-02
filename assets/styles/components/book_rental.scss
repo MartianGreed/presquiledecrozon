@@ -4,11 +4,18 @@
     @apply fixed bottom-0 left-0 right-0 bg-white border-t-4 border-greeny shadow-lg px-6 py-4;
 
     form {
-        @apply grid grid-cols-8;
+        @apply grid grid-cols-8 items-center;
 
         .book_rental {
             &__avatar {
+                &__container {
+                    @apply relative;
+                }
 
+                @apply -top-[125px] absolute rounded-full border-2 border-blue bg-gray-200 mr-3 w-[150px] h-[150px];
+                img {
+                    @apply rounded-full border-2 border-blue;
+                }
             }
 
             &__description {
@@ -21,7 +28,11 @@
             }
 
             &__price {
+                @apply text-xs px-2 text-center;
 
+                span[data-booking--total-price-target="price"] {
+                    @apply text-lg font-semibold;
+                }
             }
 
             &__contact {
@@ -33,6 +44,10 @@
 
                 input[type="date"], select {
                     @apply border-0 border-b-4 border-greeny rounded-b-none shadow-none focus:outline-none cursor-pointer;
+                }
+
+                .mb-6 {
+                    margin-bottom: 0;
                 }
             }
         }

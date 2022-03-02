@@ -154,8 +154,12 @@
                 'data-action': 'change->form-types--booking-rental#updateTotalPrice',
             }
         }) }}
-            <div class="book_rental__avatar">
-
+            <div class="book_rental__avatar__container">
+                <div class="book_rental__avatar">
+                    {% if rental.owner.profile.picture is not null %}
+                        <img src="{{ uploaded_asset(rental.owner.profile.picture, 'file', null, { h: 150, w: 150, crop: true}) }}" alt="Photo de profil {{ rental.owner.profile.fullname }}">
+                    {% endif %}
+                </div>
             </div>
             <div class="book_rental__description">
                 <div class="name">
