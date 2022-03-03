@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Service;
+
 use App\Domain\Rental\PictureResizerOptions;
 
 /**

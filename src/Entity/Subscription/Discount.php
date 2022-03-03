@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
-class Discount
+class Discount implements \Stringable
 {
     use IdentityTrait, TimestampabbleTrait;
 
@@ -28,7 +28,7 @@ class Discount
     private \DateTimeInterface $expiresAt;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'discounts')]
-    private ?User $payee;
+    private ?User $payee = null;
 
     public function __toString(): string
     {

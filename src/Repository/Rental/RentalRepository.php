@@ -99,7 +99,12 @@ class RentalRepository extends ServiceEntityRepository
 
     public function getPaginatedList(): QueryBuilder
     {
-        return $this->getBaseQueryBuilder()->orderBy('r.createdAt', 'DESC');
+        $qb = $this->getBaseQueryBuilder();
+        return $qb
+            ->andWhere($qb->expr()->eq('r.status', ':published'))
+            ->setParameter('published', Status::PUBLISHED->value)
+            ->orderBy('r.createdAt', 'DESC')
+        ;
     }
 
 

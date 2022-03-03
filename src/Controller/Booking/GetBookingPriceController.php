@@ -14,7 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class GetBookingPriceController extends AbstractController
 {
-    public function __construct(private readonly BookingPriceSimulatorService $simulatorService) {}
+    public function __construct(private readonly BookingPriceSimulatorService $simulatorService)
+    {
+    }
 
     #[Route('/booking/price/{id}', name: 'app_booking_price', methods: [Request::METHOD_POST])]
     #[ParamConverter('rental', Rental::class)]
@@ -23,7 +25,7 @@ final class GetBookingPriceController extends AbstractController
         try {
             /** @var array{startAt: string, endAt: string, peopleCount: string} $content */
             $content = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return new JsonResponse(['message' => 'JSON incorrectly formatted'], Response::HTTP_NOT_ACCEPTABLE);
         }
 

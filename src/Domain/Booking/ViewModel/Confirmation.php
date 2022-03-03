@@ -8,11 +8,11 @@ use App\Entity\Rental\Rental;
 
 final class Confirmation
 {
-    private Rental $rental;
-    private \DateTimeInterface $startAt;
-    private \DateTimeInterface $endAt;
-    private int $peopleCount;
-    private BookingPrices $prices;
+    private readonly Rental $rental;
+    private readonly \DateTimeInterface $startAt;
+    private readonly \DateTimeInterface $endAt;
+    private readonly int $peopleCount;
+    private readonly BookingPrices $prices;
 
     public function __construct(Booking $booking)
     {
@@ -42,7 +42,7 @@ final class Confirmation
 
         $str = '';
         if (0 < $weeks) {
-            $str .= $weeks . ' semaine' . ($weeks > 1 ? 's': '');
+            $str .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '');
         }
         if (0 < $leftDays) {
             $str .= ' et ' . $leftDays . ' jour' . ($leftDays > 1 ? 's' : '');

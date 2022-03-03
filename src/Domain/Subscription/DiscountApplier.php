@@ -25,5 +25,4 @@ final class DiscountApplier
     {
         return $amount->minus(($discountAmount / 100) * $amount->getAmount());
     }
-
 }

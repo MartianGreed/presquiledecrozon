@@ -11,8 +11,7 @@ final class DiscountService
     public function __construct(
         private readonly DiscountRepository $discountRepository,
         private readonly RentalSubscriptionRepository $rentalSubscriptionRepository,
-    )
-    {
+    ) {
     }
 
     public function applyDiscountCode(RentalSubscription $rentalSubscription, string $discountCode): RentalSubscription

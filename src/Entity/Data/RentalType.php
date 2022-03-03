@@ -7,7 +7,7 @@ use App\Repository\Data\RentalTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RentalTypeRepository::class)]
-class RentalType
+class RentalType implements \Stringable
 {
     use IdentityTrait;
 

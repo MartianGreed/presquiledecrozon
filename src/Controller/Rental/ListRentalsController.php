@@ -14,8 +14,7 @@ final class ListRentalsController extends AbstractController
     public function __construct(
         private readonly RentalRepository $rentalRepository,
         private readonly PaginatorInterface $paginator,
-    )
-    {
+    ) {
     }
 
     #[Route('/annonces', name: 'app_rental_list')]

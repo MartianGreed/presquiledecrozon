@@ -20,8 +20,7 @@ final class ConfirmSubscriptionController extends AbstractController
     public function __construct(
         private readonly StripeService $stripeService,
         private readonly RentalSubscriptionRepository $rentalSubscriptionRepository,
-    )
-    {
+    ) {
     }
 
     #[Route('/abonnement/confirm/{rentalId}', name: 'app_confirm_subscription')]
@@ -43,7 +42,7 @@ final class ConfirmSubscriptionController extends AbstractController
                     $rentalSubscription = $rentalSubscription->pay($rentalSubscription->getSubscription(), $charge->id);
                     $rental->addSubscription($rentalSubscription);
                     $this->rentalSubscriptionRepository->flush();
-                } catch (RentalSubscriptionNotFound $e) {
+                } catch (RentalSubscriptionNotFound) {
                     return $this->redirectWithError($rental);
                 }
             }
@@ -51,7 +50,7 @@ final class ConfirmSubscriptionController extends AbstractController
             return $this->render('subscription/confirm.html.twig', [
                 'message' => ConfirmationMessage::fromPaymentIntentStatus($status),
             ]);
-        } catch (ApiErrorException $e) {
+        } catch (ApiErrorException) {
             return $this->render('subscription/error.html.twig');
         }
     }

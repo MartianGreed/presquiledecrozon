@@ -20,8 +20,7 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
         private readonly ApplicationTokenGenerator $applicationTokenGenerator,
         private readonly RentalRepository $rentalRepository,
         private readonly TokenStorageInterface $tokenStorage,
-    )
-    {
+    ) {
     }
 
     public static function getSubscribedEvents()

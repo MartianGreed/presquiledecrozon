@@ -2,13 +2,12 @@
 
 namespace App\Domain;
 
-final class Price
+final class Price implements \Stringable
 {
     public function __construct(
-        private float $value,
-        private Currency $currency = new Euro(),
-    )
-    {
+        private readonly float $value,
+        private readonly Currency $currency = new Euro(),
+    ) {
     }
 
     public function getAmount(): float

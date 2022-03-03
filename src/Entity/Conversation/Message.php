@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-class Message
+class Message implements \Stringable
 {
     use IdentityTrait, TimestampabbleTrait;
 

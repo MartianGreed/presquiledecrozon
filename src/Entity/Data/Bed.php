@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: BedRepository::class)]
-class Bed
+class Bed implements \Stringable
 {
     use IdentityTrait;
 

@@ -71,7 +71,6 @@ final class VichUploaderMappingExtractor
 
     /**
      * @param object $obj
-     * @return \ReflectionClass
      * @phpstan-ignore-next-line
      */
     private function getReflectionClass($obj): \ReflectionClass

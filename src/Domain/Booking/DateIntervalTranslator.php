@@ -19,7 +19,7 @@ enum DateIntervalTranslator: string
 
     public function translate(): string
     {
-        return match($this) {
+        return match ($this) {
             self::P1M => '1 mois',
             self::P2M => '2 mois',
             self::P3M => '3 mois',

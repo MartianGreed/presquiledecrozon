@@ -42,82 +42,82 @@ class RentalCrudController extends AbstractCrudController
         }
 
         yield FormField::addTab('Configuration');
-            yield FormField::addPanel('Configuration');
-                yield AssociationField::new('configuration.type')
+        yield FormField::addPanel('Configuration');
+        yield AssociationField::new('configuration.type')
                     ->setCrudController(RentalTypeCrudController::class)
                 ;
-                yield NumberField::new('configuration.peopleCount');
-                yield CollectionField::new('configuration.bedrooms')
+        yield NumberField::new('configuration.peopleCount');
+        yield CollectionField::new('configuration.bedrooms')
                     ->setEntryType(AdminBedroomType::class)
                     ->setEntryIsComplex(true)
                 ;
 
-            yield FormField::addPanel('Equipements');
-                yield AssociationField::new('furnitures')->setCrudController(FurnitureCrudController::class);
-                yield CollectionField::new('customFurnitures');
+        yield FormField::addPanel('Equipements');
+        yield AssociationField::new('furnitures')->setCrudController(FurnitureCrudController::class);
+        yield CollectionField::new('customFurnitures');
 
-            yield FormField::addPanel('Description');
-                yield TextField::new('description.title')->setColumns(6);
-                yield SlugField::new('slug')->setTargetFieldName('description_title')->setColumns(6);
-                yield TextareaField::new('description.description')->setColumns(12);
+        yield FormField::addPanel('Description');
+        yield TextField::new('description.title')->setColumns(6);
+        yield SlugField::new('slug')->setTargetFieldName('description_title')->setColumns(6);
+        yield TextareaField::new('description.description')->setColumns(12);
 
-            yield FormField::addPanel('Addresse');
-                yield TextField::new('address.address')->setColumns(6);
-                yield TextField::new('address.address2')->setColumns(6);
-                yield AssociationField::new('address.town')
+        yield FormField::addPanel('Addresse');
+        yield TextField::new('address.address')->setColumns(6);
+        yield TextField::new('address.address2')->setColumns(6);
+        yield AssociationField::new('address.town')
                     ->setCrudController(TownCrudController::class)
                     ->setRequired(true)
                 ;
 
         yield FormField::addTab('Photos');
-            yield MediaField::new('gallery.cover');
-            yield CollectionField::new('gallery.pictures')
+        yield MediaField::new('gallery.cover');
+        yield CollectionField::new('gallery.pictures')
                 ->setEntryType(MediaType::class)
                 ->setEntryIsComplex(true)
             ;
 
         yield FormField::addTab('Disponibilités');
-            yield FormField::addPanel('Préférences');
-                yield ChoiceField::new('preferences.acceptedLastBooking')
+        yield FormField::addPanel('Préférences');
+        yield ChoiceField::new('preferences.acceptedLastBooking')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::acceptedLastBookingChoices())
                     ->setRequired(true)
                 ;
-                yield ChoiceField::new('preferences.maxTimeBeforeBooking')
+        yield ChoiceField::new('preferences.maxTimeBeforeBooking')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::maxTimeBeforeBookingChoices())
                     ->setRequired(true)
                 ;
-                yield ChoiceField::new('preferences.beginBookingAt')
+        yield ChoiceField::new('preferences.beginBookingAt')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::beginBookingAt())
                     ->setRequired(true)
                 ;
-                yield ChoiceField::new('preferences.endBookingAt')
+        yield ChoiceField::new('preferences.endBookingAt')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::endBookingAt())
                     ->setRequired(true)
                 ;
 
-            yield FormField::addPanel('Périodes d\'indisponibilité');
-                yield CollectionField::new('unavailabilities')
+        yield FormField::addPanel('Périodes d\'indisponibilité');
+        yield CollectionField::new('unavailabilities')
                     ->setEntryType(UnavailabilityType::class)
                     ->setEntryIsComplex(true)
                 ;
 
         yield FormField::addTab('Tarifs');
-            yield PriceField::new('weeklyRate', 'Tarif de base à la semaine')->setColumns(6);
-            yield PriceField::new('dailyRate', 'Tarif de base à la nuitée')->setColumns(6);
+        yield PriceField::new('weeklyRate', 'Tarif de base à la semaine')->setColumns(6);
+        yield PriceField::new('dailyRate', 'Tarif de base à la nuitée')->setColumns(6);
 
-            yield FormField::addPanel('Taxes');
-                yield TextField::new('tax.localTax');
-                yield PriceField::new('tax.cleaningTax');
-                yield PriceField::new('tax.linensTax');
+        yield FormField::addPanel('Taxes');
+        yield TextField::new('tax.localTax');
+        yield PriceField::new('tax.cleaningTax');
+        yield PriceField::new('tax.linensTax');
 //                yield AssociationField::new('tax.linens')
 //                    ->setCrudController(LinensCrudController::class)
 //                ;
-            yield FormField::addPanel('Tranches tarifaires');
-                yield CollectionField::new('prices')
+        yield FormField::addPanel('Tranches tarifaires');
+        yield CollectionField::new('prices')
                     ->setEntryIsComplex(true)
                     ->setEntryType(PricesType::class)
                 ;

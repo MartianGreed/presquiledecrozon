@@ -26,7 +26,7 @@ class RentalSubscription
     private Rental $rental;
 
     #[ORM\ManyToOne(targetEntity: Discount::class)]
-    private ?Discount $discount;
+    private ?Discount $discount = null;
 
     #[ORM\Column(type: 'price')]
     private Price $amount;
@@ -82,5 +82,4 @@ class RentalSubscription
             ->setPaidAt(new \DateTime('now'))
         ;
     }
-
 }

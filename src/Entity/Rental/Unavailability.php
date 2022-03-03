@@ -7,7 +7,7 @@ use App\Repository\Rental\UnavailabilityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UnavailabilityRepository::class)]
-class Unavailability
+class Unavailability implements \Stringable
 {
     use IdentityTrait;
 
@@ -63,7 +63,7 @@ class Unavailability
     }
 
     /** @return array{start: string, end: string} */
-    final function toArray(): array
+    final public function toArray(): array
     {
         return [
             'start' => (string) $this->startAt?->format('d/m/Y'),

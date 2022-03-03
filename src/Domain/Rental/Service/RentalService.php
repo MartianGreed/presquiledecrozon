@@ -36,7 +36,7 @@ final class RentalService
     {
         try {
             return $this->rentalRepository->findLatestDraftRentalForUser((string) $user->getId());
-        } catch (EntityNotFoundException $e) {
+        } catch (EntityNotFoundException) {
             $rental = Rental::new($user);
 
             $this->manager->persist($rental);
@@ -170,7 +170,7 @@ final class RentalService
                 throw new RentalNotFoundException($rentalId);
             }
             return $rental;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new RentalNotFoundException($rentalId);
         }
     }

@@ -29,8 +29,7 @@ final class RentalDetailController extends AbstractController
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
         private readonly BookingValidator $bookingValidator,
-    )
-    {
+    ) {
     }
 
     #[Route('/annonce/{slug}', name: 'app_rental_details')]
@@ -62,7 +61,7 @@ final class RentalDetailController extends AbstractController
 
             try {
                 $booking = Booking::init(
-                    $this->bookingValidator ,
+                    $this->bookingValidator,
                     $rental,
                     $booker,
                     $startAt,

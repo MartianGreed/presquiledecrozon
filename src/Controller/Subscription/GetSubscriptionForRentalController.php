@@ -29,7 +29,8 @@ final class GetSubscriptionForRentalController extends AbstractController
         private readonly StripeService $stripeService,
         private readonly RentalSubscriptionRepository $rentalSubscriptionRepository,
         private readonly DiscountService $discountService,
-    ) {}
+    ) {
+    }
 
     #[Route('/abonnement', name: 'app_get_subscription')]
     public function __invoke(Request $request): Response
@@ -66,7 +67,7 @@ final class GetSubscriptionForRentalController extends AbstractController
                 $discountCode = strval($discountForm->get('discount')->getData());
                 $this->discountService->applyDiscountCode($rentalSubscription, $discountCode);
                 return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
-             }
+            }
 
             // Only create form, payment is handled by stripe
             $form = $this->createForm(CreateSubscriptionType::class);

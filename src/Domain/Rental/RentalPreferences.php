@@ -4,7 +4,6 @@ namespace App\Domain\Rental;
 
 final class RentalPreferences
 {
-
     /** @return array<string, string> */
     public static function acceptedLastBookingChoices(): array
     {

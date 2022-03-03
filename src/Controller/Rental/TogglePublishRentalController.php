@@ -18,7 +18,8 @@ final class TogglePublishRentalController extends AbstractController
     public function __construct(
         private readonly RentalService $rentalService,
         private readonly MessageBusInterface $bus,
-    ) {}
+    ) {
+    }
 
     #[Route('/rental/{id}/toggle-publish', name: 'app_rental_toggle_publish', methods: ['PATCH'])]
     #[ParamConverter('rental', class: Rental::class)]

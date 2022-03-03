@@ -19,9 +19,7 @@ final class MediaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $imageUri = function (Media $media) use ($options) {
-            return $this->mediaService->assetHelper($media, 'file', null, ['h' => $options['h'], 'w' => $options['w']]);
-        };
+        $imageUri = fn (Media $media) => $this->mediaService->assetHelper($media, 'file', null, ['h' => $options['h'], 'w' => $options['w']]);
 
         $builder->add('file', VichImageType::class, [
             'allow_delete' => true,

@@ -245,9 +245,7 @@ class Rental
     /** @return ArrayCollection<int, RentalSubscription> */
     private function getPaidSubscriptions(): Collection
     {
-        return $this->subscriptions->filter(function (RentalSubscription $rs) {
-            return null !== $rs->getProviderChargeId() && null === $rs->getExpiresAt() && !$rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus();
-        });
+        return $this->subscriptions->filter(fn (RentalSubscription $rs) => null !== $rs->getProviderChargeId() && null === $rs->getExpiresAt() && !$rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus());
     }
 
     /** @return array{0: PriceVO, 1: PriceVO} */

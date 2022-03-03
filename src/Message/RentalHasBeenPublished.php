@@ -8,5 +8,6 @@ final class RentalHasBeenPublished
         public readonly string $rentalId,
         public readonly string $subscriptionId,
         public readonly string $occuredAt,
-    ) {}
+    ) {
+    }
 }

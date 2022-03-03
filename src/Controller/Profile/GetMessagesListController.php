@@ -18,8 +18,7 @@ final class GetMessagesListController extends AbstractController
     public function __construct(
         private readonly ConversationRepository $conversationRepository,
         private readonly UrlGeneratorInterface $urlGenerator,
-    )
-    {
+    ) {
     }
 
     #[Route('/mon-compte/messages', name: 'app_profile_conversation')]

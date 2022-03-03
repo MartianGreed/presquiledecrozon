@@ -66,12 +66,10 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $this->fetchData($manager);
 
         for ($i = 0; $i < 150; $i++) {
-
             $user = $this->getReference(UserFixtures::USER_REFERENCE . $i);
             assert($user instanceof User);
 
             for ($j = 0; $j < 2; $j++) {
-
                 $rental = Rental::new($user);
 
                 $rental = $this->createConfiguration($rental, $manager);

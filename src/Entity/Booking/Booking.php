@@ -92,4 +92,29 @@ class Booking
 
         return $this;
     }
+
+    public function cancelBooking(User $owner, \DateTime $cancelledAt): self
+    {
+        if ($owner->getId() !== $this->rental->getOwner()?->getId()) {
+            throw new CannotManagerOtherOwnersRentalException();
+        }
+
+        $this->status = Status::CANCELED;
+        $this->bookedAt = null;
+        $this->updatedAt = $cancelledAt;
+
+        return $this;
+    }
+
+    public function cancel(\DateTime $cancelledAt): void
+    {
+        $this->status = Status::CANCELED;
+        $this->bookedAt = null;
+        $this->updatedAt = $cancelledAt;
+    }
+
+    public static function expiringInterval(): \DateInterval
+    {
+        return new \DateInterval('P3D');
+    }
 }

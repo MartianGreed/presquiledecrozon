@@ -2,7 +2,6 @@
 
 namespace App\Domain\Booking\Exception;
 
-
 final class RentalNotAvailableForPeriodException extends \DomainException
 {
     public function __construct(\DateTimeInterface $startAt, \DateTimeInterface $endAt)

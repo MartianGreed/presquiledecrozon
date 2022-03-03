@@ -13,7 +13,7 @@ enum Status: string
 
     public function translate(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Brouillon',
             self::IN_PROGRESS => 'En cours',
             self::VALID => 'Valide',
@@ -25,7 +25,7 @@ enum Status: string
 
     public function badge(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'info',
             self::IN_PROGRESS => 'info',
             self::VALID => 'primary',

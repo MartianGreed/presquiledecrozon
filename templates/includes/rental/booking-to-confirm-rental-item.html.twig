@@ -38,8 +38,13 @@
             <div class="price">
                 {{ booking.prices.totalPrice }}
             </div>
-            <div class="see-details">
-                <a href="{{ url('app_profile_validate_booking_request', { id: booking.id }) }}">Valider la demande de réservation</a>
+            <div class="flex gap-6">
+                <div class="see-details cancel">
+                    <a href="{{ url('app_profile_cancel_booking_request', { id: booking.id }) }}">Annuler</a>
+                </div>
+                <div class="see-details">
+                    <a href="{{ url('app_profile_validate_booking_request', { id: booking.id }) }}">Valider la demande de réservation</a>
+                </div>
             </div>
         </div>
     </div>

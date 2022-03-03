@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class ValidateBookingRequestController extends AbstractController
+final class CancelBookingRequestController extends AbstractController
 {
     use WithUserTrait;
 
@@ -21,7 +21,7 @@ final class ValidateBookingRequestController extends AbstractController
     ) {
     }
 
-    #[Route('/mon-compte/reservation/{id}/valider', name: 'app_profile_validate_booking_request')]
+    #[Route('/mon-compte/reservation/{id}/annuler', name: 'app_profile_cancel_booking_request')]
     public function __invoke(Request $request, string $id): Response
     {
         $booking = $this->bookingRepository->find($id);
@@ -30,7 +30,7 @@ final class ValidateBookingRequestController extends AbstractController
         }
 
         try {
-            $booking->confirmBooking($this->getUser(), new \DateTime('now'));
+            $booking->cancelBooking($this->getUser(), new \DateTime('now'));
 
             $this->manager->flush();
         } catch (CannotManagerOtherOwnersRentalException $e) {

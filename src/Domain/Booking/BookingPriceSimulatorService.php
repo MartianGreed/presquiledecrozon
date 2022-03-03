@@ -9,9 +9,10 @@ use App\Entity\Booking\Booking;
 final class BookingPriceSimulatorService
 {
     public function __construct()
-    {}
+    {
+    }
 
-    public function simulate(BookingRequest $request):  Price
+    public function simulate(BookingRequest $request): Price
     {
         if ($request->startAt > $request->endAt) {
             throw new InvalidDateRangeException();

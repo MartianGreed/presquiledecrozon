@@ -59,7 +59,9 @@ class BookingRepository extends ServiceEntityRepository
         $ranges = $qb
             ->select('b.startAt as start_at', 'b.endAt as end_at')
             ->where($qb->expr()->eq('b.rental', ':rentalId'))
+            ->andWhere($qb->expr()->in('b.status', ':statuses'))
             ->setParameter('rentalId', $rentalId)
+            ->setParameter('statuses', [Status::CONFIRMED->value, Status::BOOKED->value])
             ->getQuery()
             ->getArrayResult()
         ;
@@ -104,9 +106,10 @@ class BookingRepository extends ServiceEntityRepository
         $bookings = $qb
             ->andWhere(
                 $qb->expr()->orX(
-                    $qb->expr()->gte('b.startAt', ':now')),
-                    $qb->expr()->gte('b.endAt', ':then')
-                )
+                    $qb->expr()->gte('b.startAt', ':now')
+                ),
+                $qb->expr()->gte('b.endAt', ':then')
+            )
             ->setParameter('now', $now)
             ->setParameter('then', $now)
             ->getQuery()
@@ -174,8 +177,10 @@ class BookingRepository extends ServiceEntityRepository
             ->join('r.owner', 'o')
             ->join('o.profile', 'p')
             ->where($qb->expr()->eq('b.booker', ':userId'))
+            ->andWhere($qb->expr()->neq('b.status', ':cancelled'))
             ->addOrderBy('b.startAt')
             ->setParameter('userId', $userId)
+            ->setParameter('cancelled', Status::CANCELED->value)
         ;
     }
 
@@ -217,5 +222,26 @@ class BookingRepository extends ServiceEntityRepository
         ;
 
         return 0 === $available;
+    }
+
+    /** @return array<Booking> */
+    public function getExpiringConfirmedBookings(): array
+    {
+        $dt = (new \DateTime())->sub(Booking::expiringInterval());
+        $qb = $this->createQueryBuilder('b');
+
+        /** @var array<Booking> $bookings */
+        $bookings = $qb
+            ->where($qb->expr()->eq('b.status', ':confirmed'))
+            ->andWhere($qb->expr()->gte('b.confirmedAt', ':timeAgo'))
+            ->setParameters([
+                'confirmed' => Status::CONFIRMED->value,
+                'timeAgo' => $dt->format('Y-m-d H:i:s')
+            ])
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $bookings;
     }
 }

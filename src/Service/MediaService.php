@@ -12,7 +12,7 @@ use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
  */
 final class MediaService
 {
-    private OptionsResolver $resolver;
+    private readonly OptionsResolver $resolver;
 
     public function __construct(
         private readonly UploaderHelper $helper,
@@ -25,11 +25,8 @@ final class MediaService
 
     /**
      * @param array<string, mixed>|object $obj
-     * @param string|null  $fieldName
-     * @param string|null  $className
      * @param ResizeOption|array<string, mixed> $options
      *
-     * @return string
      */
     public function assetHelper($obj, ?string $fieldName = null, ?string $className = null, array $options = []): string
     {

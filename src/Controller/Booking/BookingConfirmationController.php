@@ -25,8 +25,7 @@ final class BookingConfirmationController extends AbstractController
         private readonly BookingPriceSimulatorService $simulatorService,
         private readonly BookingService $bookingService,
         private readonly EntityManagerInterface $manager,
-    )
-    {
+    ) {
     }
 
     #[Route('/reservation/{id}/confirmation', name: 'app_confirm_booking')]
@@ -48,7 +47,6 @@ final class BookingConfirmationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if (!$this->bookingService->isRentalAvailableForBooking($booking->getRental(), $booking)) {
                 $form->addError(new FormError('Ce logement semble ne pas etre disponible durant cette période.'));
                 return $this->renderForm('booking/confirmation.html.twig', [

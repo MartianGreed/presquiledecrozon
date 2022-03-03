@@ -8,4 +8,5 @@ enum Status: string
     case BOOKED = 'booked';
     case CONFIRMED = 'confirmed';
     case DONE = 'done';
+    case CANCELED = 'cancelled';
 }

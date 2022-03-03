@@ -8,7 +8,7 @@ use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PriceRepository::class)]
-class Price
+class Price implements \Stringable
 {
     use IdentityTrait;
 

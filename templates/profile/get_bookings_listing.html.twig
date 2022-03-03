@@ -50,11 +50,13 @@
                         {% include 'includes/rental/booking-rental-item.html.twig' with { booking: booking } %}
                     {% endfor %}
                 </div>
-                <div class="tab__content__item" id="to-confirm">
-                    {% for booking in to_confirm_bookings %}
-                        {% include 'includes/rental/booking-to-confirm-rental-item.html.twig' with { booking: booking } %}
-                    {% endfor %}
-                </div>
+                {% if to_confirm_bookings is defined and not null %}
+                    <div class="tab__content__item" id="to-confirm">
+                        {% for booking in to_confirm_bookings %}
+                            {% include 'includes/rental/booking-to-confirm-rental-item.html.twig' with { booking: booking } %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

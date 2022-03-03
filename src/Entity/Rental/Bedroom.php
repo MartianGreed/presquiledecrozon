@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BedroomRepository::class)]
-class Bedroom
+class Bedroom implements \Stringable
 {
     use IdentityTrait;
 
@@ -29,7 +29,7 @@ class Bedroom
 
     public function __toString(): string
     {
-        return implode(', ', $this->beds->map(fn(Bed $bed) => $bed->getLabel())->toArray());
+        return implode(', ', $this->beds->map(fn (Bed $bed) => $bed->getLabel())->toArray());
     }
 
     /**

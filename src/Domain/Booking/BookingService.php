@@ -12,7 +12,8 @@ final class BookingService
     {
     }
 
-    public function isRentalAvailableForBooking(Rental $rental, Booking $booking): bool {
+    public function isRentalAvailableForBooking(Rental $rental, Booking $booking): bool
+    {
         $bookings = $this->bookingRepository->findBookingsForPeriod(
             (string) $rental->getId(),
             (string) $booking->getId(),

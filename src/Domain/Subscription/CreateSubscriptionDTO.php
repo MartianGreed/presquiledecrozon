@@ -19,7 +19,7 @@ final class CreateSubscriptionDTO
 
     #[Assert\NotBlank]
     public string $address;
-    public ?string $address2;
+    public ?string $address2 = null;
     #[Assert\NotBlank]
     public string $town;
     #[Assert\NotBlank]

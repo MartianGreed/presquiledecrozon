@@ -15,8 +15,7 @@ final class BookingValidatorService implements BookingValidator
     public function __construct(
         private readonly BookingRepository $bookingRepository,
         private readonly RentalRepository $rentalRepository,
-    )
-    {
+    ) {
     }
 
     public function validateBooking(Rental $rental, \DateTimeInterface $startAt, \DateTimeInterface $endAt, int $peopleCount): bool

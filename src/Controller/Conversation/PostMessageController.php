@@ -21,9 +21,7 @@ final class PostMessageController extends AbstractController
     public function __construct(
         private readonly ConversationRepository $conversationRepository,
         private readonly EntityManagerInterface $manager,
-    )
-    {
-
+    ) {
     }
     #[Route('/api/conversation/message', name: 'api_post_message', methods: [Request::METHOD_POST])]
     public function __invoke(Request $request): Response
@@ -49,7 +47,7 @@ final class PostMessageController extends AbstractController
                     'send_at' => $message->getSendAt()?->getTimestamp(),
                     'sender_id' => $message->getSender()?->getId(),
                 ], Response::HTTP_CREATED);
-            } catch (ConversationNotFoundException $e) {
+            } catch (ConversationNotFoundException) {
                 return new JsonResponse(['message' => 'invalid conversation'], Response::HTTP_NOT_FOUND);
             }
         }
