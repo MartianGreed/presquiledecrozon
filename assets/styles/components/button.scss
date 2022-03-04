@@ -8,4 +8,8 @@
     &__outlined__grey {
         @apply border-2 border-gray-500 text-gray-600 rounded-full;
     }
+
+    &__white {
+        @apply text-blue rounded-full bg-white;
+    }
 }

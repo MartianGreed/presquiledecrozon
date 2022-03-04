@@ -53,3 +53,7 @@ services:
     App\Service\ApplicationTokenGenerator:
         arguments:
             $secret: '%env(APP_SECRET)%'
+
+    App\Infrastructure\Twig\IconExtension:
+        arguments:
+            $package: '@assets._default_package'

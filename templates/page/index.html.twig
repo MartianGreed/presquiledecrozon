@@ -4,8 +4,18 @@
 
 {% block header %}
     {{ parent() }}
-    <div class="hero">
-
+    <div class="homepage__hero">
+        <div class="homepage__hero__container">
+            <div class="homepage__hero__title">
+                <h1 class="title">Presqu'île de Crozon</h1>
+                <div class="subtitleq">
+                    Venez respirer l'air du large et vous ressourcer aux embruns bretons
+                </div>
+            </div>
+            <div class="homepage__hero__cta">
+                <a href="{{ url('app_rental_list') }}" class="button">Voir les annonces</a>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
@@ -27,4 +37,58 @@
             </div>
         </div>
     </div>
+
+    <div class="homepage__main_cta">
+        <div class="container mx-auto mx-3 md:mx-auto">
+            <div class="homepage__main_cta__container">
+                <div class="homepage__main_cta__item">
+                    <h3>1. Je choisis</h3>
+                    <p>la location qui me convient le mieux.</p>
+                </div>
+                <div class="homepage__main_cta__item">
+                    <h3>2. Je réserve</h3>
+                    <p>le logement qui correspond à mes critèrese de recherche.</p>
+                </div>
+                <div class="homepage__main_cta__item">
+                    <h3>2. Je profite</h3>
+                    <p>avec ma famille où entre amis, de la sérénité et de la richesse de la Presqu'île de Crozon.</p>
+                </div>
+            </div>
+
+            <a href="{{ url('app_rental_list') }}" class="button button__blue">Voir les annonces</a>
+        </div>
+    </div>
+
+    <div class="homepage__second_cta">
+        <div class="container mx-auto mx-3 md:mx-auto">
+            <div class="homepage__second_cta__container">
+                <div class="homepage__second_cta__content">
+                    <h3>Locations de particuliers à particuliers</h3>
+                    <p>
+                        Le site offre la possibilité aux particuliers de déposer leur annonce dans le but d'avoir un service autonome.
+                    </p>
+                    <strong>Vous possédez un bien que vous souhaitez louer ?</strong>
+                    <a href="{{ url('app_create_rental') }}" class="button button__white">
+                        Déposez mon annonce
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if subscription is not null %}
+        <div class="homepage__subscription">
+            <div class="container mx-auto mx-3 md:mx-auto">
+                <div class="homepage__subscription__container">
+                    <h3>
+                        {{ subscription.amount }}/an
+                        <small>pour une location.</small>
+                    </h3>
+                    <a href="{{ url('app_create_rental') }}" class="button button__white">
+                        Déposer mon annonce
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

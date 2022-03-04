@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   content: ['./templates/**/*.html.twig', './assets/**/*.{ts,tsx}'],
   theme: {
@@ -9,6 +11,11 @@ module.exports = {
         'red': '#e74c3c',
         'light-bg': '#f7f5f2',
         'greeny': '#3FD0B8C7',
+      },
+      fontFamily: {
+        main: ['Asap', ...defaultTheme.fontFamily.sans],
+        secondary: ['Circular', ...defaultTheme.fontFamily.serif],
+        emphase: ['AvantGarde', ...defaultTheme.fontFamily.mono],
       }
     },
   },

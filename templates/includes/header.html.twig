@@ -67,6 +67,17 @@
                         {% endif %}
                     </a>
                 </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="px-3 button button__white" href="{{ url('app_register') }}">
+                        Créer mon compte
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="px-3 button button__white" href="{{ url('app_login') }}">
+                        Connexion
+                    </a>
+                </li>
             {% endif %}
             <li class="nav-item">
                 <button type="button" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></button>

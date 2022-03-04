@@ -1,3 +1,13 @@
 .main__title {
     @apply text-4xl mt-3 mb-6 font-semibold;
 }
+
+
+* {
+    @apply font-main;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply font-emphase;
+}
+

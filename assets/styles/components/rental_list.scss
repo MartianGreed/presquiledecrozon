@@ -28,7 +28,11 @@
                 &__footer {
                     @apply flex justify-between;
                     &__people-count {
+                        @apply flex;
 
+                        .icon-people {
+                            @apply mr-1;
+                        }
                     }
                     &__rate {
                         @apply font-semibold text-blue;

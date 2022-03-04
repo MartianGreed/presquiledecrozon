@@ -1,7 +1,6 @@
 .homepage {
-
     &__rental-list {
-        @apply my-12;
+        @apply my-24;
         &__title {
             @apply text-3xl mb-6;
             small {
@@ -14,4 +13,100 @@
         }
 
     }
+
+
+    &__main_cta {
+        @apply text-center mt-24 bg-light-bg py-24;
+        &__container {
+            @apply grid md:grid-cols-3 gap-6;
+        }
+
+        &__item {
+            @apply text-center;
+            h3 {
+                @apply text-4xl font-semibold text-gray-700;
+            }
+
+            p {
+                @apply font-light text-gray-700;
+            }
+        }
+
+        .button {
+            @apply mt-12;
+        }
+    }
+
+    &__second_cta {
+        @apply bg-cover bg-center py-48;
+        background-image: url('../../images/ui/homepage--second-cta.png');
+        &__container {
+            @apply grid md:grid-cols-3 gap-6;
+        }
+
+        &__content {
+            @apply text-center col-span-3 text-white;
+            h3 {
+                @apply text-4xl
+            }
+
+            p {
+                @apply mt-6;
+            }
+
+            strong {
+                @apply mt-3 block;
+            }
+
+            .button {
+                @apply mt-12 ;
+            }
+        }
+    }
+
+    &__subscription {
+        @apply bg-yellow py-24;
+        &__container {
+            @apply text-center;
+
+            h3 {
+                @apply text-6xl font-bold text-white;
+                small {
+                    @apply block text-lg font-light;
+                }
+            }
+
+            .button {
+                @apply mt-12;
+            }
+        }
+    }
 }
+
+.homepage__hero {
+    @apply min-h-[600px] bg-cover bg-center flex items-center justify-center;
+
+    background-image: url('../../images/ui/welcome.jpg');
+
+    &__container {
+        .homepage__hero__title {
+            @apply text-white;
+
+            .title {
+                @apply text-6xl uppercase;
+            }
+
+            .subtitle {
+
+            }
+        }
+
+        .homepage__hero__cta {
+            @apply mt-6 text-center;
+            .button {
+                @apply bg-white text-blue font-semibold text-lg;
+            }
+        }
+    }
+}
+

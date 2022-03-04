@@ -1,0 +1,86 @@
+@font-face {
+    font-family: 'Asap';
+    src: url('../../fonts/asap/Asap-Regular.eot');
+    src: local('☺'), url('../../fonts/asap/Asap-Regular.woff') format('woff'), url('../../fonts/asap/Asap-Regular.ttf') format('truetype'), url('../../fonts/asap/Asap-Regular.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Asap';
+    src: url('../../fonts/asap/Asap-Medium.eot');
+    src: local('☺'), url('../../fonts/asap/Asap-Medium.woff') format('woff'), url('../../fonts/asap/Asap-Medium.ttf') format('truetype'), url('../../fonts/asap/Asap-Medium.svg') format('svg');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Asap';
+    src: url('../../fonts/asap/Asap-SemiBold.eot');
+    src: local('☺'), url('../../fonts/asap/Asap-SemiBold.woff') format('woff'), url('../../fonts/asap/Asap-SemiBold.ttf') format('truetype'), url('../../fonts/asap/Asap-SemiBold.svg') format('svg');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Asap';
+    src: url('../../fonts/asap/Asap-Bold.eot');
+    src: local('☺'), url('../../fonts/asap/Asap-Bold.woff') format('woff'), url('../../fonts/asap/Asap-Bold.ttf') format('truetype'), url('../../fonts/asap/Asap-Bold.svg') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circular';
+    src: url('../../fonts/circular/CircularStd-Book.eot?#iefix') format('embedded-opentype'),  url('../../fonts/circular/CircularStd-Book.otf')  format('opentype'),
+    url('../../fonts/circular/CircularStd-Book.woff') format('woff'), url('../../fonts/circular/CircularStd-Book.ttf')  format('truetype'), url('../../fonts/circular/CircularStd-Book.svg#CircularStd-Book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Circular';
+    src: url('../../fonts/circular/CircularStd-Medium.eot?#iefix') format('embedded-opentype'),  url('../../fonts/circular/CircularStd-Medium.otf')  format('opentype'),
+    url('../../fonts/circular/CircularStd-Medium.woff') format('woff'), url('../../fonts/circular/CircularStd-Medium.ttf')  format('truetype'), url('../../fonts/circular/CircularStd-Medium.svg#CircularStd-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circular';
+    src: url('../../fonts/circular/CircularStd-Bold.eot?#iefix') format('embedded-opentype'),  url('../../fonts/circular/CircularStd-Bold.otf')  format('opentype'),
+    url('../../fonts/circular/CircularStd-Bold.woff') format('woff'), url('../../fonts/circular/CircularStd-Bold.ttf')  format('truetype'), url('../../fonts/circular/CircularStd-Bold.svg#CircularStd-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AvantGarde';
+    src: url('../../fonts/itc/AvantGardeLT-Bold.eot?#iefix') format('embedded-opentype'),  url('../../fonts/itc/AvantGardeLT-Bold.woff') format('woff'), url('../../fonts/itc/AvantGardeLT-Bold.ttf')  format('truetype'), url('../../fonts/itc/AvantGardeLT-Bold.svg#AvantGardeLT-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AvantGarde';
+    src: url('../../fonts/itc/AvantGardeLT-Book.eot?#iefix') format('embedded-opentype'),  url('../../fonts/itc/AvantGardeLT-Book.woff') format('woff'), url('../../fonts/itc/AvantGardeLT-Book.ttf')  format('truetype'), url('../../fonts/itc/AvantGardeLT-Book.svg#AvantGardeLT-Book') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@mixin font($font-name, $font-weight, $font-style) {
+    font-family: #{$font-name}, serif;
+    font-weight: #{$font-weight};
+    font-style: #{$font-style};
+}
+
+@mixin asap($font-weight: 'normal', $font-style: 'normal') {
+    @include font('Asap', $font-weight, $font-style);
+}
+
+@mixin circular($font-weight: 'normal', $font-style: 'normal') {
+    @include font('Circular', $font-weight, $font-style);
+}
+
+@mixin avantGarde($font-weight: 'normal', $font-style: 'normal') {
+    @include font('AvantGarde', $font-weight, $font-style);
+}
