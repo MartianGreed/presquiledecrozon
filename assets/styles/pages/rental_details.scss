@@ -44,7 +44,7 @@
 
             .sidebar__menu {
                 .sidebar__menu__item {
-                    @apply text-gray-700 my-6 list-disc;
+                    @apply text-gray-700 my-6 list-disc cursor-pointer hover:text-blue hover:underline;
                     &.active {
                         @apply text-blue;
                     }
@@ -68,7 +68,28 @@
             }
 
             .content_item {
-                @apply mb-20 last:mb-0;
+                @apply mb-20 last:mb-0 hidden duration-300;
+
+                &.active {
+                    @apply block;
+                }
+
+
+                &.appear-enter {
+                    @apply transition-opacity opacity-0;
+                }
+
+                &.appear-enter-active {
+                    @apply transition-opacity opacity-100;
+                }
+
+                &.appear-leave {
+                    @apply transition-opacity opacity-100;
+                }
+
+                &.appear-leave-active {
+                    @apply transition-opacity opacity-0;
+                }
             }
 
             #rental_details_map_display {

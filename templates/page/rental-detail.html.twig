@@ -49,16 +49,49 @@
             {% endif %}
         {% endfor %}
     </div>
-    <div class="rental_details__content__container">
+    <div
+            class="rental_details__content__container"
+            data-controller="rental--detail"
+    >
         <div class="rental_details__content__sidebar">
-            <ul class="sidebar__menu">
-                <li class="sidebar__menu__item">Description</li>
-                <li class="sidebar__menu__item">Géolocalisation</li>
-                <li class="sidebar__menu__item">Disponibilité</li>
-                <li class="sidebar__menu__item">Conditions/règlement</li>
+            <ul
+                    class="sidebar__menu"
+                    data-rental--detail-target="menu"
+            >
+                <li
+                        class="sidebar__menu__item"
+                        data-action="click->rental--detail#toggleContent"
+                        data-toggle="rental_details_description"
+                >
+                    Description
+                </li>
+                <li
+                        class="sidebar__menu__item"
+                        data-action="click->rental--detail#toggleContent"
+                        data-toggle="rental_details_map"
+                >
+                    Géolocalisation
+                </li>
+                <li
+                        class="sidebar__menu__item"
+                        data-action="click->rental--detail#toggleContent"
+                        data-toggle="rental_details_availability"
+                >
+                    Disponibilité
+                </li>
+                <li
+                        class="sidebar__menu__item"
+                        data-action="click->rental--detail#toggleContent"
+                        data-toggle="rental_details_conditions"
+                >
+                    Conditions/règlement
+                </li>
             </ul>
         </div>
-        <div class="rental_details__content__content">
+        <div
+                class="rental_details__content__content"
+                data-rental--detail-target="content"
+        >
             <div id="rental_details_description" class="content_item">
                 <h2 class="content__title">
                     Description
@@ -132,7 +165,7 @@
                 </div>
             </div>
 
-            <div id="rental_conditions" class="content_item">
+            <div id="rental_details_conditions" class="content_item">
                 <h2 class="content__title">
                     Conditions & Règlement
                 </h2>
