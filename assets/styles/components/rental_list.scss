@@ -10,6 +10,10 @@
 
             &__heart {
                 @apply absolute top-2 right-4;
+
+                &.is-favorite {
+                    @apply text-pink;
+                }
             }
             &__description {
                 @apply flex  flex-col flex-grow;
@@ -37,6 +41,21 @@
                     &__rate {
                         @apply font-semibold text-blue;
                     }
+                }
+            }
+        }
+    }
+}
+
+.favorites_list {
+    .rental_list {
+        &__item {
+            @apply mb-6 last:mb-0;
+            &__content {
+                @apply flex-row gap-6;
+
+                &__image {
+                    @apply mb-0;
                 }
             }
         }

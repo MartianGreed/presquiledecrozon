@@ -1,7 +1,29 @@
 {% extends 'base.html.twig' %}
 
 {% block page_title 'Liste des coup de coeur' %}
+{% set content_class = 'favorites_list' %}
 
 {% block body %}
-    <h1>Profil {{ app.user.userIdentifier }}</h1>
+    <div class="container mx-auto">
+        <h1 class="main__title">Coups de coeur</h1>
+        {% if rental_list is not empty %}
+            <div class="rental_list">
+                {% for favorite in rental_list %}
+                    {% include 'includes/rental/list-item.html.twig' with {
+                        rental: favorite.rental,
+                        height: 400,
+                        width: 500,
+                        with_favorites: false
+                    } %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Vous n'avez pas encore sauvegardé d'annonces.</p>
+            <div class="text-center">
+                <a href="{{ url('app_rental_list') }}" class="button button__pink">
+                    Rechercher une annonce
+                </a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

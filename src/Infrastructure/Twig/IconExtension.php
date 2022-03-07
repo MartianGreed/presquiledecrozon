@@ -19,7 +19,7 @@ final class IconExtension extends AbstractExtension
         ];
     }
 
-    /** @param array{w: int, h: int} $options */
+    /** @param array{w: int, h: int}|array{} $options */
     public function generateHtmlSvgForIcon(string $iconName, array $options = []): string
     {
         $attrs = '';

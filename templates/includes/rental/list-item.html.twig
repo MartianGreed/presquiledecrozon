@@ -1,10 +1,25 @@
+{% if with_favorites is not defined %}
+{% set with_favorites = true %}
+{% endif %}
 <div class="rental_list__item">
     <div class="rental_list__item__content">
         <div class="rental_list__item__content__image">
             <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
                 <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }}" alt="Photo de la location de {{ rental.owner.profile.fullname }}" />
             </a>
-            <button class="rental_list__item__content__heart"><i class="fas fa-heart"></i></button>
+            {% if with_favorites %}
+                <button
+                        class="rental_list__item__content__heart"
+                        type="button"
+                        data-controller="rental--favorites"
+                        data-rental--favorites-uri-value="{{ url('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
+                        data-rental--favorites-is-favorite-uri-value="{{ url('app_profile_is_rental_favorite', { id: rental.id }) }}"
+                        data-rental--favorites-is-favorite-value="false"
+                        data-action="click->rental--favorites#addToFavoriteList"
+                >
+                    <i class="fas fa-heart"></i>
+                </button>
+            {% endif %}
         </div>
         <div class="rental_list__item__content__description">
             <div class="rental_list__item__content__description__container">

@@ -12,4 +12,8 @@
     &__white {
         @apply text-blue rounded-full bg-white;
     }
+
+    &__pink {
+        @apply text-white rounded-full bg-pink;
+    }
 }
