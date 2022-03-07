@@ -22,6 +22,9 @@ framework:
             App\Message\FetchRentalGeolocation: async
             App\Message\ResizeRentalPictures: async
             App\Message\RentalHasBeenPublished: async
+            App\Message\RentalHasBeenBooked: async
+            App\Message\BookingHasBeenConfirmed: async
+            App\Message\BookingHasBeenCancelled: async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

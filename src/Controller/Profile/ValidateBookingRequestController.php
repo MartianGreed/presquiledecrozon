@@ -4,11 +4,13 @@ namespace App\Controller\Profile;
 
 use App\Controller\WithUserTrait;
 use App\Domain\Booking\Exception\CannotManagerOtherOwnersRentalException;
+use App\Message\BookingHasBeenConfirmed;
 use App\Repository\Booking\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class ValidateBookingRequestController extends AbstractController
@@ -18,6 +20,7 @@ final class ValidateBookingRequestController extends AbstractController
     public function __construct(
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
+        private readonly MessageBusInterface $bus,
     ) {
     }
 
@@ -33,6 +36,8 @@ final class ValidateBookingRequestController extends AbstractController
             $booking->confirmBooking($this->getUser(), new \DateTime('now'));
 
             $this->manager->flush();
+
+            $this->bus->dispatch(new BookingHasBeenConfirmed($booking->getId(), $booking->getConfirmedAt()->format('Y-m-d H:i:s')));
         } catch (CannotManagerOtherOwnersRentalException $e) {
             $this->addFlash('error', $e->getMessage());
         } finally {

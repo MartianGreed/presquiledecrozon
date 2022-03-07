@@ -12,6 +12,7 @@ use App\Entity\Booking\Booking;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
 use App\Form\Booking\BookRentalType;
+use App\Message\RentalHasBeenBooked;
 use App\Repository\Booking\BookingRepository;
 use App\Repository\Rental\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class RentalDetailController extends AbstractController
@@ -29,6 +31,7 @@ final class RentalDetailController extends AbstractController
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
         private readonly BookingValidator $bookingValidator,
+        private readonly MessageBusInterface $bus,
     ) {
     }
 
@@ -76,6 +79,8 @@ final class RentalDetailController extends AbstractController
 
             $this->manager->persist($booking);
             $this->manager->flush();
+
+            $this->bus->dispatch(new RentalHasBeenBooked($rental->getId(), $booking->getId(), $booking->getCreatedAt()->format('Y-m-d H:i:s')));
 
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }

@@ -4,11 +4,13 @@ namespace App\Controller\Profile;
 
 use App\Controller\WithUserTrait;
 use App\Domain\Booking\Exception\CannotManagerOtherOwnersRentalException;
+use App\Message\BookingHasBeenCancelled;
 use App\Repository\Booking\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class CancelBookingRequestController extends AbstractController
@@ -18,6 +20,7 @@ final class CancelBookingRequestController extends AbstractController
     public function __construct(
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
+        private readonly MessageBusInterface $bus,
     ) {
     }
 
@@ -30,9 +33,12 @@ final class CancelBookingRequestController extends AbstractController
         }
 
         try {
-            $booking->cancelBooking($this->getUser(), new \DateTime('now'));
+            $cancelledAt = new \DateTime('now');
+            $booking->cancelBooking($this->getUser(), $cancelledAt);
 
             $this->manager->flush();
+
+            $this->bus->dispatch(new BookingHasBeenCancelled($booking->getId(), $cancelledAt->format('Y-m-d H:i:s')));
         } catch (CannotManagerOtherOwnersRentalException $e) {
             $this->addFlash('error', $e->getMessage());
         } finally {

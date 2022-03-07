@@ -8,6 +8,7 @@ use App\Domain\Rental\Status;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Unavailability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -100,6 +101,8 @@ class RentalRepository extends ServiceEntityRepository
     public function getPaginatedList(): QueryBuilder
     {
         $qb = $this->getBaseQueryBuilder();
+        $qb = $this->addEntitiesJoin($qb);
+
         return $qb
             ->andWhere($qb->expr()->eq('r.status', ':published'))
             ->setParameter('published', Status::PUBLISHED->value)
@@ -111,11 +114,10 @@ class RentalRepository extends ServiceEntityRepository
     public function fetchRentalDetails(string $slug): Rental
     {
         $qb = $this->getBaseQueryBuilder();
+        $qb = $this->addEntitiesJoin($qb);
 
         /** @var ?Rental $rental */
         $rental = $qb
-            ->select('r', 'd')
-            ->join('r.description', 'd')
             ->where($qb->expr()->eq('r.slug', "'" . $slug . "'"))
             ->setMaxResults(1)
             ->getQuery()
@@ -173,5 +175,31 @@ class RentalRepository extends ServiceEntityRepository
         ;
 
         return 0 < $unavailabilites;
+    }
+
+
+    private function addEntitiesJoin(QueryBuilder $qb): QueryBuilder
+    {
+        return $qb
+            ->select('r', 'd', 'co', 'u', 'g', 'cover', 'p', 's', 'a', 'at', 'pt', 'dep', 'geo', 'rt', 'bed', 'beds', 'ow', 'owp')
+            ->leftJoin('r.description', 'd')
+            ->leftJoin('r.activeSubscription', 's')
+            ->leftJoin('r.configuration', 'co')
+            ->leftJoin('co.bedrooms', 'bed')
+            ->leftJoin('co.type', 'rt')
+            ->leftJoin('bed.beds', 'beds')
+            ->leftJoin('r.unavailabilities', 'u')
+            ->leftJoin('r.gallery', 'g')
+            ->leftJoin('g.cover', 'cover')
+//            ->leftJoin('g.pictures', 'pictures')
+            ->leftJoin('r.preferences', 'p')
+            ->leftJoin('r.address', 'a')
+            ->leftJoin('a.town', 'at')
+            ->leftJoin('at.postalCode', 'pt')
+            ->leftJoin('pt.department', 'dep')
+            ->leftJoin('r.geolocation', 'geo')
+            ->leftJoin('r.owner', 'ow')
+            ->leftJoin('ow.profile', 'owp')
+        ;
     }
 }
