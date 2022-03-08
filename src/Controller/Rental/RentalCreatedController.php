@@ -32,6 +32,7 @@ final class RentalCreatedController extends AbstractController
         return $this->render('create_rental/finished.html.twig', [
             'rental' => $rental,
             'first_booking_at' => (new \DateTime())->add(new \DateInterval((string) $rental->getPreferences()?->getAcceptedLastBooking()))->format('d/m/Y'),
+            'token' => $rental->tokenize(),
         ]);
     }
 }

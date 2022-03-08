@@ -1,4 +1,4 @@
-import {ActionEvent, Controller} from '@hotwired/stimulus';
+import { ActionEvent, Controller } from '@hotwired/stimulus';
 import axios from 'axios';
 
 export default class extends Controller {

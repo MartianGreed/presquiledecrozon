@@ -301,4 +301,15 @@ class Rental
 
         return $bookingPrices;
     }
+
+    final public function tokenize(): string
+    {
+        $content = sprintf('%s_%s', $this->id, $this->slug);
+
+        return sprintf(
+            '%s-%s',
+            md5($content),
+            $content
+        );
+    }
 }

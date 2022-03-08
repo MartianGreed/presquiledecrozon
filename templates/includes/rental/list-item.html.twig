@@ -5,17 +5,26 @@
     <div class="rental_list__item__content">
         <div class="rental_list__item__content__image">
             <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
-                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }}" alt="Photo de la location de {{ rental.owner.profile.fullname }}" />
+                <img
+                        srcset="
+                            {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }} {{ height }}w
+                            {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 100, w: 100, crop: true }) }} 100w
+                        "
+                        src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }}"
+                        alt="Photo de la location de {{ rental.owner.profile.fullname }}"
+                />
             </a>
             {% if with_favorites %}
                 <button
                         class="rental_list__item__content__heart"
                         type="button"
-                        data-controller="rental--favorites"
-                        data-rental--favorites-uri-value="{{ url('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
-                        data-rental--favorites-is-favorite-uri-value="{{ url('app_profile_is_rental_favorite', { id: rental.id }) }}"
-                        data-rental--favorites-is-favorite-value="false"
-                        data-action="click->rental--favorites#addToFavoriteList"
+                        {% if app.user is not null %}
+                            data-controller="rental--favorites"
+                            data-rental--favorites-uri-value="{{ url('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
+                            data-rental--favorites-is-favorite-uri-value="{{ url('app_profile_is_rental_favorite', { id: rental.id }) }}"
+                            data-rental--favorites-is-favorite-value="false"
+                            data-action="click->rental--favorites#addToFavoriteList"
+                        {% endif %}
                 >
                     <i class="fas fa-heart"></i>
                 </button>

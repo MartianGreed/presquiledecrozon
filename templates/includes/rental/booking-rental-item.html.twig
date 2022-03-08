@@ -1,6 +1,13 @@
 <div class="bookings_list__item">
     <div class="bookings_list__item__picture">
-        <img src="{{ uploaded_asset(booking.rental.gallery.cover, 'file', null, { h: 250, w: 250, crop: true}) }}" alt="" />
+        <img
+                srcset="
+                            {{ uploaded_asset(booking.rental.gallery.cover, 'file', null, { h: 250, w: 250, crop: true}) }} 250w,
+                            {{ uploaded_asset(booking.rental.gallery.cover, 'file', null, { h: 50, w: 50, crop: true}) }} 50w,
+                       "
+                src="{{ uploaded_asset(booking.rental.gallery.cover, 'file', null, { h: 250, w: 250, crop: true}) }}"
+                alt="{{ booking.rental.configuration.type.label }} de {{ booking.rental.owner.profile.fullname }}"
+        />
     </div>
     <div class="bookings_list__item__content">
         <div class="title">

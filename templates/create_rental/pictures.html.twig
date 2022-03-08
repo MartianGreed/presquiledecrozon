@@ -1,20 +1,22 @@
 {% extends 'create_rental/create-rental-layout.html.twig' %}
 
 {% block create_rental_aside %}
-    <h2>Bonjour Joël</h2>
+    <div class="create__rental__aside__icon">
+        {{ svg_icon('pictures', { h: 90 }) }}
+    </div>
+    <h2 class="create__rental__aside__title">Détails de votre location</h2>
     <p>
-        Nous démarrons le processus de mise en ligne de votre logement pour de la location de particuliers à particuliers.<br /><br />Afin de conserver vos informations, nous vous recommandons de cliquer sur le boutton "Sauvegarder".
+        Evitez le flash et les filtres ainsi que les photos floues. Faites attention qu'il y ait suffisamment de lumière sur celle-ci. Prioriser une pièce, un lieu avec un angle de vue correct si possible.
+        <br><br>
+        Veuillez télécharger au minimum 5 photos présentant vos lieux pour que vos locataires puissent se projeter plus facilement.
+        <br><br>
+        Contacter l’administrateur si vous souhaitez rajouter d’autres photos
     </p>
 {% endblock %}
 
 {% block create_rental_main %}
-    <h1>Géolocalisation</h1>
-    <p>
-        Validez-vous cette position de votre logement? Si oui, continuez.
-        Si ce n'est pas le cas, vous pouvez déplacer le curseur pour indiquer la position exacte de votre logement.
-    </p>
-
-{#    <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 300, w: 200 }) }}" alt="">#}
+    <h1 class="create__rental__main__title">Etape 1: On se jette à l'eau</h1>
+{#    <h2 class="create__rental__main__subtitle">Géolocalisation</h2>#}
 
     {{ form_start(form, { attr: {
         id: 'rental_pictures',

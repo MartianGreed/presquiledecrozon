@@ -6,11 +6,27 @@
     }
 
     &__aside {
-        @apply col-span-2 bg-sky-200 text-blue p-3;
+        @apply col-span-2 bg-sky-200 text-blue p-3 py-6;
+
+        &__icon {
+            @apply w-1/4 mb-3;
+        }
+
+        &__title {
+            @apply font-main text-xl md:text-3xl mb-6 font-bold;
+        }
     }
 
     &__main {
         @apply col-span-4;
+
+        &__title {
+            @apply text-xl text-blue mb-6;
+        }
+
+        &__subtitle {
+            @apply font-main text-3xl md:text-xl font-semibold text-blue mb-4;
+        }
     }
 }
 

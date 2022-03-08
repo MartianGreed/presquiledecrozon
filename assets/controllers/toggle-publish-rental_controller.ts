@@ -34,16 +34,27 @@ export default class extends Controller {
             });
             isDisabled = true;
         }
+        if (!result.isConfirmed && isDisabled) {
+            this.inputTarget.checked = true;
+            return;
+        }
 
-        if (result.isConfirmed) {
-            let res = await axios.patch(this.apiUriValue);
-            if (200 === res.status) {
-                await Swal.fire(
-                    isDisabled ? 'Annonce masquée' : 'Annonce publiée',
-                    isDisabled ? 'À tout moment, vous pouvez la publier à nouveau.' : 'Elle est désormais visible dans la recherche.',
-                    'success'
-                );
-            }
+        let res = await axios.patch(this.apiUriValue, null, { validateStatus: null });
+        if (200 === res.status) {
+            await Swal.fire(
+                isDisabled ? 'Annonce masquée' : 'Annonce publiée',
+                isDisabled ? 'À tout moment, vous pouvez la publier à nouveau.' : 'Elle est désormais visible dans la recherche.',
+                'success'
+            );
+        }
+
+        if (403 === res.status) {
+            await Swal.fire(
+                'Action impossible',
+                res.data.message,
+                'error'
+            );
+            this.inputTarget.checked = false;
         }
     }
 }

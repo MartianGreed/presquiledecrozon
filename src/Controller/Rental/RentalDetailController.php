@@ -40,6 +40,13 @@ final class RentalDetailController extends AbstractController
     {
         try {
             $rental = $this->rentalRepository->fetchRentalDetails($slug);
+
+            $token = $request->query->get('token');
+            if (null !== $token) {
+                if ($token !== $rental->tokenize()) {
+                    throw new RentalNotFoundException($rental->getSlug());
+                }
+            }
         } catch (RentalNotFoundException $e) {
             throw $this->createNotFoundException();
         }

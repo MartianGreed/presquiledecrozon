@@ -3,13 +3,16 @@
 
     @apply fixed bottom-0 left-0 right-0 bg-white border-t-4 border-greeny shadow-lg px-6 py-4;
 
+    @apply transition delay-100 translate-y-[80%] hover:translate-y-0;
+
     form {
         @apply grid grid-cols-8 items-center;
 
         .book_rental {
             &__avatar {
+
                 &__container {
-                    @apply relative;
+                    @apply relative col-span-4 md:col-span-1;
                 }
 
                 @apply -top-[125px] absolute rounded-full border-2 border-blue bg-gray-200 mr-3 w-[150px] h-[150px];
@@ -19,6 +22,7 @@
             }
 
             &__description {
+                @apply col-span-4 md:col-span-1;
                 .name {
                     @apply text-blue;
                 }
@@ -28,7 +32,7 @@
             }
 
             &__price {
-                @apply text-xs px-2 text-center;
+                @apply text-xs px-2 text-center col-span-8 md:col-span-1 my-3 md:my-0;
 
                 span[data-booking--total-price-target="price"] {
                     @apply text-lg font-semibold;
@@ -36,18 +40,42 @@
             }
 
             &__contact {
+                @apply col-span-8 md:col-span-1 text-center my-3 md:my-0;
+            }
 
+            &__submit {
+                @apply col-span-8 md:col-span-1 text-center my-3 md:my-0;
             }
 
             &__form {
-                @apply flex justify-between col-span-3;
+                @apply flex justify-between col-span-8 md:col-span-3 flex-col my-3 md:my-0 mt-6 md:mt-0;
 
-                input[type="date"], select {
-                    @apply border-0 border-b-4 border-greeny rounded-b-none shadow-none focus:outline-none cursor-pointer;
+                &__errors {
+                    ul {
+                        li {
+                            @apply text-red;
+                        }
+                    }
                 }
 
-                .mb-6 {
-                    margin-bottom: 0;
+                &__fields {
+                    @apply flex flex-col md:flex-row justify-between;
+
+                    .form__row {
+                        input, select {
+                            &.border-red-700 {
+                                @apply border-4 border-red;
+                            }
+                        }
+                    }
+
+                    input[type="date"], select {
+                        @apply border-0 border-b-4 border-greeny rounded-b-none shadow-none focus:outline-none cursor-pointer;
+                    }
+
+                    .mb-6 {
+                        margin-bottom: 0;
+                    }
                 }
             }
         }

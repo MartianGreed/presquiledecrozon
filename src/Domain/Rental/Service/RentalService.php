@@ -21,6 +21,7 @@ use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class RentalService
 {
@@ -29,6 +30,7 @@ final class RentalService
         private readonly RentalRepository $rentalRepository,
         private readonly MessageBusInterface $bus,
         private readonly RentalImproveLocalisationService $improveLocalisationService,
+        private readonly SluggerInterface $slugger,
     ) {
     }
 
@@ -53,7 +55,9 @@ final class RentalService
 
     public function saveDescription(Rental $rental, Description $description): Rental
     {
-        $rental->saveDescription($description);
+        $rental = $rental->saveDescription($description);
+
+        $rental->setSlug(strtolower($this->slugger->slug($rental->getDescription()?->getTitle())));
 
         /** @var Description $rentalDescription */
         $rentalDescription = $rental->getDescription();

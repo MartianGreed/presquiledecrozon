@@ -25,6 +25,9 @@ final class TogglePublishRentalController extends AbstractController
     #[ParamConverter('rental', class: Rental::class)]
     public function __invoke(Request $request, Rental $rental): Response
     {
+        if (!$rental->isPublishable() && !$rental->isPublished()) {
+            return new JsonResponse(['message' => 'Vous ne pouvez pas publier la location. Vous devez avoir un abonnement valide pour pouvoir le faire.'], 403);
+        }
         if ($rental->isPublishable() && !$rental->isPublished()) {
             $rental = $rental->publish();
 

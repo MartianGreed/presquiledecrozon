@@ -10,5 +10,12 @@
         #update_profile_informations_gender {
             @apply flex gap-6;
         }
+
+        .update_profile {
+            form[name="update_profile_informations"] {
+                div {
+                }
+            }
+        }
     }
 }

@@ -1,13 +1,18 @@
 {% extends 'create_rental/create-rental-layout.html.twig' %}
 
 {% block create_rental_aside %}
-    <h2>Bonjour Joël</h2>
+    <div class="create__rental__aside__icon">
+        {{ svg_icon('telescop') }}
+    </div>
+
+    <h2 class="create__rental__aside__title">Bonjour{% if app.user.profile.firstname is not null %} {{ app.user.profile.firstname }}{% endif %},</h2>
     <p>
         Nous démarrons le processus de mise en ligne de votre logement pour de la location de particuliers à particuliers.<br /><br />Afin de conserver vos informations, nous vous recommandons de cliquer sur le boutton "Sauvegarder".
     </p>
 {% endblock %}
 
 {% block create_rental_main %}
-    <h1>Formulaire</h1>
+    <h1 class="create__rental__main__title">Etape 1: On se jette à l'eau</h1>
+    <h2 class="create__rental__main__subtitle">Configuration</h2>
     {% include 'create_rental/_forms/configuration.html.twig' with { form: form } %}
 {% endblock %}

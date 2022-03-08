@@ -1,18 +1,18 @@
 {% extends 'create_rental/create-rental-layout.html.twig' %}
 
 {% block create_rental_aside %}
-    <h2>Bonjour Joël</h2>
+    <div class="create__rental__aside__icon">
+        {{ svg_icon('house', { h: 90 }) }}
+    </div>
+    <h2 class="create__rental__aside__title">Conditions</h2>
     <p>
-        Nous démarrons le processus de mise en ligne de votre logement pour de la location de particuliers à particuliers.<br /><br />Afin de conserver vos informations, nous vous recommandons de cliquer sur le boutton "Sauvegarder".
+        Nous tenons à ce que vous vous sentiez confiant à chaque réservation. C’est la raison pour laquelle nous demandons certaines informations à chaque personne avant qu’ils effectuent une réservation.
     </p>
 {% endblock %}
 
 {% block create_rental_main %}
-    <h1>Tarifs</h1>
-    <p>
-        Validez-vous cette position de votre logement? Si oui, continuez.
-        Si ce n'est pas le cas, vous pouvez déplacer le curseur pour indiquer la position exacte de votre logement.
-    </p>
+    <h1 class="create__rental__main__title">Etape 2: Questions d'organisations</h1>
+    <h2 class="create__rental__main__subtitle">Tarifs</h2>
 
     {% include 'create_rental/_forms/prices.html.twig' with { form: form } %}
 {% endblock %}

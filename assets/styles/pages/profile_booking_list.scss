@@ -1,9 +1,9 @@
 .bookings_list {
     .bookings_list__item {
-        @apply px-3 py-2 border border-gray-300 mb-6 flex gap-3;
+        @apply px-3 py-2 border border-gray-300 mb-6 flex flex-col md:flex-row gap-3;
         &__picture {
             img {
-                @apply flex-grow min-h-[250px] min-w-[250px];
+                @apply flex-grow max-h-[100px] md:max-h-[250px] max-w-[100px] md:max-w-[250px];
             }
         }
 
@@ -22,7 +22,7 @@
                 }
 
                 .owner-picture {
-                    @apply flex items-center gap-3;
+                    @apply items-center gap-3 hidden md:flex;
                     .picture {
                         @apply rounded-full border-2 border-blue bg-gray-200 mr-3 w-[50px] h-[50px];
                         img {
@@ -46,7 +46,7 @@
 
 
             .details {
-                @apply flex justify-between;
+                @apply flex justify-between flex-col md:flex-row;
 
                 .people-count {
                     @apply text-gray-700 font-light;

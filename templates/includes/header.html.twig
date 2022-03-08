@@ -140,9 +140,20 @@
                         {% endif %}
                     </a>
                 </li>
+            {% else %}
+                <li class="nav__menu__mobile__item">
+                    <a class="block text-sm px-2 py-4 transition duration-300" href="{{ url('app_register') }}">
+                        Créer mon compte
+                    </a>
+                </li>
+                <li class="nav__menu__mobile__item">
+                    <a class="block text-sm px-2 py-4 transition duration-300" href="{{ url('app_login') }}">
+                        Connexion
+                    </a>
+                </li>
             {% endif %}
             <li class="nav__menu__mobile__item">
-                <button type="button" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></button>
+                <a href="{{ url('app_profile_favorites') }}" class="px-2 py-4" id="like-btn"><i class="fa fa-heart" aria-hidden="true"></i></a>
             </li>
         </ul>
     </div>

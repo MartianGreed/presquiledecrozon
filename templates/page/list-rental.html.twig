@@ -11,13 +11,13 @@
 
 {% set content_class = 'rental_list' %}
 {% block body %}
-    <div class="container mx-auto mx-3 md:mx-auto">
+    <div class="app_container">
         <div class="rental_list__list">
             {% for rental in pagination %}
                 {% include 'includes/rental/list-item.html.twig' with { rental: rental, height: 400, width: 500 } %}
             {% endfor %}
         </div>
-        <div class="navigation">
+        <div class="pagination">
             {{ knp_pagination_render(pagination) }}
         </div>
     </div>

@@ -1,5 +1,5 @@
 .confirm_booking {
-    @apply my-6;
+    @apply my-6 px-4 md:px-0;
 
     .separator {
         @apply flex items-center whitespace-nowrap text-gray-600 font-semibold mb-16;
@@ -22,7 +22,9 @@
     }
 
     &__title {
-        @apply text-3xl text-gray-500 mb-6;
+        //@apply text-3xl text-gray-500 mb-6;
+
+        @extend .main__title;
     }
 
     &__duration {

@@ -1,18 +1,18 @@
 {% extends 'create_rental/create-rental-layout.html.twig' %}
 
 {% block create_rental_aside %}
-    <h2>Bonjour Joël</h2>
+    <div class="create__rental__aside__icon">
+        {{ svg_icon('calendar', { h: 90 }) }}
+    </div>
+    <h2 class="create__rental__aside__title">Instructions</h2>
     <p>
-        Nous démarrons le processus de mise en ligne de votre logement pour de la location de particuliers à particuliers.<br /><br />Afin de conserver vos informations, nous vous recommandons de cliquer sur le boutton "Sauvegarder".
+        En autorisant les réservations le jour J, vous augmentez vos chances de louer votre logement pour les personnes reservant à la dernière minute.
     </p>
 {% endblock %}
 
 {% block create_rental_main %}
-    <h1>Disponibilités</h1>
-    <p>
-        Validez-vous cette position de votre logement? Si oui, continuez.
-        Si ce n'est pas le cas, vous pouvez déplacer le curseur pour indiquer la position exacte de votre logement.
-    </p>
+    <h1 class="create__rental__main__title">Etape 2: Questions d'organisations</h1>
+    <h2 class="create__rental__main__subtitle">Disponibilités</h2>
 
     {% include 'create_rental/_forms/preferences.html.twig' with { form: form } %}
 {% endblock %}

@@ -22,7 +22,7 @@
 {% set content_class = 'homepage' %}
 {% block body %}
     <div class="homepage__rental-list">
-        <div class="container mx-auto mx-3 md:mx-auto">
+        <div class="app_container">
             <h1 class="homepage__rental-list__title">
                 Se loger
                 <small>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="homepage__main_cta">
-        <div class="container mx-auto mx-3 md:mx-auto">
+        <div class="app_container">
             <div class="homepage__main_cta__container">
                 <div class="homepage__main_cta__item">
                     <h3>1. Je choisis</h3>
@@ -60,7 +60,7 @@
     </div>
 
     <div class="homepage__second_cta">
-        <div class="container mx-auto mx-3 md:mx-auto">
+        <div class="app_container">
             <div class="homepage__second_cta__container">
                 <div class="homepage__second_cta__content">
                     <h3>Locations de particuliers à particuliers</h3>
@@ -78,7 +78,7 @@
 
     {% if subscription is not null %}
         <div class="homepage__subscription">
-            <div class="container mx-auto mx-3 md:mx-auto">
+            <div class="app_container">
                 <div class="homepage__subscription__container">
                     <h3>
                         {{ subscription.amount }}/an

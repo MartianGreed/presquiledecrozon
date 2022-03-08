@@ -1,10 +1,11 @@
 .footer {
+    @apply w-[80%];
     &__wrapper {
 
     }
 
     &__container {
-        @apply container mx-3 md:mx-auto;
+        @apply container px-3 md:px-0 mx-0 md:mx-auto max-w-full;
 
         .footer__primary {
             @apply flex flex-col md:flex-row gap-0 md:gap-6 justify-center border-b border-b-gray-300 mb-3;
@@ -21,7 +22,7 @@
 
             a {
                 &.footer__secondary__item {
-                    @apply flex w-full text-blue justify-start md:justify-center p-1 md:p-3;
+                    @apply flex max-w-full text-blue justify-start md:justify-center p-1 md:p-3;
                 }
             }
         }

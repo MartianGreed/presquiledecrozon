@@ -40,5 +40,9 @@ body {
     min-height: 100vh;
 }
 
+.app_container {
+    @apply container px-3 md:px-0 mx-0 md:mx-auto;
+}
+
 @import 'components/components';
 @import 'pages/pages';

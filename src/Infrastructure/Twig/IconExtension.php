@@ -23,8 +23,11 @@ final class IconExtension extends AbstractExtension
     public function generateHtmlSvgForIcon(string $iconName, array $options = []): string
     {
         $attrs = '';
-        if (array_key_exists('w', $options) && array_key_exists('h', $options)) {
-            $attrs = " width=\"{$options['w']}px\" height=\"{$options['h']}px\"";
+        if (array_key_exists('w', $options)) {
+            $attrs = " width=\"{$options['w']}px\"";
+        }
+        if (array_key_exists('h', $options)) {
+            $attrs = " height=\"{$options['h']}px\"";
         }
 
         return <<<HTML

@@ -23,7 +23,7 @@
             </div>
         </aside>
         <div class="create__rental__preview">
-
+            <iframe src="{{ url('app_rental_details', { slug: rental.slug, token: token }) }}" width="100%" height="100%"></iframe>
         </div>
     </div>
 {% endblock %}

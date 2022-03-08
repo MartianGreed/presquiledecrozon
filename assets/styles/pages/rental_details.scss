@@ -3,7 +3,7 @@
         @apply grid grid-cols-8 gap-2;
 
         .slideshow__cover {
-            @apply row-span-2 col-span-3;
+            @apply row-span-2 col-span-6 md:col-span-3;
 
             img {
                 @apply object-cover h-full w-full;
@@ -11,7 +11,7 @@
         }
 
         .slideshow__image {
-            @apply col-span-2;
+            @apply hidden md:block md:col-span-2;
 
             img {
                 @apply object-cover h-full w-full;
@@ -19,7 +19,7 @@
         }
 
         .slideshow__details {
-            @apply row-span-2 bg-blue flex flex-col justify-between items-center py-12;
+            @apply row-span-2 col-span-2 md:col-span-1 bg-blue flex flex-col justify-between items-center py-12;
 
             .item {
                 @apply text-white border-b-2 border-b-white text-center min-w-[50%];
@@ -36,11 +36,11 @@
 
     &__content {
         &__container {
-            @apply container mx-3 md:mx-auto mt-16 grid grid-cols-12 gap-6;
+            @apply container mx-0 px-3 md:px-0 md:mx-auto mt-4 md:mt-16 grid grid-cols-12 gap-3 md:gap-6;
         }
 
         &__sidebar {
-            @apply col-span-4;
+            @apply col-span-12 md:col-span-4 ml-5 md:ml-0;
 
             .sidebar__menu {
                 .sidebar__menu__item {
@@ -53,7 +53,7 @@
         }
 
         &__content {
-            @apply col-span-8;
+            @apply col-span-12 md:col-span-8;
 
             .content__title {
                 @apply text-3xl text-blue mb-6;
