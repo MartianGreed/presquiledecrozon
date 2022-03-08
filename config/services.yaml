@@ -57,3 +57,7 @@ services:
     App\Infrastructure\Twig\IconExtension:
         arguments:
             $package: '@assets._default_package'
+
+    App\Command\UploadAssetsCommand:
+        arguments:
+            $rootDirectory: '%kernel.project_dir%'

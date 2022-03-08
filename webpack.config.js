@@ -89,4 +89,13 @@ let config = Encore.getWebpackConfig();
 
 config.resolve.plugins = [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })];
 
+if (Encore.isProduction()) {
+  var buff = Buffer.from(process.env.PLATFORM_VARIABLES, 'base64');
+  var env = JSON.parse(buff.toString('utf-8'));
+
+  Encore.setPublicPath(env.CDN_HOST + '/static/build');
+  Encore.setManifestKeyPrefix('build/');
+}
+
+
 module.exports = config;

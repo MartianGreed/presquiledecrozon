@@ -41,7 +41,7 @@ body {
 }
 
 .app_container {
-    @apply container px-3 md:px-0 mx-0 md:mx-auto;
+    @apply container px-3 md:px-0 mx-auto md:mx-auto;
 }
 
 @import 'components/components';
