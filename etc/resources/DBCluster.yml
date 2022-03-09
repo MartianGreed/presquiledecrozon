@@ -1,0 +1,12 @@
+Type: AWS::RDS::DBCluster
+Properties:
+  MasterUsername: ${self:custom.db_user}
+  MasterUserPassword: ${self:custom.db_password.${self:provider.stage, 'dev'}}
+  DBSubnetGroupName:
+    Ref: ServerlessSubnetGroup
+  Engine: aurora-postgresql
+  EngineVersion: "10.14"
+  DatabaseName: ${self:custom.db_name}
+  BackupRetentionPeriod: 3
+  VpcSecurityGroupIds:
+    - !Ref 'ServerlessSecurityGroup'

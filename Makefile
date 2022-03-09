@@ -18,3 +18,13 @@ phpstan:
 lint:
 	vendor/bin/rector process src tests
 	vendor/bin/ecs check src tests --fix
+
+deploy_staging:
+	npm run build:staging
+	php bin/console app:assets:upload
+	serverless deploy
+
+deploy_prod:
+	npm run build:prod
+	php bin/console app:assets:upload
+	serverless deploy --stage prod

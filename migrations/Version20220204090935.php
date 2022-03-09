@@ -36,7 +36,6 @@ final class Version20220204090935 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('COMMENT ON COLUMN bed.size IS NULL');
         $this->addSql('COMMENT ON COLUMN price.weekly_rate IS NULL');
         $this->addSql('COMMENT ON COLUMN price.daily_rate IS NULL');
         $this->addSql('COMMENT ON COLUMN tax.cleaning_tax IS NULL');

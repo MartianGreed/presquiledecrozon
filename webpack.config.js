@@ -1,9 +1,18 @@
 const Encore = require('@symfony/webpack-encore');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const dotenv = require('dotenv');
+
+const envVars = dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
+  let env = 'dev';
+
+  if ('local' === process.env.NODE_ENV || 'prod' === process.env.NODE_ENV) {
+    env = 'production';
+  }
+
   Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
@@ -85,17 +94,12 @@ Encore
 //.autoProvidejQuery()
 ;
 
-let config = Encore.getWebpackConfig();
-
-config.resolve.plugins = [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })];
-
 if (Encore.isProduction()) {
-  var buff = Buffer.from(process.env.PLATFORM_VARIABLES, 'base64');
-  var env = JSON.parse(buff.toString('utf-8'));
-
-  Encore.setPublicPath(env.CDN_HOST + '/static/build');
+  Encore.setPublicPath(envVars.parsed.CDN_URL + '/static/build');
   Encore.setManifestKeyPrefix('build/');
 }
 
+let config = Encore.getWebpackConfig();
+config.resolve.plugins = [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })];
 
 module.exports = config;

@@ -2,6 +2,24 @@
     "async-aws/core": {
         "version": "1.13.0"
     },
+    "async-aws/lambda": {
+        "version": "1.6.0"
+    },
+    "bref/bref": {
+        "version": "1.5.4"
+    },
+    "bref/symfony-bridge": {
+        "version": "0.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.1",
+            "ref": "073e577186ef96e4f26df1f8a3dc14a48826d364"
+        },
+        "files": [
+            "serverless.yml"
+        ]
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },
@@ -127,6 +145,9 @@
     "guzzlehttp/psr7": {
         "version": "2.1.0"
     },
+    "hollodotme/fast-cgi-client": {
+        "version": "v3.1.7"
+    },
     "infection/abstract-testframework-adapter": {
         "version": "0.5.0"
     },
@@ -191,6 +212,18 @@
     "nikic/php-parser": {
         "version": "v4.13.2"
     },
+    "nyholm/psr7": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "0cd4d2d0e7f646fda75f9944f747a56e6ed13d4c"
+        },
+        "files": [
+            "config/packages/nyholm_psr7.yaml"
+        ]
+    },
     "ondram/ci-detector": {
         "version": "3.5.1"
     },
@@ -199,6 +232,9 @@
     },
     "phar-io/version": {
         "version": "3.1.0"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -262,6 +298,9 @@
     "psr/http-message": {
         "version": "1.0.1"
     },
+    "psr/http-server-handler": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "2.0.1"
     },
@@ -273,6 +312,9 @@
     },
     "rector/rector": {
         "version": "0.12.10"
+    },
+    "riverline/multipart-parser": {
+        "version": "2.0.9"
     },
     "sanmai/later": {
         "version": "0.1.2"
@@ -592,6 +634,9 @@
     },
     "symfony/proxy-manager-bridge": {
         "version": "v6.0.1"
+    },
+    "symfony/psr-http-message-bridge": {
+        "version": "v2.1.2"
     },
     "symfony/routing": {
         "version": "6.0",

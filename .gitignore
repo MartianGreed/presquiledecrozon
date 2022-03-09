@@ -29,3 +29,7 @@ yarn-error.log
 ###< phpunit/phpunit ###
 
 /coverage/
+
+###> bref/symfony-bridge ###
+/.serverless/
+###< bref/symfony-bridge ###

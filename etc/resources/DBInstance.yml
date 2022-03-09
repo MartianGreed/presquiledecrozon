@@ -1,0 +1,11 @@
+DependsOn: ServerlessVPCGA
+Type: AWS::RDS::DBInstance
+Properties:
+  DBInstanceClass: ${self:custom.db_instance}
+  DBSubnetGroupName:
+    Ref: ServerlessSubnetGroup
+  Engine: aurora-postgresql
+  EngineVersion: "10.14"
+  PubliclyAccessible: false
+  DBClusterIdentifier:
+    Ref: AuroraRDSCluster

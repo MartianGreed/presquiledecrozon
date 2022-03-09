@@ -19,6 +19,7 @@ final class Version20220204100626 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $this->addSql('COMMIT;');
        $this->addSql('ALTER TYPE rental_status ADD VALUE \'expired\'');
     }
 

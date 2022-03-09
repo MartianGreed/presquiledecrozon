@@ -3,7 +3,7 @@
 
     @apply fixed bottom-0 left-0 right-0 bg-white border-t-4 border-greeny shadow-lg px-6 py-4;
 
-    @apply transition delay-100 translate-y-[80%] hover:translate-y-0;
+    @apply transition delay-100 translate-y-[80%] hover:translate-y-0 md:transition-none md:translate-y-0;
 
     form {
         @apply grid grid-cols-8 items-center;
