@@ -43,7 +43,7 @@
                     data-conversation--list-target="conversation"
                     data-conversation--detail-current-id-value="{{ conversations[0].id }}"
                     data-conversation--detail-user-id-value="{{ app.user.id }}"
-                    data-conversation--detail-api-url-value="{{ url('api_get_conversation', { id: '__id__' }) }}"
+                    data-conversation--detail-api-url-value="{{ path('api_get_conversation', { id: '__id__' }) }}"
             >
                 <div class="conversation__detail__description">
                     <div class="name" data-conversation--detail-target="name"></div>

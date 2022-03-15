@@ -1,0 +1,8 @@
+Type: AWS::EC2::SecurityGroupEgress
+Properties:
+  Description: Allows Lambda to access MySQL in the DBSecurityGroup
+  GroupId: !Ref AppSecurityGroup
+  FromPort: 3306
+  IpProtocol: tcp
+  DestinationSecurityGroupId: !GetAtt DBSecurityGroup.GroupId
+  ToPort: 3306

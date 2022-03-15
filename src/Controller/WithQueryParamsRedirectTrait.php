@@ -21,4 +21,10 @@ trait WithQueryParamsRedirectTrait
     {
         return $this->redirect($this->urlGenerator->generate($route, $queryParams));
     }
+
+    /** @param array<string, string> $queryParams */
+    final public function getUrl(string $route, array $queryParams): string
+    {
+        return $this->urlGenerator->generate($route, $queryParams);
+    }
 }

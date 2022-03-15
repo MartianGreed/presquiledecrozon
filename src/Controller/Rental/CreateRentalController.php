@@ -210,6 +210,7 @@ final class CreateRentalController extends AbstractController
         return $this->renderForm('create_rental/pictures.html.twig', [
             'form' => $form,
             'rental' => $rental,
+            'next_step_url' => $this->getUrl('app_create_rental_availabilities', $request->query->all()),
         ]);
     }
 

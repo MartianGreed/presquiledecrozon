@@ -19,9 +19,16 @@ lint:
 	vendor/bin/rector process src tests
 	vendor/bin/ecs check src tests --fix
 
-deploy_staging:
+prod_vendor:
+	symfony composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
+
+deploy_assets_staging:
 	npm run build:staging
 	php bin/console app:assets:upload
+
+deploy_staging:
+	composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
+	php bin/console cache:clear --env prod && php bin/console cache:warmup --env prod
 	serverless deploy
 
 deploy_prod:

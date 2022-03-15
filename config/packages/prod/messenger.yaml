@@ -1,0 +1,9 @@
+framework:
+  messenger:
+    transports:
+      async:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        options:
+          auto_setup: false
+      failed:
+        dsn: '%env(MESSENGER_FAILED_TRANSPORT_DSN)%'

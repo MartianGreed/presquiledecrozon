@@ -44,7 +44,7 @@ final class RentalDetailController extends AbstractController
             $token = $request->query->get('token');
             if (null !== $token) {
                 if ($token !== $rental->tokenize()) {
-                    throw new RentalNotFoundException($rental->getSlug());
+                    throw new RentalNotFoundException((string) $rental->getSlug());
                 }
             }
         } catch (RentalNotFoundException $e) {

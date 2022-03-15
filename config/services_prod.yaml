@@ -1,0 +1,15 @@
+parameters:
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
+
+services:
+    AsyncAws\DynamoDbSession\SessionHandler:
+        arguments:
+            - '@async_aws.client.dynamo_db'
+            - table_name: '%env(DYNAMODB_SESSION_TABLE)%'
+
+    Bref\Symfony\Messenger\Service\Sqs\SqsConsumer:
+        public: true
+        autowire: true
+        arguments:
+            $transportName: 'async'

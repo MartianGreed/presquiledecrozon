@@ -1,0 +1,35 @@
+.dz-clickable {
+   @apply min-h-[200px];
+
+    img[data-dz-thumbnail] {
+        @apply w-[150px] h-[150px] border-2 border-blue/60 rounded-md relative mb-2;
+    }
+
+    .dz-preview {
+        @apply relative;
+
+        .dz-progress, .dz-error-message, .dz-success-mark {
+            @apply hidden;
+        }
+
+        .dz-remove {
+            @apply cursor-pointer absolute top-1 left-[130px] text-red bg-white p-1 leading-none shadow-none hover:shadow-inner
+        }
+
+        .dz-details {
+            @apply text-xs;
+        }
+    }
+
+}
+
+div[data-rental--uploader-target="dropzoneContainer"] {
+    &.no-file {
+        @apply max-w-[150px] max-h-[150px] min-h-[150px] border-2 border-blue/60 rounded-md cursor-pointer relative;
+
+        &:before {
+            content: '+';
+            @apply top-0 bottom-0 left-0 right-0 absolute text-center leading-none flex justify-center items-center text-6xl text-blue -mt-3;
+        }
+    }
+}

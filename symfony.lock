@@ -1,12 +1,42 @@
 {
+    "async-aws/async-aws-bundle": {
+        "version": "1.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "36bc5854429183d4ba6980c916f9e9284deb3a16"
+        },
+        "files": [
+            "config/packages/async_aws.yaml"
+        ]
+    },
     "async-aws/core": {
         "version": "1.13.0"
+    },
+    "async-aws/dynamo-db": {
+        "version": "1.2.0"
+    },
+    "async-aws/dynamo-db-session": {
+        "version": "1.0.1"
+    },
+    "async-aws/event-bridge": {
+        "version": "1.3.0"
     },
     "async-aws/lambda": {
         "version": "1.6.0"
     },
+    "async-aws/sns": {
+        "version": "1.3.0"
+    },
+    "async-aws/sqs": {
+        "version": "1.7.0"
+    },
     "bref/bref": {
         "version": "1.5.4"
+    },
+    "bref/extra-php-extensions": {
+        "version": "0.11.25"
     },
     "bref/symfony-bridge": {
         "version": "0.2",
@@ -19,6 +49,9 @@
         "files": [
             "serverless.yml"
         ]
+    },
+    "bref/symfony-messenger": {
+        "version": "0.4.3"
     },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
@@ -387,6 +420,9 @@
     },
     "stripe/stripe-php": {
         "version": "v7.108.0"
+    },
+    "symfony/amazon-sqs-messenger": {
+        "version": "v6.0.3"
     },
     "symfony/asset": {
         "version": "v6.0.1"

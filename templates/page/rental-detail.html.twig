@@ -18,7 +18,7 @@
         </div>
         {% for i in 0..3 %}
             <div class="slideshow__image">
-                <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', null, { h: 400, w: 700, crop: true }) }}"
+                <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true }) }}"
                      alt=""/>
             </div>
             {% if i == 1 %}
@@ -232,7 +232,7 @@
         <div
                 class="book_rental__price"
                 data-controller="booking--total-price"
-                data-booking--total-price-api-value="{{ url('app_booking_price', { id: rental.id }) }}"
+                data-booking--total-price-api-value="{{ path('app_booking_price', { id: rental.id }) }}"
                 data-form-types--booking-rental-target="price"
         >
             Veuillez sélectionner les dates pour connaître le montant de la location.

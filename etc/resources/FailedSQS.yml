@@ -1,0 +1,4 @@
+Type: AWS::SQS::Queue
+Properties:
+  QueueName: failed-queue.fifo
+  FifoQueue: true

@@ -10,7 +10,8 @@ final class StringExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('excerpt', [$this, 'excerpt'])
+            new TwigFilter('excerpt', [$this, 'excerpt']),
+            new TwigFilter('human_filesize', [$this, 'humanFilesize'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -20,5 +21,18 @@ final class StringExtension extends AbstractExtension
         $tmp = array_slice($parts, 0, $wordsCount);
 
         return implode(' ', $tmp) . '...';
+    }
+
+    public function humanFilesize(int $size): string
+    {
+        $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        $step = 1024;
+        $i = 0;
+        while (($size / $step) > 0.9) {
+            $size /= $step;
+            $i++;
+        }
+
+        return '<strong>' . round($size, 2) . '</strong>' . ' ' . $units[$i];
     }
 }

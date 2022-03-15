@@ -4,7 +4,7 @@
 <div class="rental_list__item">
     <div class="rental_list__item__content">
         <div class="rental_list__item__content__image">
-            <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
+            <a href="{{ path('app_rental_details', { slug: rental.slug }) }}">
                 <img
                         srcset="
                             {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }} {{ height }}w
@@ -20,8 +20,8 @@
                         type="button"
                         {% if app.user is not null %}
                             data-controller="rental--favorites"
-                            data-rental--favorites-uri-value="{{ url('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
-                            data-rental--favorites-is-favorite-uri-value="{{ url('app_profile_is_rental_favorite', { id: rental.id }) }}"
+                            data-rental--favorites-uri-value="{{ path('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
+                            data-rental--favorites-is-favorite-uri-value="{{ path('app_profile_is_rental_favorite', { id: rental.id }) }}"
                             data-rental--favorites-is-favorite-value="false"
                             data-action="click->rental--favorites#addToFavoriteList"
                         {% endif %}
@@ -36,7 +36,7 @@
                     {{ rental.configuration.type.label }}
                 </div>
                 <div class="rental_list__item__content__description__title">
-                    <a href="{{ url('app_rental_details', { slug: rental.slug }) }}">
+                    <a href="{{ path('app_rental_details', { slug: rental.slug }) }}">
                         {{ rental.description.title }}
                     </a>
                 </div>

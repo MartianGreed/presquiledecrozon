@@ -57,7 +57,7 @@ final class RentalService
     {
         $rental = $rental->saveDescription($description);
 
-        $rental->setSlug(strtolower($this->slugger->slug($rental->getDescription()?->getTitle())));
+        $rental->setSlug(strtolower($this->slugger->slug((string) $rental->getDescription()?->getTitle())));
 
         /** @var Description $rentalDescription */
         $rentalDescription = $rental->getDescription();

@@ -1,0 +1,9 @@
+DependsOn: ElasticIP
+Type: AWS::EC2::NatGateway
+Properties:
+  AllocationId: !GetAtt ElasticIP.AllocationId
+  SubnetId: !Ref ServerlessSubnetA
+  Tags:
+    -
+      Key: "Name"
+      Value: "ServerlessNAT"

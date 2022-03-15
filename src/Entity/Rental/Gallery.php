@@ -15,15 +15,15 @@ class Gallery
     use IdentityTrait;
 
     #[ORM\ManyToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private Media $cover;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Media $cover = null;
 
     /** @var ArrayCollection<int, Media> */
     #[ORM\ManyToMany(targetEntity: Media::class, cascade: ['persist', 'remove'])]
     private Collection $pictures;
 
     #[ORM\OneToOne(mappedBy: 'gallery', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
-    private Rental $rental;
+    private ?Rental $rental = null;
 
     public function __construct()
     {
@@ -59,6 +59,13 @@ class Gallery
         return $this;
     }
 
+    public function addPictureAtIndex(Media $picture, int $index): self
+    {
+        $this->pictures->offsetSet($index, $picture);
+
+        return $this;
+    }
+
     public function removePicture(Media $picture): self
     {
         $this->pictures->removeElement($picture);
@@ -66,7 +73,7 @@ class Gallery
         return $this;
     }
 
-    public function getRental(): Rental
+    public function getRental(): ?Rental
     {
         return $this->rental;
     }

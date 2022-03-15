@@ -20,4 +20,6 @@ return [
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     League\FlysystemBundle\FlysystemBundle::class => ['all' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
+    AsyncAws\Symfony\Bundle\AsyncAwsBundle::class => ['all' => true],
+    Bref\Symfony\Messenger\BrefMessengerBundle::class => ['all' => true],
 ];

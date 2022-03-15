@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
 final class MediaType extends AbstractType
@@ -27,6 +28,9 @@ final class MediaType extends AbstractType
             'download_uri' => $imageUri,
             'image_uri' => $imageUri,
             'required' => $options['required'],
+            'constraints' => [
+                new Image(maxSize: '5M'),
+            ]
         ]);
     }
 

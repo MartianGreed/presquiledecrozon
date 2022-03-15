@@ -1,0 +1,13 @@
+Type: AWS::EC2::SecurityGroup
+Properties:
+  GroupDescription: Security group for the database, allowing access from Lambda
+  VpcId: !Ref VPC
+  SecurityGroupIngress:
+    -   Description: Allow inbound MySQL access from Lambda
+        FromPort: 3306
+        IpProtocol: tcp
+        SourceSecurityGroupId: !GetAtt AppSecurityGroup.GroupId
+        ToPort: 3306
+  Tags:
+    -   Key: Name
+        Value: !Join ['', [!Ref AWS::StackName, '-db']]

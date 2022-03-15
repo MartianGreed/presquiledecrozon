@@ -262,6 +262,10 @@ trait RentalAccessorTrait
     final public function setGallery(?Gallery $gallery): Rental
     {
         $this->gallery = $gallery;
+        if (null === $gallery?->getRental()) {
+            $gallery?->setRental($this);
+        }
+
         return $this;
     }
 

@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="homepage__hero__cta">
-                <a href="{{ url('app_rental_list') }}" class="button">Voir les annonces</a>
+                <a href="{{ path('app_rental_list') }}" class="button">Voir les locations</a>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <a href="{{ url('app_rental_list') }}" class="button button__blue">Voir les annonces</a>
+            <a href="{{ path('app_rental_list') }}" class="button button__blue">Voir les locations</a>
         </div>
     </div>
 
@@ -68,7 +68,7 @@
                         Le site offre la possibilité aux particuliers de déposer leur annonce dans le but d'avoir un service autonome.
                     </p>
                     <strong>Vous possédez un bien que vous souhaitez louer ?</strong>
-                    <a href="{{ url('app_create_rental') }}" class="button button__white">
+                    <a href="{{ path('app_create_rental') }}" class="button button__white">
                         Déposez mon annonce
                     </a>
                 </div>
@@ -84,7 +84,7 @@
                         {{ subscription.amount }}/an
                         <small>pour une location.</small>
                     </h3>
-                    <a href="{{ url('app_create_rental') }}" class="button button__white">
+                    <a href="{{ path('app_create_rental') }}" class="button button__white">
                         Déposer mon annonce
                     </a>
                 </div>

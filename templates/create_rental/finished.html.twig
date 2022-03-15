@@ -18,12 +18,12 @@
                 </p>
 
                 <div class="link__container">
-                    <a href="{{ url('app_get_subscription', { rental_id: rental.id }) }}">Publier l'annonce</a>
+                    <a href="{{ path('app_get_subscription', { rental_id: rental.id }) }}">Publier l'annonce</a>
                 </div>
             </div>
         </aside>
         <div class="create__rental__preview">
-            <iframe src="{{ url('app_rental_details', { slug: rental.slug, token: token }) }}" width="100%" height="100%"></iframe>
+            <iframe src="{{ path('app_rental_details', { slug: rental.slug, token: token }) }}" width="100%" height="100%"></iframe>
         </div>
     </div>
 {% endblock %}

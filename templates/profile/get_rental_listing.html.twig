@@ -9,7 +9,7 @@
         <h1 class="main__title">Annonces</h1>
         
         <div class="flex justify-end">
-            <a class="button button__blue" href="{{ url('app_create_rental') }}"><i class="fas fa-plus"></i> Ajouter une location</a>
+            <a class="button button__blue" href="{{ path('app_create_rental') }}"><i class="fas fa-plus"></i> Ajouter une location</a>
         </div>
 
         <div class="rental__list">
@@ -24,10 +24,10 @@
                             <div class="type">{{ rental.configuration.type.label }}</div>
                         </div>
                         <div class="rental__list__item__inner__actions">
-                            <div><a href="{{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"><i class="far fa-edit"></i></a></div>
+                            <div><a href="{{ path('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"><i class="far fa-edit"></i></a></div>
                             <label
                                     data-controller="toggle-publish-rental"
-                                    data-toggle-publish-rental-api-uri-value="{{ url('app_rental_toggle_publish', { id: rental.id }) }}"
+                                    data-toggle-publish-rental-api-uri-value="{{ path('app_rental_toggle_publish', { id: rental.id }) }}"
                                     for="toggle-publish-rental-{{ rental.id }}"
                             >
                                 <input
