@@ -9,9 +9,6 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
-use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[Assert\Email]
     private string $email;
 
-    /** @var array<string>  */
+    /** @var array<string> */
     #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_USER'];
 

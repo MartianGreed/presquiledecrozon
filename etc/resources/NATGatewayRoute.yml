@@ -1,5 +1,0 @@
-Type: AWS::EC2::Route
-Properties:
-  DestinationCidrBlock: 0.0.0.0/0
-  RouteTableId: !Ref RouteTablePublic
-  NatGatewayId: !Ref ServerlessNATGateway

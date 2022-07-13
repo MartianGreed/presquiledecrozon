@@ -3,9 +3,6 @@ framework:
   trusted_proxies: '127.0.0.1'
   trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port']
 
-  session:
-    handler_id: AsyncAws\DynamoDbSession\SessionHandler
-
   assets:
     base_urls:
       - '%env(CDN_URL)%/static'

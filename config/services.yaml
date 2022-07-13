@@ -32,6 +32,7 @@ services:
 
     App\Infrastructure\BunnyCDN\Storage:
         arguments:
+            $client: '@http_client'
             $storageZoneName: '%env(BUNNYCDN_BUCKET)%'
             $apiAccessKey: '%env(BUNNYCDN_API_KEY)%'
             $storageZoneRegion: '%env(BUNNYCDN_REGION)%'

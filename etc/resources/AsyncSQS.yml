@@ -1,4 +1,0 @@
-Type: AWS::SQS::Queue
-Properties:
-  QueueName: async-queue.fifo
-  FifoQueue: true

@@ -20,9 +20,9 @@ final class Storage
 
     public function getBaseUrl(): string
     {
-        return $this->storageZoneRegion === "de" || !$this->storageZoneRegion
+        return $this->storageZoneRegion === 'de' || !$this->storageZoneRegion
             ? 'https://storage.bunnycdn.com/'
-            : "https://" . $this->storageZoneRegion . ".storage.bunnycdn.com/";
+            : 'https://' . $this->storageZoneRegion . '.storage.bunnycdn.com/';
     }
 
     public function getStorageObjects(string $path): Reply
