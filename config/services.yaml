@@ -62,3 +62,6 @@ services:
     App\Command\UploadAssetsCommand:
         arguments:
             $rootDirectory: '%kernel.project_dir%'
+    App\Command\ImportSqlCommand:
+        arguments:
+            $rootDir: '%kernel.project_dir%'

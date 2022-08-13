@@ -1,0 +1,1 @@
+INSERT INTO public.region (id, country_id, name, prefix1, prefix2, slug, display_old_name) VALUES ('1ec8a506-8c48-6278-8e3b-433c19c62dce', '1ec8a506-8ba0-6df2-a302-433c19c62dce', 'Bretagne', 'de', 'en', 'bretagne', false);

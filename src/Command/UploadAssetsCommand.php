@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Infrastructure\BunnyCDN\Storage;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,21 +11,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
+#[AsCommand('app:assets:upload')]
 final class UploadAssetsCommand extends Command
 {
-    public static $defaultName = 'app:assets:upload';
-
     private SymfonyStyle $io;
 
-    private Storage $storage;
-    private string $rootDirectory;
-
-    public function __construct(Storage $storage, string $rootDirectory)
-    {
-        parent::__construct(static::$defaultName);
-
-        $this->storage = $storage;
-        $this->rootDirectory = $rootDirectory;
+    public function __construct(
+        private readonly Storage $storage,
+        private readonly string $rootDirectory
+    ) {
+        parent::__construct();
     }
 
     public function configure(): void

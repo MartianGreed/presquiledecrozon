@@ -2,6 +2,9 @@ start:
 	docker-compose -p presquiledecrozon up -d
 	symfony serve
 
+stop:
+	docker-compose -p presquiledecrozon stop
+
 fixtures:
 	php bin/console doctrine:fixtures:load --group=data
 	php bin/console doctrine:fixtures:load --group=rental --append

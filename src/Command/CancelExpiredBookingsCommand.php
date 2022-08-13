@@ -4,22 +4,22 @@ namespace App\Command;
 
 use App\Repository\Booking\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand('app:bookings:cancel-expired')]
 final class CancelExpiredBookingsCommand extends Command
 {
     private SymfonyStyle $io;
-
-    protected static $defaultName = 'app:bookings:cancel-expired';
 
     public function __construct(
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
     ) {
-        parent::__construct(static::$defaultName);
+        parent::__construct();
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
