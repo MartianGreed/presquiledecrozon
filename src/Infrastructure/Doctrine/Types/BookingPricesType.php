@@ -51,7 +51,7 @@ final class BookingPricesType extends JsonType
         return true;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'booking_prices';
     }

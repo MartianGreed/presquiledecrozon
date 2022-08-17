@@ -26,6 +26,7 @@ final class GetBookerBookingsListController extends AbstractController
             'is_owner' => false,
             'past_bookings' => $this->bookingRepository->getUserPastBookings($userId),
             'forthcoming_bookings' => $this->bookingRepository->getUserForthcomingBookings($userId),
+            'title' => 'Vacances',
         ]);
     }
 }

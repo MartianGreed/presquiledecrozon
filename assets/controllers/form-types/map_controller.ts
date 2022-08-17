@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { Loader } from "@googlemaps/js-api-loader";
+import { fromDecimalToFloat } from "@crozon/utils";
 
 export default class extends Controller {
     static targets = ['lat', 'lng', 'map', 'suggestions'];
@@ -36,7 +37,7 @@ export default class extends Controller {
             let google = await this.loader.load();
             this.geocoder = new google.maps.Geocoder();
 
-            this.position = { lat: this.fromDecimalToFloat(this.latCenterValue), lng: this.fromDecimalToFloat(this.lngCenterValue) }; 
+            this.position = { lat: fromDecimalToFloat(this.latCenterValue), lng: fromDecimalToFloat(this.lngCenterValue) };
 
             this.map = new google.maps.Map(this.mapTarget, {
                 center: this.position,
@@ -95,10 +96,5 @@ export default class extends Controller {
         `).join('<br/>');
 
         this.suggestionsTarget.innerHTML = stringAddresses;
-    }
-
-    fromDecimalToFloat(val: string): number {
-        let parsed = val.replace(',', '.');
-        return parseFloat(parsed);
     }
 }

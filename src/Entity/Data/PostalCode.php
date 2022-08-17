@@ -25,7 +25,7 @@ class PostalCode implements \Stringable
     private Department $department;
 
     /** @var ArrayCollection<int, Town>  */
-    #[ORM\OneToMany(mappedBy: 'postalCodes', targetEntity: Town::class)]
+    #[ORM\OneToMany(mappedBy: 'postalCode', targetEntity: Town::class)]
     private Collection $towns;
 
     public function __construct()

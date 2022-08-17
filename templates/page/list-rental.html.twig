@@ -12,13 +12,52 @@
 {% set content_class = 'rental_list' %}
 {% block body %}
     <div class="app_container">
-        <div class="rental_list__list">
-            {% for rental in pagination %}
-                {% include 'includes/rental/list-item.html.twig' with { rental: rental, height: 400, width: 500 } %}
-            {% endfor %}
-        </div>
-        <div class="pagination">
-            {{ knp_pagination_render(pagination) }}
+        <div
+                class="rental_list__layout-container"
+                data-controller="rental--list-layout"
+        >
+            <div class="rental_list__map-toggler">
+                <div class="flex justify-end">
+                    <div class="form-check form-switch">
+                        <label class="rental_list__map-toggler__label" for="map-toggler">
+                            <input
+                                    class="rental_list__map-toggler__input"
+                                    type="checkbox"
+                                    role="switch"
+                                    id="map-toggler"
+                                    data-rental--list-layout-target="toggler"
+                                    checked
+                            />
+                            Afficher la carte
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div
+                    class="rental_list__list"
+                    data-rental--list-layout-target="listContainer"
+            >
+                <div class="items">
+                    {% for rental in pagination %}
+                        {% include 'includes/rental/list-item.html.twig' with { rental: rental, height: 400, width: 500 } %}
+                    {% endfor %}
+                </div>
+                <div
+                        class="map"
+                        data-controller="rental--list-map"
+                        data-rental--list-map-api-key-value="{{ gmaps_api_key }}"
+                        data-rental--list-map-markers-value="{{ rental_markers_list(pagination) }}"
+                >
+                    <div
+                            class="map-display"
+                            data-rental--list-map-target="map"
+                    >
+                    </div>
+                </div>
+            </div>
+            <div class="pagination">
+                {{ knp_pagination_render(pagination) }}
+            </div>
         </div>
     </div>
 {% endblock %}

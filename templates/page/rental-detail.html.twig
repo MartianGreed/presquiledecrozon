@@ -54,6 +54,8 @@
     <div
             class="rental_details__content__container"
             data-controller="rental--detail"
+            data-rental--detail-lat-value="{{ rental.geolocation.coordinates.lat }}"
+            data-rental--detail-lng-value="{{ rental.geolocation.coordinates.lng }}"
     >
         <div class="rental_details__content__sidebar">
             <ul
@@ -119,35 +121,14 @@
                 </div>
             </div>
 
-            <div id="rental_details_map" class="content_item">
-                <script src="https://maps.google.com/maps/api/js?key={{ gmaps_api_key }}"
-                        type="text/javascript"
-                        data-turbo-track="reload"
-                        defer
-                ></script>
-                <script async type="text/javascript" data-turbo-track="reload" defer>
-                  var position = new google.maps.LatLng({{ rental.geolocation.coordinates.lat }}, {{ rental.geolocation.coordinates.lng }});
-                  var map = null;
-
-                  function initMap() {
-
-                    map = new google.maps.Map(document.getElementById('rental_details_map_display'), {
-                      center: position,
-                      zoom: 11,
-                    });
-
-                    new google.maps.Marker({
-                      position: position,
-                      map: map,
-                      title: 'Votre logement',
-                    });
-                  }
-
-                  window.onload = function () {
-                    initMap();
-                  };
-                </script>
-
+            <div
+                    id="rental_details_map"
+                    class="content_item"
+                    data-controller="rental--map"
+                    data-rental--map-api-key-value="{{ gmaps_api_key }}"
+                    data-rental--map-lat-value="{{ rental.geolocation.coordinates.lat }}"
+                    data-rental--map-lng-value="{{ rental.geolocation.coordinates.lng }}"
+            >
                 <h2 class="content__title">
                     Géolocalisation
                 </h2>
@@ -158,7 +139,7 @@
                     {% endif %}
                     {{ rental.address.town.postalCode.code }} - {{ rental.address.town }}
                 </div>
-                <div id="rental_details_map_display"></div>
+                <div id="rental_details_map_display" data-rental--map-target="map"></div>
             </div>
 
             <div id="rental_details_availability" class="content_item">

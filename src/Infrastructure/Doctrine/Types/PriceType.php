@@ -16,13 +16,13 @@ final class PriceType extends IntegerType
     /**
      * {@inheritdoc}
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        return $value === null ? null : new Price(intval($value) / 100);
+        return $value === null ? null : new Price((int)$value / 100);
     }
 
     /** @param ?Price $value */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         return parent::convertToDatabaseValue($value?->getValue(), $platform);
     }

@@ -18,9 +18,9 @@ Encore
   // directory where compiled assets will be stored
   .setOutputPath('public/build/')
   // public path used by the web server to access the output path
-  .setPublicPath('/build')
+  .setPublicPath(Encore.isProduction() ? process.env.CDN_URL + '/static/build' : '/build')
   // only needed for CDN's or sub-directory deploy
-  //.setManifestKeyPrefix('build/')
+  .setManifestKeyPrefix('build/')
 
   /*
    * ENTRY CONFIG
@@ -94,13 +94,5 @@ Encore
 
 let config = Encore.getWebpackConfig();
 config.resolve.plugins = [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })];
-
-if (Encore.isProduction()) {
-  Encore.setPublicPath(process.env.CDN_URL + '/static/build');
-  // guarantee that the keys in manifest.json are *still*
-  // prefixed with build/
-  // (e.g. "build/dashboard.js": "https://my-cool-app.com.global.prod.fastly.net/dashboard.js")
-  Encore.setManifestKeyPrefix('build/');
-}
 
 module.exports = config;

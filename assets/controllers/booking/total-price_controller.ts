@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import axios from 'axios';
-import {BookingRentalValues} from "../form-types/booking-rental_controller";
+import { BookingRentalValues } from '../form-types/booking-rental_controller';
 
 export default class extends Controller {
     static targets = ['price']
@@ -17,6 +17,10 @@ export default class extends Controller {
     }
 
     async formValueChanged(): Promise<void> {
+        if (0 === Object.keys(this.formValue).length) {
+            return;
+        }
+
         try {
             let { data, status, statusText } = await axios.post(this.apiValue, this.formValue);
 

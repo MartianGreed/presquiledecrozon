@@ -1,6 +1,33 @@
 .rental_list {
     &__list {
-        @apply my-12 grid grid-cols-12 gap-6;
+        @apply grid grid-cols-12 gap-6;
+
+        .items {
+            @apply my-12 grid grid-cols-12 col-span-12 gap-6;
+        }
+        .map {
+            @apply my-12;
+            .map-display {
+                // override google maps default position relative
+                @apply h-1/5 sticky top-4;
+                position: sticky !important;
+            }
+        }
+
+        &.map-toggled {
+
+            .items {
+                @apply col-span-8;
+            }
+            .map {
+                @apply col-span-4;
+            }
+
+
+            .rental_list__item {
+                @apply col-span-12 md:col-span-6 lg:col-span-4;
+            }
+        }
 
         .rental_list__item {
             @apply col-span-12 md:col-span-4 lg:col-span-3;

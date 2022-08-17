@@ -24,20 +24,20 @@ final class ImportSqlCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('file', 'f', InputArgument::OPTIONAL, 'File path you want to import');
         $this->addOption('raw', 'r', InputArgument::OPTIONAL, 'Raw sql you want to play');
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
 
         $this->io->title('Importing sql');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $file = $input->getOption('file')) {
             return $this->handleImportSingleFile($file);
@@ -65,7 +65,7 @@ final class ImportSqlCommand extends Command
     private function handleSingleFile(SplFileInfo $file): void
     {
         try {
-            $this->connection->executeQuery($file->getContents());
+            $this->connection->executeStatement(str_replace(PHP_EOL, '', $file->getContents()));
         } catch (\Exception $e) {
             $this->io->error('Failed to import : ' . $file->getFilename() . PHP_EOL . $e->getMessage());
         }

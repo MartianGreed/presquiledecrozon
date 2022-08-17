@@ -22,6 +22,7 @@ dependencies:
     php:
         composer/composer: '^2'
     nodejs:
+        n: '*'
         yarn: '*'
 
 variables:
@@ -29,6 +30,7 @@ variables:
         # Tell Symfony to always install in production-mode.
         APP_ENV: 'prod'
         APP_DEBUG: 0
+        N_PREFIX: '/app/.global'
     
     php:
         memory_limit: '512M'
@@ -38,8 +40,10 @@ variables:
 hooks:
     build: |
         set -e
+        n auto
+        hash -r
         yarn install
-        yarn run build:prod
+        NODE_ENV=prod yarn run build:prod
         chmod +x bin/deploydotenv.sh
         bin/deploydotenv.sh
         bin/console cache:clear
@@ -81,6 +85,10 @@ web:
             passthru: "/index.php"
             
 workers:
-    messages:
+    async_worker:
         commands:
-            start: bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M
+            start: php bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M
+
+    failed_worker:
+        commands:
+            start: php bin/console messenger:consume failed -vv --time-limit=3600 --memory-limit=128M

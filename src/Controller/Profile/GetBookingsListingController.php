@@ -31,6 +31,7 @@ final class GetBookingsListingController extends AbstractController
             'past_bookings' => $this->bookingRepository->getOwnerBookingsHistory($userId),
             'forthcoming_bookings' => $this->bookingRepository->getOwnerForthcomingBookings($userId),
             'to_confirm_bookings' => $this->bookingRepository->getOwnerBookingsToValidate($userId),
+            'title' => 'Réservations',
         ]);
     }
 }

@@ -1,10 +1,13 @@
 {% if with_favorites is not defined %}
 {% set with_favorites = true %}
 {% endif %}
-<div class="rental_list__item">
+<div
+        class="rental_list__item"
+        id="rental-list-item-{{ rental.id }}"
+>
     <div class="rental_list__item__content">
         <div class="rental_list__item__content__image">
-            <a href="{{ path('app_rental_details', { slug: rental.slug }) }}">
+            <a href="{{ path('app_rental_details', { slug: rental.slug }) }}" target="_blank">
                 <img
                         srcset="
                             {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }} {{ height }}w
