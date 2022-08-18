@@ -153,33 +153,35 @@ final class CreateRentalController extends AbstractController
         }
 
         $geolocation = $rental->getGeolocation();
-        if (null === $geolocation) {
-            throw new \LogicException('Geolocation cannot be null');
-        }
+        $geolocationFetched = null !== $geolocation;
 
-        $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), ['allow_extra_fields' => true]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                /** @var GeolocationDTO $geolocationDTO */
-                $geolocationDTO = $form->getData();
-                $this->rentalService->improveLocalisation(
-                    $rental,
-                    $geolocationDTO,
-                    (string) $request->request->get('suggestion', null),
-                    (string) $request->request->get('suggestion_meta', null),
-                );
+        if ($geolocationFetched) {
+            $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), ['allow_extra_fields' => true]);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    /** @var GeolocationDTO $geolocationDTO */
+                    $geolocationDTO = $form->getData();
+                    $this->rentalService->improveLocalisation(
+                        $rental,
+                        $geolocationDTO,
+                        (string) $request->request->get('suggestion', null),
+                        (string) $request->request->get('suggestion_meta', null),
+                    );
 
-                return $this->redirectToRouteWithQueryParams('app_create_rental_pictures', $request->query->all());
-            } catch (\Exception) {
-                return $this->renderForm('create_rental/map.html.twig', [
-                    'form' => $form,
-                ]);
+                    return $this->redirectToRouteWithQueryParams('app_create_rental_pictures', $request->query->all());
+                } catch (\Exception) {
+                    return $this->renderForm('create_rental/map.html.twig', [
+                        'form' => $form,
+                    ]);
+                }
             }
         }
 
         return $this->renderForm('create_rental/map.html.twig', [
-            'form' => $form,
+            'geolocation_fetched' => $geolocationFetched,
+            'fetch_geolocation_url' => $this->generateUrl('app_rental_geolocation', ['id' => $rental->getId()]),
+            'form' => !$geolocationFetched ? null : $form,
         ]);
     }
 
