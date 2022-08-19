@@ -17,6 +17,7 @@ export default class extends Controller {
         this.handleSending = this.handleSending.bind(this);
         this.removeEmptyClass = this.removeEmptyClass.bind(this);
         this.addEmptyClass = this.addEmptyClass.bind(this);
+        this.handleDispatchResponse = this.handleDispatchResponse.bind(this);
 
         try {
             this.dropzone = new Dropzone(this.dropzoneContainerTarget, {
@@ -35,7 +36,8 @@ export default class extends Controller {
 
         this.dropzone.on('sending', this.handleSending);
         this.dropzone.on('addedfile', this.removeEmptyClass);
-        this.dropzone.on('removedfile', this.addEmptyClass)
+        this.dropzone.on('removedfile', this.addEmptyClass);
+        this.dropzone.on('success', this.handleDispatchResponse);
     }
 
     async removeImage(ev: ActionEvent): Promise<void> {
@@ -49,6 +51,16 @@ export default class extends Controller {
         if ('picture' === this.fieldValue) {
             formData.set('upload_rental_picture[index]', this.indexValue);
         }
+    }
+
+    private handleDispatchResponse(file: Dropzone.File) {
+        let { is_valid } = JSON.parse(file.xhr.response);
+
+        this.dispatch('onUploadDone', {
+            detail: { isValid: is_valid },
+            target: this.element,
+            bubbles: true,
+        });
     }
 
     private removeEmptyClass(file: File) {

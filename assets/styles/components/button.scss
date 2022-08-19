@@ -3,6 +3,10 @@
 
     &__blue {
         @apply bg-blue text-white;
+
+        &.disabled {
+            @apply cursor-not-allowed bg-gray-500 text-white;
+        }
     }
 
     &__outlined__grey {

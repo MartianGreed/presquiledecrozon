@@ -9,7 +9,7 @@
             @apply my-12;
             .map-display {
                 // override google maps default position relative
-                @apply h-1/5 sticky top-4 min-h-[400px];
+                @apply h-1/5 sticky top-4;
                 position: sticky !important;
             }
         }
@@ -20,7 +20,7 @@
                 @apply col-span-8;
             }
             .map {
-                @apply col-span-4;
+                @apply col-span-4 min-h-[400px];
             }
 
 

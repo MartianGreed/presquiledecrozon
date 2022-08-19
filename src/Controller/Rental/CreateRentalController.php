@@ -192,25 +192,25 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
-        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Gallery $gallery */
-            $gallery = $form->getData();
-
-            try {
-                $rental = $this->rentalService->savePictures($rental, $gallery);
-            } catch (\Exception) {
-                return $this->renderForm('create_rental/pictures.html.twig', [
-                    'form' => $form,
-                ]);
-            }
-
-            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
-        }
+//        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            /** @var Gallery $gallery */
+//            $gallery = $form->getData();
+//
+//            try {
+//                $rental = $this->rentalService->savePictures($rental, $gallery);
+//            } catch (\Exception) {
+//                return $this->renderForm('create_rental/pictures.html.twig', [
+//                    'form' => $form,
+//                ]);
+//            }
+//
+//            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
+//        }
 
         return $this->renderForm('create_rental/pictures.html.twig', [
-            'form' => $form,
+//            'form' => $form,
             'rental' => $rental,
             'next_step_url' => $this->getUrl('app_create_rental_availabilities', $request->query->all()),
         ]);

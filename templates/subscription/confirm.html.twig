@@ -6,6 +6,10 @@
 {% block body %}
     <div class="create__subscription__container">
         <h1>{{ message }}</h1>
-        <p></p>
+        <div>
+            <a href="{{ path('app_profile_rental') }}" class="button button__blue">
+                Publier mon annonce
+            </a>
+        </div>
     </div>
 {% endblock %}

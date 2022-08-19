@@ -35,6 +35,10 @@
                     {% include 'includes/rental/list-item.html.twig' with { rental: rental, height: 400, width: 500 } %}
                 {% endfor %}
             </div>
+
+            <div class="mt-12">
+                <a href="{{ path('app_rental_list') }}" class="button button__blue">Voir les locations</a>
+            </div>
         </div>
     </div>
 
