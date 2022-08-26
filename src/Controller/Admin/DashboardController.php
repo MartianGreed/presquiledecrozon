@@ -6,10 +6,12 @@ use App\Entity\Data\Bed;
 use App\Entity\Data\Furniture;
 use App\Entity\Data\RentalType;
 use App\Entity\Data\Town;
+use App\Entity\Notification;
 use App\Entity\Rental\Rental;
 use App\Entity\Subscription\Discount;
 use App\Entity\Subscription\Subscription;
 use App\Entity\User;
+use App\Repository\NotificationRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -18,6 +20,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
+    public function __construct(private readonly NotificationRepository $notificationRepository)
+    {
+    }
+
     #[Route('/admin', name: 'app_admin')]
     public function index(): Response
     {
@@ -34,7 +40,13 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
+        $unreadNotificationsCount = $this->notificationRepository->countUnreadNotifications();
+
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+
+        yield MenuItem::section();
+        $notificationMessage = 0 === $unreadNotificationsCount ? 'Notifications' : sprintf('Notifications <span class="badge bg-danger text-white">%d</span>', $unreadNotificationsCount);
+        yield MenuItem::linkToCrud($notificationMessage, 'fas fa-bell', Notification::class);
 
         yield MenuItem::section('Contenu');
         yield MenuItem::linkToCrud('Type de locations', 'fas fa-home', RentalType::class);

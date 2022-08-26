@@ -3,9 +3,12 @@
 namespace App\MessageHandler;
 
 use App\Domain\Exception\RentalNotFoundException;
+use App\Domain\Notifications;
+use App\Entity\Notification;
 use App\Message\RentalHasBeenPublished;
 use App\MessageHandler\Traits\RentalFetcherTrait;
 use App\Repository\Rental\RentalRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -18,6 +21,7 @@ final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
 
     public function __construct(
         private readonly RentalRepository $rentalRepository,
+        private readonly EntityManagerInterface $entityManager,
         private readonly LoggerInterface $logger,
         private readonly MailerInterface $mailer,
         private readonly string $emailSender,
@@ -43,5 +47,9 @@ final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
         ;
         $this->mailer->send($email);
 
+        $notification = Notification::create($rental, Notifications::RENTAL_HAS_BEEN_PUBLISHED->value, new \DateTime());
+
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
     }
 }

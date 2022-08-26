@@ -1,0 +1,2 @@
+{% set link = notification_link_resolver(entity.instance) %}
+{{ field.value }} -> <a href="{{ link.url }}" target="_blank">{{ link.label }}</a>
