@@ -7,7 +7,10 @@ use App\Message\RentalHasBeenPublished;
 use App\MessageHandler\Traits\RentalFetcherTrait;
 use App\Repository\Rental\RentalRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Mime\Address;
 
 final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
 {
@@ -16,6 +19,8 @@ final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
     public function __construct(
         private readonly RentalRepository $rentalRepository,
         private readonly LoggerInterface $logger,
+        private readonly MailerInterface $mailer,
+        private readonly string $emailSender,
     )
     {
     }
@@ -29,6 +34,14 @@ final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
             return;
         }
 
-        // Send an email to confirm owner rental has been published
+        // Email owner to confirm rental has been published
+        $email = (new TemplatedEmail())
+            ->from($this->emailSender)
+            ->to(new Address($rental->getOwner()->getEmail()))
+            ->subject('Votre annonce à bien été publiée !')
+            ->htmlTemplate('emails/rental_has_been_published.html.twig')
+        ;
+        $this->mailer->send($email);
+
     }
 }
