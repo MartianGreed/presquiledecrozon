@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Booking\Booking;
 use App\Entity\Data\Bed;
 use App\Entity\Data\Furniture;
 use App\Entity\Data\RentalType;
@@ -63,5 +64,6 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Annonces & Réservations');
         yield MenuItem::linkToCrud('Annonces', 'fas fa-hospital-user', Rental::class);
+        yield MenuItem::linkToCrud('Réservations', 'fas fa-money-check-dollar', Booking::class);
     }
 }

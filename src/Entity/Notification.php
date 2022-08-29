@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 #[ORM\Index(columns: ['target_id', 'target_class'], name: 'object_identity_idx')]
-final class Notification
+class Notification
 {
     use IdentityTrait;
 

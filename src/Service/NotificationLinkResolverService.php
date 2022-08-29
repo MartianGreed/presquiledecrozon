@@ -27,6 +27,9 @@ final class NotificationLinkResolverService
 
         return match (Notifications::tryFrom($entity->getLabel())) {
             Notifications::RENTAL_HAS_BEEN_PUBLISHED => $this->resolvers[Notifications::RENTAL_HAS_BEEN_PUBLISHED->name]->resolve($entity),
+            Notifications::RENTAL_HAS_BEEN_BOOKED => $this->resolvers[Notifications::RENTAL_HAS_BEEN_BOOKED->name]->resolve($entity),
+            Notifications::BOOKING_HAS_BEEN_CONFIRMED => $this->resolvers[Notifications::BOOKING_HAS_BEEN_CONFIRMED->name]->resolve($entity),
+            Notifications::BOOKING_HAS_BEEN_CANCELLED => $this->resolvers[Notifications::BOOKING_HAS_BEEN_CANCELLED->name]->resolve($entity),
             default => throw new \LogicException('Not implemented yet'),
         };
     }

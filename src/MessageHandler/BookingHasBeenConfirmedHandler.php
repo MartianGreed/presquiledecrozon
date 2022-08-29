@@ -2,21 +2,31 @@
 
 namespace App\MessageHandler;
 
+use App\Domain\Notifications;
+use App\Entity\Booking\Booking;
+use App\Entity\Notification;
 use App\Message\BookingHasBeenConfirmed;
 use App\Repository\Booking\BookingRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Mime\Address;
 
 final class BookingHasBeenConfirmedHandler implements MessageHandlerInterface
 {
     public function __construct(
         private readonly BookingRepository $bookingRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
+        private readonly string $emailSender,
     )
     {
     }
 
-    public function __invoke(BookingHasBeenConfirmed $message)
+    public function __invoke(BookingHasBeenConfirmed $message): void
     {
         $booking = $this->bookingRepository->find($message->bookingId);
         if (null === $booking) {
@@ -24,7 +34,23 @@ final class BookingHasBeenConfirmedHandler implements MessageHandlerInterface
             return;
         }
 
-        // Send an email to the booker to notify him his booking has been confirmed
-        // Send an email to the owner to confirm his decision has properly been taken in account.
+        $this->confirmBookerBookingsHasBeenConfirmed($booking);
+
+        $notification = Notification::create($booking, Notifications::BOOKING_HAS_BEEN_CONFIRMED->value, new \DateTime());
+
+        $this->entityManager->persist($notification);
+        $this->entityManager->flush();
+    }
+
+    private function confirmBookerBookingsHasBeenConfirmed(Booking $booking): void
+    {
+        $email = (new TemplatedEmail())
+            ->from($this->emailSender)
+            ->to(new Address($booking->getBooker()->getEmail()))
+            ->subject('Votre réservation vient d\'être validée !')
+            ->htmlTemplate('emails/booker_booking_has_been_confirmed.html.twig')
+        ;
+
+        $this->mailer->send($email);
     }
 }
