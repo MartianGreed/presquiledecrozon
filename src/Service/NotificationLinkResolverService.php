@@ -12,6 +12,9 @@ final class NotificationLinkResolverService
     /** @var array<NotificationLinkResolverInterface> */
     private array $resolvers;
 
+    /**
+     * @param array<NotificationLinkResolverInterface> $resolvers
+     */
     public function __construct(iterable $resolvers)
     {
         foreach ($resolvers as $resolver) {
@@ -19,12 +22,8 @@ final class NotificationLinkResolverService
         }
     }
 
-    public function resolve(object $entity): ResolvedNotificationLink
+    public function resolve(Notification $entity): ResolvedNotificationLink
     {
-        if (!$entity instanceof Notification) {
-            throw new \DomainException('This resolver only supports entity of class :' . Notification::class);
-        }
-
         return match (Notifications::tryFrom($entity->getLabel())) {
             Notifications::RENTAL_HAS_BEEN_PUBLISHED => $this->resolvers[Notifications::RENTAL_HAS_BEEN_PUBLISHED->name]->resolve($entity),
             Notifications::RENTAL_HAS_BEEN_BOOKED => $this->resolvers[Notifications::RENTAL_HAS_BEEN_BOOKED->name]->resolve($entity),

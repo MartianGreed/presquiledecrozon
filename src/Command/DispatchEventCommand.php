@@ -18,6 +18,7 @@ final class DispatchEventCommand extends Command
     private const MESSAGE_FQN_PREFIX = 'App\\Message\\';
 
     private SymfonyStyle $io;
+    /** @var class-string $messageClass */
     private string $messageClass;
     private QuestionHelper $helper;
 
@@ -35,13 +36,20 @@ final class DispatchEventCommand extends Command
     public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->messageClass = $input->getArgument('class');
-        $this->helper = $this->getHelper('question');
+        /** @var class-string $message */
+        $message = strval($input->getArgument('class'));
+        $this->messageClass = $message;
+
+        // PHPStan hack to ensure type
+        $helper = $this->getHelper('question');
+        if ($helper instanceof QuestionHelper) {
+            $this->helper = $helper;
+        }
 
         $this->io->title(sprintf('Dispatching event of type : %s', $this->messageClass));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$this->messageExists($this->messageClass)) {
             $this->io->error(sprintf('Message named %s does not exists', $this->messageClass));
@@ -54,9 +62,10 @@ final class DispatchEventCommand extends Command
             $constructorValues[$arg] = $this->askArgumentValue($input, $output, $arg);
         }
 
+        // @phpstan-ignore-next-line
         $reflection = new \ReflectionClass($this->getClassFQN($this->messageClass));
 
-        $messageToDispatch = $reflection->newInstanceArgs($constructorValues);
+        $messageToDispatch = $reflection->newInstanceArgs(array_values($constructorValues));
 
         $this->messageBus->dispatch($messageToDispatch);
 
@@ -66,15 +75,17 @@ final class DispatchEventCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function askArgumentValue(InputInterface $input, OutputInterface $output, string $arg)
+    private function askArgumentValue(InputInterface $input, OutputInterface $output, string $arg): string
     {
         $question = new Question(sprintf('Please set the value for : $%s  ->  ', $arg));
 
-        return $this->helper->ask($input, $output, $question);
+        return strval($this->helper->ask($input, $output, $question));
     }
 
+    /** @return array<int, string> */
     private function getMessageConstructorArgNames(string $messageClass): array
     {
+        // @phpstan-ignore-next-line
         $reflectionClass = new \ReflectionClass($this->getClassFQN($messageClass));
         $constructor = $reflectionClass->getMethod('__construct');
 

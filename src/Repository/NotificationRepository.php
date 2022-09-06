@@ -21,25 +21,28 @@ final class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
+    /** @return array<Notification> */
     public function getUnreadNotifications(): array
     {
         $qb = $this->createQueryBuilder('n');
 
-        return $qb->where($qb->expr()->isNull('n.readAt'))
-                  ->getQuery()
-                  ->getResult()
+        /** @var array<Notification> */
+        $notifications = $qb->where($qb->expr()->isNull('n.readAt'))
+                            ->getQuery()
+                            ->getResult()
         ;
+        return $notifications;
     }
 
     public function countUnreadNotifications(): int
     {
         $qb = $this->createQueryBuilder('n');
 
-        return $qb
+        return intval($qb
             ->select('count(n.id)')
             ->where($qb->expr()->isNull('n.readAt'))
             ->getQuery()
-            ->getSingleScalarResult()
+            ->getSingleScalarResult())
         ;
     }
 }

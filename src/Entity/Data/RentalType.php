@@ -2,12 +2,13 @@
 
 namespace App\Entity\Data;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Data\RentalTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RentalTypeRepository::class)]
-class RentalType implements \Stringable
+class RentalType implements \Stringable, Identity
 {
     use IdentityTrait;
 

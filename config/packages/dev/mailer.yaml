@@ -1,4 +1,0 @@
-framework:
-    mailer:
-        envelope:
-            recipients: ['valentin@pupucecorp.com']

@@ -46,7 +46,7 @@ final class BookingHasBeenCancelledHandler implements MessageHandlerInterface
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address($booking->getBooker()->getEmail()))
+            ->to(new Address((string)$booking->getBooker()->getEmail()))
             ->subject('Votre réservation vient d\'être annulée...')
             ->htmlTemplate('emails/booker_booking_has_been_cancelled.html.twig')
         ;

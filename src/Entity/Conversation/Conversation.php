@@ -3,6 +3,7 @@
 namespace App\Entity\Conversation;
 
 use App\Entity\Booking\Booking;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
@@ -14,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
-class Conversation
+class Conversation implements Identity
 {
     use IdentityTrait, TimestampabbleTrait;
 

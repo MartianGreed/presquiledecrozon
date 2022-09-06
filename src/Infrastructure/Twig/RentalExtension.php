@@ -12,13 +12,20 @@ final class RentalExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('rental_markers_list', [$this, 'getMarkersList'])
+            new TwigFunction('rental_markers_list', [$this, 'getMarkersList']),
         ];
     }
 
+    /**
+     * @param PaginationInterface<Rental> $pagination
+     *
+     * @return string
+     * @throws \JsonException
+     */
     public function getMarkersList(PaginationInterface $pagination): string
     {
         $items = [];
+
         foreach ($pagination as $rental) {
             if (!$rental instanceof Rental) {
                 continue;

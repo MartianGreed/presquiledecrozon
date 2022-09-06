@@ -24,14 +24,10 @@ class Notification
         private ?\DateTime $readAt = null,
     ) {}
 
-    public static function create(object $targetEntity, string $label, \DateTime $createdAt): Notification
+    public static function create(Identity $targetEntity, string $label, \DateTime $createdAt): Notification
     {
-        if (!method_exists($targetEntity, 'getId')) {
-            throw new \DomainException('Provided entity does not have any identifier method.');
-        }
-
         return new self(
-            $targetEntity->getId(),
+            (string)$targetEntity->getId(),
             \get_class($targetEntity),
             $label,
             $createdAt,

@@ -38,7 +38,7 @@ final class CancelBookingRequestController extends AbstractController
 
             $this->manager->flush();
 
-            $this->bus->dispatch(new BookingHasBeenCancelled($booking->getId(), $cancelledAt->format('Y-m-d H:i:s')));
+            $this->bus->dispatch(new BookingHasBeenCancelled((string)$booking->getId(), $cancelledAt->format('Y-m-d H:i:s')));
         } catch (CannotManagerOtherOwnersRentalException $e) {
             $this->addFlash('error', $e->getMessage());
         } finally {

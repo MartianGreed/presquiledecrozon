@@ -35,8 +35,13 @@ final class GetConversationDetailsController extends AbstractController
             'full_name' => $conversation->getSender()?->getId() === $this->getUser()->getId() ? $conversation->getReceiver()?->getProfile()?->getFullName() : $conversation->getSender()?->getProfile()?->getFullName(),
             'period' => $booking->getPeriod(),
             'people_count' => $booking->getPeopleCount(),
-            'total_price' => (string) $booking->getPrices()->getTotalPrice(),
-            'messages' => $conversation->getMessages()->map(static fn (Message $m) => ['message' => $m->getMessage(), 'read_at' => $m->getReadAt()?->getTimestamp(), 'send_at' => $m->getSendAt()?->getTimestamp(), 'sender_id' => $m->getSender()?->getId()])->toArray(),
+            'total_price' => $booking->getPrices()->getTotalPrice()->__toString(),
+            'messages' => $conversation->getMessages()->map(fn (Message $m = null) => [
+                'message' => $m?->getMessage(),
+                'read_at' => $m?->getReadAt()?->getTimestamp(),
+                'send_at' => $m?->getSendAt()?->getTimestamp(),
+                'sender_id' => $m?->getSender()?->getId()
+            ])->toArray(),
         ]);
     }
 }

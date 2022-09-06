@@ -3,6 +3,7 @@
 namespace App\Entity\Subscription;
 
 use App\Domain\Price;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
-class Discount implements \Stringable
+class Discount implements \Stringable, Identity
 {
     use IdentityTrait, TimestampabbleTrait;
 

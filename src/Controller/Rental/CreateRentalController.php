@@ -155,6 +155,7 @@ final class CreateRentalController extends AbstractController
         $geolocation = $rental->getGeolocation();
         $geolocationFetched = null !== $geolocation;
 
+        $form = null;
         if ($geolocationFetched) {
             $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), ['allow_extra_fields' => true]);
             $form->handleRequest($request);

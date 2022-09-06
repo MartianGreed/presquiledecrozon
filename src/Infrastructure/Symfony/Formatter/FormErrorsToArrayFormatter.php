@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Symfony\Formatter;
 
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
 final class FormErrorsToArrayFormatter
@@ -10,6 +11,7 @@ final class FormErrorsToArrayFormatter
     public static function format(FormInterface $form): array
     {
         $errors = [];
+        /** @var FormError $error */
         foreach ($form->getErrors() as $error) {
             $errors[] = $error->getMessage();
         }
@@ -18,11 +20,11 @@ final class FormErrorsToArrayFormatter
                 continue;
             }
 
-            if ($childErrors = self::format($childForm)) {
-                $errors[$childForm->getName()] = $childErrors;
-            }
+            $childErrors = self::format($childForm);
+            $errors[$childForm->getName()] = $childErrors;
         }
 
+        /** @var array{array<string, string>} $errors */
         return $errors;
     }
 }

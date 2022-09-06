@@ -2,12 +2,13 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\UnavailabilityRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UnavailabilityRepository::class)]
-class Unavailability implements \Stringable
+class Unavailability implements \Stringable, Identity
 {
     use IdentityTrait;
 

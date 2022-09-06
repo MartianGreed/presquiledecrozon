@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 final class NotificationController extends AbstractCrudController
 {
@@ -67,7 +68,7 @@ final class NotificationController extends AbstractCrudController
         return $queryBuilder;
     }
 
-    public function markAsRead(AdminContext $context)
+    public function markAsRead(AdminContext $context): RedirectResponse
     {
         $notification = $context->getEntity()->getInstance();
 

@@ -7,6 +7,7 @@ use App\Domain\Booking\BookingValidator;
 use App\Domain\Booking\Exception\CannotBookOwnRentalException;
 use App\Domain\Booking\Exception\CannotManagerOtherOwnersRentalException;
 use App\Domain\Booking\Status;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Rental;
 use App\Entity\TimestampabbleTrait;
@@ -16,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
-class Booking
+class Booking implements Identity
 {
     use IdentityTrait, TimestampabbleTrait, BookingAccessorTrait;
 

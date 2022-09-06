@@ -2,6 +2,7 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\Media;
 use App\Repository\Rental\GalleryRepository;
@@ -10,7 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GalleryRepository::class)]
-class Gallery
+class Gallery implements Identity
 {
     use IdentityTrait;
 

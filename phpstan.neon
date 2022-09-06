@@ -3,6 +3,8 @@ parameters:
   paths:
     - src
     - tests
+  excludePaths:
+    - src/Infrastructure/VichUploader
 
 includes:
   - vendor/phpstan/phpstan/conf/bleedingEdge.neon

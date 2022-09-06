@@ -34,7 +34,7 @@ final class CreateAdminUserCommand extends Command
         $this->io->title('Create new admin user.');
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('email', InputArgument::REQUIRED, 'Email of the newborn admin user');
     }
@@ -49,11 +49,11 @@ final class CreateAdminUserCommand extends Command
             $this->io->error('Impossible de recréer un compte pour cet utilisateur.');
             return self::FAILURE;
         }
-        $password = $this->io->askHidden('Tapez votre mot de passe');
+        $password = strval($this->io->askHidden('Tapez votre mot de passe'));
 
         $user = new User();
         $user
-            ->setEmail($email)
+            ->setEmail(strval($email))
             ->setPassword($this->hasher->hashPassword($user, $password))
             ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
         ;

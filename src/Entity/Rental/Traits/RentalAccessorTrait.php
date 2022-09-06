@@ -301,7 +301,8 @@ trait RentalAccessorTrait
     /** @return array<array{start: string, end: string}> */
     final public function displayUnavailabilities(): array
     {
-        return $this->unavailabilities->map(fn (Unavailability $u) => $u->toArray())->toArray();
+        // @phpstan-ignore-next-line
+        return $this->unavailabilities->map(fn (Unavailability $u = null) => $u?->toArray())->toArray();
     }
 
     /** @return ArrayCollection<int, Booking> */

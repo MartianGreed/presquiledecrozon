@@ -3,6 +3,7 @@
 namespace App\Entity\Rental;
 
 use App\Entity\Data\RentalType;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\ConfigurationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,7 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ConfigurationRepository::class)]
-class Configuration
+class Configuration implements Identity
 {
     use IdentityTrait;
 

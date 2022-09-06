@@ -31,7 +31,7 @@ describe('Calendar', () => {
         let next = calendar.getNext();
         let prev = calendar.getPrev();
 
-        expect(next.getCalendarView().months[0].label).toBe('March');
-        expect(prev.getCalendarView().months[0].label).toBe('January');
+        expect(next.getCalendarView().months[0].label).toBe('mars');
+        expect(prev.getCalendarView().months[0].label).toBe('janvier');
     })
 })

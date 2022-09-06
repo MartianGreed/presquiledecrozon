@@ -2,12 +2,13 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\DescriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DescriptionRepository::class)]
-class Description
+class Description implements Identity
 {
     use IdentityTrait;
 

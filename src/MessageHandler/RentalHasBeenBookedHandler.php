@@ -42,11 +42,15 @@ final class RentalHasBeenBookedHandler implements MessageHandlerInterface
             // Do nothing here, log is done in the upper method, just return silently.
             return;
         }
-
         $booking = $this->bookingRepository->find($message->bookingId);
 
-        $this->notifyOwnerRentalHasBeenBooked($rental, $booking);
-        $this->confirmBookerBookingsHasBeenTakenInAccount($rental, $booking);
+        if (null === $booking) {
+            $this->logger->error('Booking not found with id : ' . $message->bookingId);
+            return;
+        }
+
+        $this->notifyOwnerRentalHasBeenBooked($rental);
+        $this->confirmBookerBookingsHasBeenTakenInAccount($booking);
 
         $notification = Notification::create($rental, Notifications::RENTAL_HAS_BEEN_BOOKED->value, new \DateTime());
 
@@ -54,11 +58,11 @@ final class RentalHasBeenBookedHandler implements MessageHandlerInterface
         $this->entityManager->flush();
     }
 
-    private function notifyOwnerRentalHasBeenBooked(Rental $rental, Booking $booking): void
+    private function notifyOwnerRentalHasBeenBooked(Rental $rental): void
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address($rental->getOwner()->getEmail()))
+            ->to(new Address((string)$rental->getOwner()?->getEmail()))
             ->subject('Nouvelle demande de réservation')
             ->htmlTemplate('emails/owner_rental_has_been_booked.html.twig')
         ;
@@ -66,11 +70,11 @@ final class RentalHasBeenBookedHandler implements MessageHandlerInterface
         $this->mailer->send($email);
     }
 
-    private function confirmBookerBookingsHasBeenTakenInAccount(Rental $rental, Booking $booking): void
+    private function confirmBookerBookingsHasBeenTakenInAccount(Booking $booking): void
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address($booking->getBooker()->getEmail()))
+            ->to(new Address((string)$booking->getBooker()->getEmail()))
             ->subject('Votre réservation à bien été prise en compte')
             ->htmlTemplate('emails/booker_rental_has_been_booked.html.twig')
         ;

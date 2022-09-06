@@ -3,6 +3,7 @@
 namespace App\Service\Notification;
 
 use App\Domain\Notifications;
+use App\Entity\Notification;
 use App\Repository\Rental\RentalRepository;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -14,11 +15,11 @@ final class RentalHasBeenPublishedNotificationLinkResolver implements Notificati
     )
     {}
 
-    public function resolve(object $entity): ResolvedNotificationLink
+    public function resolve(Notification $entity): ResolvedNotificationLink
     {
         $rental = $this->rentalRepository->find($entity->getTargetId());
         return new ResolvedNotificationLink(
-            $this->router->generate('app_rental_details', ['slug' => $rental->getSlug()]),
+            $this->router->generate('app_rental_details', ['slug' => $rental?->getSlug()]),
             'Voir l\'annonce'
         );
     }

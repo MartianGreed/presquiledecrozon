@@ -5,6 +5,7 @@ namespace App\Entity\Subscription;
 use App\Domain\Price;
 use App\Domain\Subscription\DiscountApplier;
 use App\Domain\Subscription\SubscriptionStatus;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Rental;
 use App\Entity\Subscription\Traits\RentalSubscriptionAccessors;
@@ -13,7 +14,7 @@ use App\Repository\Subscription\RentalSubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RentalSubscriptionRepository::class)]
-class RentalSubscription
+class RentalSubscription implements Identity
 {
     use IdentityTrait, TimestampabbleTrait, RentalSubscriptionAccessors;
 

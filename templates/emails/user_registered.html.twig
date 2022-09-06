@@ -1,0 +1,26 @@
+{% apply inky_to_html %}
+    <container>
+        <row class="header">
+            <columns>
+                <spacer size="16"></spacer>
+                <h1 class="text-center"><h1>Votre inscription a bien été prise en compte</h1></h1>
+            </columns>
+        </row>
+        <row>
+            <columns>
+                <spacer size="16"></spacer>
+                <p>
+                    Vous pouvez désormais vous connecter sur le site !
+                </p>
+            </columns>
+        </row>
+        <row>
+            <columns large="6">
+                <button href="{{ url('app_create_rental') }}">Déposer une annonce</button>
+            </columns>
+            <columns large="6">
+                <button href="{{ url('app_rental_list') }}">Réserver un logement</button>
+            </columns>
+        </row>
+    </container>
+{% endapply %}

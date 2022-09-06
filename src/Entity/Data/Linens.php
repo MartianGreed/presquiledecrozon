@@ -2,19 +2,15 @@
 
 namespace App\Entity\Data;
 
+use App\Entity\Identity;
+use App\Entity\IdentityTrait;
 use App\Repository\Data\LinensRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: LinensRepository::class)]
-class Linens implements \Stringable
+class Linens implements \Stringable, Identity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $label = null;
@@ -23,10 +19,6 @@ class Linens implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private LinensCategory $category;
 
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
 
     public function getLabel(): ?string
     {

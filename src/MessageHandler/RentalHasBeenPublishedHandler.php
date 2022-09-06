@@ -41,9 +41,12 @@ final class RentalHasBeenPublishedHandler implements MessageHandlerInterface
         // Email owner to confirm rental has been published
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address($rental->getOwner()->getEmail()))
+            ->to(new Address((string)$rental->getOwner()?->getEmail()))
             ->subject('Votre annonce à bien été publiée !')
             ->htmlTemplate('emails/rental_has_been_published.html.twig')
+            ->context([
+                'rental' => $rental,
+            ])
         ;
         $this->mailer->send($email);
 

@@ -2,18 +2,15 @@
 
 namespace App\Entity\Data;
 
+use App\Entity\Identity;
+use App\Entity\IdentityTrait;
 use App\Repository\Data\FurnitureRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: FurnitureRepository::class)]
-class Furniture implements \Stringable
+class Furniture implements \Stringable, Identity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;

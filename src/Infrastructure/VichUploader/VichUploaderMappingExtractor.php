@@ -123,7 +123,10 @@ final class VichUploaderMappingExtractor
         throw new \RuntimeException('Not uploadable fields on provided class.');
     }
 
-    /** @param VichConfigService $namer */
+    /**
+     * @param VichConfigService $namer
+     *
+     */
     private function getNamer(array $namer): ?NamerInterface
     {
         /** @var ?NamerInterface $service */

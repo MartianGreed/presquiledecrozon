@@ -4,6 +4,7 @@ namespace App\Entity\Rental;
 
 use App\Domain\Price;
 use App\Entity\Data\Linens;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\TaxRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -11,7 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TaxRepository::class)]
-class Tax
+class Tax implements Identity
 {
     use IdentityTrait;
 

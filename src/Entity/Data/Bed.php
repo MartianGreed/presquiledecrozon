@@ -3,13 +3,14 @@
 namespace App\Entity\Data;
 
 use App\Domain\Rental\BedSize;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Data\BedRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: BedRepository::class)]
-class Bed implements \Stringable
+class Bed implements \Stringable, Identity
 {
     use IdentityTrait;
 

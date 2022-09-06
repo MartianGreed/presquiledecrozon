@@ -2,20 +2,15 @@
 
 namespace App\Entity\Data;
 
+use App\Entity\Identity;
+use App\Entity\IdentityTrait;
 use App\Repository\Data\TownRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: TownRepository::class)]
-class Town implements \Stringable
+class Town implements \Stringable, Identity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private ?string $id = null;
+    use IdentityTrait;
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
@@ -32,11 +27,6 @@ class Town implements \Stringable
     public function __toString(): string
     {
         return $this->name ?? '';
-    }
-
-    public function getId(): ?string
-    {
-        return $this->id;
     }
 
     public function getName(): ?string

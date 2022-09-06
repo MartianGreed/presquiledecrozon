@@ -2,12 +2,13 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\PreferencesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PreferencesRepository::class)]
-class Preferences
+class Preferences implements Identity
 {
     use IdentityTrait;
 

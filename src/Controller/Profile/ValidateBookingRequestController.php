@@ -37,7 +37,7 @@ final class ValidateBookingRequestController extends AbstractController
 
             $this->manager->flush();
 
-            $this->bus->dispatch(new BookingHasBeenConfirmed($booking->getId(), $booking->getConfirmedAt()->format('Y-m-d H:i:s')));
+            $this->bus->dispatch(new BookingHasBeenConfirmed((string)$booking->getId(), (string)$booking->getConfirmedAt()?->format('Y-m-d H:i:s')));
         } catch (CannotManagerOtherOwnersRentalException $e) {
             $this->addFlash('error', $e->getMessage());
         } finally {

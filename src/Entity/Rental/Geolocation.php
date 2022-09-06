@@ -3,6 +3,7 @@
 namespace App\Entity\Rental;
 
 use App\Domain\Rental\DTO\GeolocationDTO;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\GeolocationRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @phpstan-import-type GeolocationDTOArray from GeolocationDTO
  */
 #[ORM\Entity(repositoryClass: GeolocationRepository::class)]
-class Geolocation
+class Geolocation implements Identity
 {
     use IdentityTrait;
 

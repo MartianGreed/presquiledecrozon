@@ -10,6 +10,7 @@ use App\Domain\Rental\Status;
 use App\Domain\Subscription\SubscriptionStatus;
 use App\Entity\Booking\Booking;
 use App\Entity\Data\Furniture;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\Rental\Traits\RentalAccessorTrait;
 use App\Entity\Subscription\RentalSubscription;
@@ -23,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RentalRepository::class)]
 #[ORM\Index(columns: ['slug'], name: 'slug_idx')]
-class Rental
+class Rental implements Identity
 {
     use IdentityTrait, TimestampabbleTrait, RentalAccessorTrait;
 

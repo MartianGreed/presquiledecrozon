@@ -3,12 +3,13 @@
 namespace App\Entity\Rental;
 
 use App\Entity\Data\Town;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
-class Address
+class Address implements Identity
 {
     use IdentityTrait;
 

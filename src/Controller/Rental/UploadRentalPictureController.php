@@ -50,7 +50,7 @@ final class UploadRentalPictureController extends AbstractController
                 'message' => 'Picture has properly been upload',
                 'rental_id' => $rental->getId(),
                 'picture_id' => $picture->media->getId(),
-                'is_valid' => null !== $rental->getGallery()->getCover() && 5 === $rental->getGallery()?->getPictures()->count(),
+                'is_valid' => null !== $rental->getGallery()?->getCover() && 5 === $rental->getGallery()->getPictures()->count(),
             ]);
         }
 

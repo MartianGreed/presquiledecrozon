@@ -3,6 +3,7 @@
 namespace App\Entity\Subscription;
 
 use App\Domain\Price;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Repository\Subscription\SubscriptionRepository;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
-class Subscription
+class Subscription implements Identity
 {
     use IdentityTrait, TimestampabbleTrait;
 

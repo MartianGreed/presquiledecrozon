@@ -3,12 +3,13 @@
 namespace App\Entity\Rental;
 
 use App\Domain\Price as PriceVO;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\PriceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PriceRepository::class)]
-class Price implements \Stringable
+class Price implements \Stringable, Identity
 {
     use IdentityTrait;
 

@@ -46,7 +46,7 @@ final class BookingHasBeenConfirmedHandler implements MessageHandlerInterface
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address($booking->getBooker()->getEmail()))
+            ->to(new Address((string)$booking->getBooker()->getEmail()))
             ->subject('Votre réservation vient d\'être validée !')
             ->htmlTemplate('emails/booker_booking_has_been_confirmed.html.twig')
         ;

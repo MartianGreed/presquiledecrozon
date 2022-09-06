@@ -2,11 +2,11 @@
   "year": 2022,
   "months": [
     {
-      "label": "January",
+      "label": "janvier",
       "month": 1,
       "days": [
         {
-          "label": "M",
+          "label": "l",
           "dayNumber": 1,
           "values": [
             {
@@ -48,7 +48,7 @@
           ]
         },
         {
-          "label": "T",
+          "label": "m",
           "dayNumber": 2,
           "values": [
             {
@@ -90,7 +90,7 @@
           ]
         },
         {
-          "label": "W",
+          "label": "m",
           "dayNumber": 3,
           "values": [
             {
@@ -132,7 +132,7 @@
           ]
         },
         {
-          "label": "T",
+          "label": "j",
           "dayNumber": 4,
           "values": [
             {
@@ -174,7 +174,7 @@
           ]
         },
         {
-          "label": "F",
+          "label": "v",
           "dayNumber": 5,
           "values": [
             {
@@ -216,7 +216,7 @@
           ]
         },
         {
-          "label": "S",
+          "label": "s",
           "dayNumber": 6,
           "values": [
             {
@@ -258,7 +258,7 @@
           ]
         },
         {
-          "label": "S",
+          "label": "d",
           "dayNumber": 7,
           "values": [
             {

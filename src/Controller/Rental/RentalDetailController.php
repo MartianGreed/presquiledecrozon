@@ -87,7 +87,7 @@ final class RentalDetailController extends AbstractController
             $this->manager->persist($booking);
             $this->manager->flush();
 
-            $this->bus->dispatch(new RentalHasBeenBooked($rental->getId(), $booking->getId(), $booking->getCreatedAt()->format('Y-m-d H:i:s')));
+            $this->bus->dispatch(new RentalHasBeenBooked((string)$rental->getId(), (string)$booking->getId(), (string)$booking->getCreatedAt()?->format('Y-m-d H:i:s')));
 
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }

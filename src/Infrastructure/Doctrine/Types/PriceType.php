@@ -18,7 +18,7 @@ final class PriceType extends IntegerType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        return $value === null ? null : new Price((int)$value / 100);
+        return $value === null ? null : new Price(intval($value) / 100);
     }
 
     /** @param ?Price $value */

@@ -6,9 +6,12 @@ use App\Entity\User;
 use App\Form\RegisterUserType;
 use App\Infrastructure\Symfony\Security\SecurityUserDTO;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -40,6 +43,8 @@ class SecurityController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $manager,
+        MailerInterface $mailer,
+        string $emailSender,
     ): Response {
         $form = $this->createForm(RegisterUserType::class);
         $form->handleRequest($request);
@@ -53,6 +58,15 @@ class SecurityController extends AbstractController
 
             $manager->persist($user);
             $manager->flush();
+
+            $email = (new TemplatedEmail())
+                ->from($emailSender)
+                ->to(new Address((string)$user->getEmail()))
+                ->subject('Votre inscription a bien été prise en compte !')
+                ->htmlTemplate('emails/user_registered.html.twig')
+            ;
+
+            $mailer->send($email);
 
             return $this->redirectToRoute('app_login');
         }

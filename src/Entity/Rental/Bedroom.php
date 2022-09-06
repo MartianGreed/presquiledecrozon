@@ -3,14 +3,16 @@
 namespace App\Entity\Rental;
 
 use App\Entity\Data\Bed;
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\BedroomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Polyfill\Intl\Idn\Idn;
 
 #[ORM\Entity(repositoryClass: BedroomRepository::class)]
-class Bedroom implements \Stringable
+class Bedroom implements \Stringable, Identity
 {
     use IdentityTrait;
 
@@ -29,7 +31,7 @@ class Bedroom implements \Stringable
 
     public function __toString(): string
     {
-        return implode(', ', $this->beds->map(fn (Bed $bed) => $bed->getLabel())->toArray());
+        return implode(', ', $this->beds->map(fn (Bed $bed = null) => $bed?->getLabel())->toArray());
     }
 
     /**

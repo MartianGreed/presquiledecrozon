@@ -13,7 +13,7 @@ trait RentalFetcherTrait
         RentalRepository $repository,
         LoggerInterface $logger,
         string $rentalId
-    ): ?Rental {
+    ): Rental {
         $rental = $repository->find($rentalId);
         if (null === $rental) {
             $logger->error('Published rental with id : ' . $rentalId . ' not found.');

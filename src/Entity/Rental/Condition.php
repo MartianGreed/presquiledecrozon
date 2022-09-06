@@ -2,12 +2,13 @@
 
 namespace App\Entity\Rental;
 
+use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Rental\ConditionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ConditionRepository::class)]
-class Condition
+class Condition implements Identity
 {
     use IdentityTrait;
 
