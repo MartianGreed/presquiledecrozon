@@ -21,6 +21,8 @@ final class RentalTaxType extends AbstractType
                 'constraints' => [
                     new LocalTaxConstraint()
                 ],
+                'help' => $this->getHelpTextContent(),
+                'help_html' => true,
             ])
             ->add('cleaningTax', PriceType::class)
             ->add('linensTax', PriceType::class)
@@ -37,5 +39,18 @@ final class RentalTaxType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Tax::class,
         ]);
+    }
+
+    private function getHelpTextContent(): string
+    {
+        return <<<HTML
+<div>
+    Renseignez votre taxe d'habitation au format suivant (1,2% ou 0,30€)<br/>
+    <a href="https://crozonaulnemaritime.taxesejour.fr/#step-one" target="_blank" class="tax-help-text">
+        Consulter les tarifs de la taxe de séjour
+    </a>
+</div>
+HTML;
+
     }
 }

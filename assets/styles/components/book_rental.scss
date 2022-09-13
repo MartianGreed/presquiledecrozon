@@ -62,11 +62,14 @@
                     @apply flex flex-col md:flex-row justify-between;
 
                     .form__row {
-                        input, select {
-                            &.border-red-700 {
-                                @apply border-4 border-red;
+                        &.has_error {
+                            input, select {
+                                &.border-red-700 {
+                                    @apply border-4 border-red;
+                                }
                             }
                         }
+
                     }
 
                     input[type="date"], select {

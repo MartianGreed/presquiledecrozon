@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Booking\Booking;
 use App\Entity\Data\Bed;
 use App\Entity\Data\Furniture;
+use App\Entity\Data\Linens;
 use App\Entity\Data\RentalType;
 use App\Entity\Data\Town;
 use App\Entity\Notification;
@@ -54,6 +55,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Type de lits', 'fas fa-bed', Bed::class);
         yield MenuItem::linkToCrud('Equipements', 'fas fa-tools', Furniture::class);
         yield MenuItem::linkToCrud('Villes', 'fas fa-hotel', Town::class);
+        yield MenuItem::linkToCrud('Linges', 'fa-solid fa-box-tissue', Linens::class);
 
         yield MenuItem::section('Abonnements');
         yield MenuItem::linkToCrud('Abonnement', 'fas fa-wallet', Subscription::class);

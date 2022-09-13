@@ -13,6 +13,10 @@ input[type="checkbox"] {
         @apply mb-0 md:mb-6;
     }
 
+    &.money_type {
+        @apply w-1/6;
+    }
+
     label {
         @apply text-gray-600 text-sm;
     }
@@ -26,6 +30,40 @@ input[type="checkbox"] {
 
     #create_subscription_civility {
         @apply flex flex-row gap-x-12;
+    }
+
+    &.has_error {
+        ul {
+            li {
+                @apply text-red;
+            }
+        }
+
+        input, select {
+            @apply border-red text-red border-2;
+        }
+    }
+
+    .input-group {
+        @apply relative;
+
+        .input-group-text {
+            @apply pointer-events-none absolute inset-y-0 flex items-center;
+            &.appended {
+                @apply pr-3 right-0;
+            }
+
+            &.prepended {
+                @apply pl-3 left-0;
+            }
+        }
+
+        .prepend {
+            @apply pl-7;
+        }
+        .append {
+            @apply pr-7;
+        }
     }
 }
 
@@ -81,4 +119,11 @@ input[type="checkbox"] {
     @apply flex gap-x-2 my-2;
 }
 
+
+.help-text {
+    @apply text-gray-600 text-sm;
+    a.tax-help-text {
+        @apply underline;
+    }
+}
 
