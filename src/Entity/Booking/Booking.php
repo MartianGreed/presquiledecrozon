@@ -33,7 +33,7 @@ class Booking implements Identity
     #[ORM\Column(type: 'booking_status')]
     private Status $status;
 
-    #[ORM\Column(type: 'booking_prices')]
+    #[ORM\Column(type: 'booking_prices', nullable: true)]
     private BookingPrices $prices;
 
     #[ORM\ManyToOne(targetEntity: Rental::class, inversedBy: 'bookings', fetch: 'EAGER')]
