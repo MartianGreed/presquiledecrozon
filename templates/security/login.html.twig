@@ -7,10 +7,6 @@
         <div class="app_container">
             <div class="flex flex-col w-full md:w-1/2 mx-auto shadow-none md:shadow-lg rounded-lg px-6 py-10 mb-12">
                 <form method="post">
-                    {% if error %}
-                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                    {% endif %}
-
                     {% if app.user %}
                         <div class="mb-3">
                             You are logged in as {{ app.user.email }}, <a href="{{ path('app_logout') }}">Logout</a>
@@ -18,6 +14,9 @@
                     {% endif %}
 
                     <h1 class="main__title">Connexion</h1>
+                    {% if error %}
+                        <div class="text-red mb-4 ">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
                     <div class="form__row mb-6">
                         <label class="block text-gray-800 required" for="inputEmail">Email</label>
                         <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="mt-1 w-full" autocomplete="email" required autofocus />
