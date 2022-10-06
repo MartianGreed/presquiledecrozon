@@ -47,13 +47,18 @@ hooks:
         NODE_ENV=prod yarn run build:prod
         chmod +x bin/deploydotenv.sh
         bin/deploydotenv.sh
-        bin/console cache:clear
         bin/console app:assets:upload
+        bin/console cache:clear
+        bin/console cache:warmup
     deploy: |
         set -e
-        bin/console cache:clear
         bin/console doctrine:migrations:migrate --env=prod --no-interaction
-        
+
+    post_deploy: |
+        set -e
+        bin/console cache:clear
+        bin/console cache:warmup
+
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
