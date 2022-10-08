@@ -18,6 +18,7 @@ export default class extends Controller {
         this.removeEmptyClass = this.removeEmptyClass.bind(this);
         this.addEmptyClass = this.addEmptyClass.bind(this);
         this.handleDispatchResponse = this.handleDispatchResponse.bind(this);
+        this.handleError = this.handleError.bind(this);
 
         try {
             this.dropzone = new Dropzone(this.dropzoneContainerTarget, {
@@ -28,7 +29,10 @@ export default class extends Controller {
                 maxFileSize: 5000000,
                 paramName: 'upload_rental_picture[media][file][file]',
                 addRemoveLinks: true,
-                dictRemoveFile: 'x'
+                dictRemoveFile: 'x',
+                dictCancelUpload: `Annuler l'envoi`,
+                dictCancelUploadConfirmation: 'Êtes-vous sûr de vouloir annuler ?'
+
             });
         } catch (err) {
             console.error('Failed to create file uploader');
@@ -38,6 +42,7 @@ export default class extends Controller {
         this.dropzone.on('addedfile', this.removeEmptyClass);
         this.dropzone.on('removedfile', this.addEmptyClass);
         this.dropzone.on('success', this.handleDispatchResponse);
+        this.dropzone.on('error', this.handleError);
     }
 
     async removeImage(ev: ActionEvent): Promise<void> {
@@ -79,4 +84,15 @@ export default class extends Controller {
         this.dropzoneContainerTarget.classList.add('no-file');
     }
 
+    private async handleError(file: Dropzone.File, message: Dropzone.Message): Promise<void> {
+        if (message.is_valid) {
+            return;
+        }
+
+        if (message.type === 'validation_errors') {
+            let error = message.errors.media.file['0']
+            let errorContainer = this.element.querySelector('[data-dz-errormessage]');
+            errorContainer.textContent = error
+        }
+    }
 }

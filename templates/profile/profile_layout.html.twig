@@ -9,6 +9,9 @@
                         <div class="profile__sidebar__inner__header__picture">
                             <img src="{{ uploaded_asset(app.user.profile.picture, 'file', null, { h: 200, w: 200 }) }}" alt="">
                         </div>
+                    {% else %}
+                        <div class="profile__sidebar__inner__header__picture no_picture">
+                        </div>
                     {% endif %}
                     {% if app.user.profile is not null and app.user.profile.firstname is not null and app.user.profile.lastname is not null %}
                     <div class="profile__sidebar__inner__header__name">{{ app.user.profile.firstname }} {{ app.user.profile.lastname }}</div>

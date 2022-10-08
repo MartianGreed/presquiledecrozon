@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 final class UpdateProfileInformationsType extends AbstractType
 {
@@ -24,7 +26,15 @@ final class UpdateProfileInformationsType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
             ])
-            ->add('cellphone', TextType::class)
+            ->add('cellphone', TextType::class, [
+                'constraints' => [
+                    new Regex(
+                        pattern: '/^(\+33[0-9]{1}|(0[0-9]{1}))[0-9]{8}$/',
+                        message: 'Ce numéro de téléphone n\'est pas valide.'
+                    ),
+                    new Length(min: 10, max: 13),
+                ]
+            ])
             ->add('description', TextareaType::class, [
                 'required' => false,
             ])

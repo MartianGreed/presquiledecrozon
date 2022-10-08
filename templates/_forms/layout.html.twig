@@ -127,7 +127,8 @@
 {%- endblock collection_widget -%}
 
 {%- block form_row -%}
-    {% set default_classes = 'mb-6 form__row'  %}
+    {% set default_classes = 'mb-6 form__row' ~ ' ' ~ cache_key|str_replace(id, '')  %}
+
     {% if false == valid %}{% set default_classes = default_classes ~ ' has_error' %}{% endif %}
     {% set row_class = row_attr.class|default('') %}
     {%- set row_attr = row_attr|merge({

@@ -23,6 +23,7 @@ final class RentalFurnituresType extends AbstractType
             ->add('customFurnitures', CustomFurnituresTypes::class, [
                 'allow_add' => true,
                 'allow_delete' => true,
+                'required' => false,
             ])
         ;
     }

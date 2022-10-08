@@ -19,6 +19,17 @@
         .dz-details {
             @apply text-xs;
         }
+
+        &.dz-error {
+            .dz-error-message {
+                @apply block text-red;
+
+            }
+
+            img[data-dz-thumbnail] {
+                @apply border-red grayscale;
+            }
+        }
     }
 
 }

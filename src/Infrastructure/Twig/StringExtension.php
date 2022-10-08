@@ -12,6 +12,7 @@ final class StringExtension extends AbstractExtension
         return [
             new TwigFilter('excerpt', [$this, 'excerpt']),
             new TwigFilter('human_filesize', [$this, 'humanFilesize'], ['is_safe' => ['html']]),
+            new TwigFilter('str_replace', [$this, 'replace'], ['is_sage' => ['html']]),
         ];
     }
 
@@ -34,5 +35,10 @@ final class StringExtension extends AbstractExtension
         }
 
         return '<strong>' . round($size, 2) . '</strong>' . ' ' . $units[$i];
+    }
+
+    public function replace(string $subject, string $search, string $replacement): string
+    {
+        return (string) str_replace($search, $replacement, $subject);
     }
 }

@@ -1,7 +1,23 @@
 label.required:after {
     content: '*';
 
-    @apply ml-2;
+    @apply ml-1;
+}
+.__entity {
+    .flex {
+        &.items-center {
+            label:after {
+                content: '';
+            }
+        }
+    }
+}
+._rental_informations_bedrooms_collection {
+    .counter__type__input {
+        label:after {
+            content: '';
+        }
+    }
 }
 
 input[type="checkbox"] {
@@ -10,7 +26,7 @@ input[type="checkbox"] {
 
 .form__row {
     > div {
-        @apply mb-0 md:mb-6;
+        @apply mb-0;
     }
 
     &.money_type {
