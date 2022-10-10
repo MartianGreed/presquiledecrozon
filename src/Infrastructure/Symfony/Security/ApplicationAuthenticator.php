@@ -5,6 +5,7 @@ namespace App\Infrastructure\Symfony\Security;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -22,7 +23,10 @@ class ApplicationAuthenticator extends AbstractLoginFormAuthenticator
 
     final public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private readonly UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly RequestStack $requestStack,
+    )
     {
     }
 
@@ -53,6 +57,9 @@ class ApplicationAuthenticator extends AbstractLoginFormAuthenticator
         if (null === $user->getProfile()) {
             return new RedirectResponse($this->urlGenerator->generate('app_profile_informations'));
         }
+
+        // @phpstan-ignore-next-line
+        $this->requestStack->getSession()->getFlashBag()->add('success', 'Bonjour '. $user->getProfile()->getFirstname());
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);

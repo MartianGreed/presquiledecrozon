@@ -53,6 +53,7 @@
         "dropzone": "^6.0.0-beta.2",
         "lodash": "^4.17.21",
         "luxon": "^2.3.0",
+        "notyf": "^3.10.0",
         "stimulus-use": "^0.50.0-2",
         "sweetalert2": "^11.3.10",
         "tslib": "^2.3.1",

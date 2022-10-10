@@ -1,6 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% for type, value in app.flashes %}
+        {% for message in value %}
+            <div
+                    data-controller="toast"
+                    data-toast-type-value="{{ type }}"
+                    class="notification__flash {{ type }}"
+            >{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+
     <div class="profile__container">
         <div class="profile__sidebar">
             <div class="profile__sidebar__inner">
