@@ -81,7 +81,7 @@ export default class extends Controller {
     async handleDeleteField() {
         if (undefined === this.updateField || 0 >= this.fieldCount) return;
 
-        this.updateField.removeChild(this.updateField.childNodes[this.updateField.childElementCount])
+        this.updateField.removeChild(this.updateField.children[this.updateField.children.length - 1]);
 
         --this.fieldCount;
     }

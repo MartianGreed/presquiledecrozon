@@ -19,7 +19,7 @@
                             {% for conversation in conversations %}
                                 {% set contact = conversation.receiver.id == app.user.id ? conversation.sender : conversation.receiver %}
                                 <li
-                                        class="conversation__list__item"
+                                        class="conversation__list__item{% if 1 == loop.index %} toggled{% endif %}"
                                         data-action="click->conversation--list#selectConversation"
                                         data-conversation--list-conversation-id-param="{{ conversation.id }}"
                                 >

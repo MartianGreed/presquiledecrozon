@@ -6,9 +6,13 @@
     &__list {
         @apply col-span-12 md:col-span-4 border-r-0 md:border-r border-gray-400;
         &__item {
-            @apply flex mb-3 hover:bg-gray-50 cursor-pointer px-2 py-1;
+            @apply flex mb-3 hover:bg-gray-50 cursor-pointer px-2 py-1 items-center;
+            &.toggled {
+                @apply bg-gray-100;
+            }
+
             &__picture {
-                @apply rounded-full border-2 border-blue bg-gray-200 mr-3 w-[50px] h-[50px];
+                @apply rounded-full border-2 border-blue bg-gray-200 mr-3 w-[50px] h-[50px] min-w-[50px] min-h-[50px];
                 img {
                     @apply rounded-full border-2 border-blue;
                 }

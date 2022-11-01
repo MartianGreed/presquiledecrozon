@@ -75,7 +75,7 @@ final class RentalHasBeenBookedHandler implements MessageHandlerInterface
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
             ->to(new Address((string)$booking->getBooker()->getEmail()))
-            ->subject('Votre réservation à bien été prise en compte')
+            ->subject('Votre réservation a bien été prise en compte')
             ->htmlTemplate('emails/booker_rental_has_been_booked.html.twig')
         ;
 

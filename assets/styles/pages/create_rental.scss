@@ -77,3 +77,11 @@
         }
     }
 }
+
+._rental_informations_bedrooms_collection {
+    .buttons {
+        button[data-action="form-types--collection#addPrototype"] {
+            @apply hidden;
+        }
+    }
+}

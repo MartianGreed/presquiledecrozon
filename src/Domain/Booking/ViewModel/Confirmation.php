@@ -97,7 +97,7 @@ final class Confirmation
 
     public function getDefaultMessageForOwner(): string
     {
-        $message = 'Bonjour %s, je souhaiterais réserver votre logement pour la période du %s au %s ! Bonne journée :)';
+        $message = 'Bonjour %s, je souhaiterai réserver votre logement pour la période du %s au %s ! Bonne journée :)';
 
         return sprintf(
             $message,

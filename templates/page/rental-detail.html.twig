@@ -11,13 +11,13 @@
 
 {% set content_class = 'rental_details' %}
 {% block body %}
-    <div class="rental_details__slideshow__container">
-        <div class="slideshow__cover">
+    <div class="rental_details__slideshow__container" data-controller="lightbox" data-lightbox-options-value='{"selector": "div.slideshow__item"}'>
+        <div class="slideshow__cover slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.cover, 'file') }}">
             <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true }) }}"
                  alt=""/>
         </div>
         {% for i in 0..3 %}
-            <div class="slideshow__image">
+            <div class="slideshow__image slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media') }}">
                 <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true }) }}"
                      alt=""/>
             </div>

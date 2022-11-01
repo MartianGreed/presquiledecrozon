@@ -90,6 +90,10 @@
                 &.appear-leave-active {
                     @apply transition-opacity opacity-0;
                 }
+
+                p {
+                    @apply break-all;
+                }
             }
 
             #rental_details_map_display {
