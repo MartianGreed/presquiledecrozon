@@ -23,7 +23,7 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
     ) {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [ControllerEvent::class => ['onKernelController', 125]];
     }

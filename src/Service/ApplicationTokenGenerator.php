@@ -12,4 +12,13 @@ final class ApplicationTokenGenerator
     {
         return crypt($id, $this->secret);
     }
+
+    public function generateRandomToken(string $id, int $length = 20): string
+    {
+
+        $prefix = random_bytes(max(1, intval($length / 2)));
+        $suffix = random_bytes(max(1, intval($length / 2)));
+
+        return bin2hex($prefix).$this->generateToken($id).bin2hex($suffix);
+    }
 }

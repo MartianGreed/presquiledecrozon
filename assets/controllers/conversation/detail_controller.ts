@@ -78,7 +78,7 @@ export default class extends Controller {
     private updateView(): void {
         this.nameTarget.innerHTML = this.conversation.full_name;
         this.periodTarget.innerHTML = this.conversation.period;
-        this.peopleCountTarget.innerHTML = this.conversation.people_count.toString();
+        this.peopleCountTarget.innerHTML = this.conversation.people_count.toString() + '<i class="fas fa-users ml-2"></i>';
         this.priceTarget.innerHTML = this.conversation.total_price;
 
         this.computeMessages();

@@ -70,6 +70,13 @@
                             }
                         }
 
+                        .input-group {
+                            @apply h-full;
+                            select {
+                                @apply pl-12 h-full md:mt-0;
+                            }
+                        }
+
                     }
 
                     input[type="date"], select {

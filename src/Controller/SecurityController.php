@@ -4,7 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterUserType;
+use App\Form\RequestResetPasswordType;
+use App\Form\ResetPasswordType;
 use App\Infrastructure\Symfony\Security\SecurityUserDTO;
+use App\Service\RequestResetPasswordService;
+use App\Service\ResetPasswordService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,6 +42,7 @@ class SecurityController extends AbstractController
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
+
     #[Route('/creer-mon-compte', name: 'app_register')]
     public function register(
         Request $request,
@@ -74,5 +79,44 @@ class SecurityController extends AbstractController
         return $this->renderForm('security/register.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/reinitialisation-mot-de-passe', name: 'app_request_reset_password')]
+    public function requestResetPassword(Request $request, RequestResetPasswordService $resetPasswordService): Response
+    {
+        $form = $this->createForm(RequestResetPasswordType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $resetPasswordService->resetPassword(strval($form->get('email')->getData()));
+            return $this->redirectToRoute('app_request_reset_password_success');
+        }
+
+        return $this->renderForm('security/request_reset_password.html.twig', [
+            'form' => $form,
+            'success_message' => false,
+        ]);
+    }
+
+    #[Route('/reinitialisation-mot-de-passe-succes', name: 'app_request_reset_password_success')]
+    public function requestResetPasswordSuccess(Request $request): Response
+    {
+        return $this->render('security/request_reset_password.html.twig', [
+            'form' => null,
+            'success_message' => true,
+        ]);
+    }
+
+    #[Route('/reinitialisation/mot-de-passe', name: 'app_reset_password')]
+    public function resetPassword(Request $request, ResetPasswordService $resetPasswordService): Response
+    {
+        $form = $this->createForm(ResetPasswordType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $resetPasswordService->resetPassword((string)$request->query->get('token'), strval($form->get('password')->getData()));
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->renderForm('security/reset_password.html.twig', ['form' => $form]);
     }
 }

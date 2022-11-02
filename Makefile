@@ -12,6 +12,9 @@ fixtures:
 test:
 	vendor/bin/phpunit
 
+test_class:
+	vendor/bin/phpunit --filter $(filter)
+
 coverage:
 	vendor/bin/phpunit --coverage-html coverage
 

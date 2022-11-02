@@ -47,6 +47,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     #[ORM\OneToMany(mappedBy: 'booker', targetEntity: Booking::class)]
     private Collection $bookings;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $resetToken;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTime $resetAt;
+
     public function __construct()
     {
         $this->rentals = new ArrayCollection();
@@ -244,5 +250,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         $this->bookings->removeElement($booking);
 
         return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    public function getResetAt(): ?\DateTime
+    {
+        return $this->resetAt;
+    }
+
+    public function setResetAt(\DateTime $resetAt): self
+    {
+        $this->resetAt = $resetAt;
+        return $this;
+    }
+
+    public function requestResetPassword(string $token): void
+    {
+        $this->resetToken = $token;
+        $this->resetAt = new \DateTime();
+    }
+
+    public function resetPassword(string $hashPassword): void
+    {
+        $this->password = $hashPassword;
+        $this->resetToken = null;
+        $this->resetAt = null;
     }
 }
