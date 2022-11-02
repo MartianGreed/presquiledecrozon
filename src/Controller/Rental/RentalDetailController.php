@@ -51,12 +51,26 @@ final class RentalDetailController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $form = $this->createForm(BookRentalType::class, null, [
+        $data = null;
+        if (null !== $sessionData = $request->getSession()->get('booking-'.$rental->getId())) {
+            $data = unserialize(strval($sessionData), ['allowed_classes' => [\DateTime::class]]);
+        }
+
+        $form = $this->createForm(BookRentalType::class, $data, [
             'rental' => $rental
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $formData = [
+                'startAt' => $form->get('startAt')->getData(),
+                'endAt' => $form->get('endAt')->getData(),
+                'peopleCount' => $form->get('peopleCount')->getData(),
+            ];
+
+            $request->getSession()->set('booking-'.$rental->getId(), serialize($formData));
+
             /** @var ?User $booker */
             $booker = $this->getUser();
             if (null === $booker) {
@@ -88,6 +102,7 @@ final class RentalDetailController extends AbstractController
             $this->manager->flush();
 
             $this->bus->dispatch(new RentalHasBeenBooked((string)$rental->getId(), (string)$booking->getId(), (string)$booking->getCreatedAt()?->format('Y-m-d H:i:s')));
+            $request->getSession()->remove('booking-'.$rental->getId());
 
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }

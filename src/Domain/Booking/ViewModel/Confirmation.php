@@ -36,13 +36,17 @@ final class Confirmation
 
     public function getBookingDuration(): string
     {
-        $diffInDays = $this->startAt->diff($this->endAt)->d + 1;
-        $weeks = $diffInDays % 7;
-        $leftDays = ($diffInDays - (7 * ($diffInDays % 7)) - 1);
+        $diffInDays = $this->startAt->diff($this->endAt)->d;
+        $weekCount = floor($diffInDays / 7);
+        $leftDays = $diffInDays % 7;
 
         $str = '';
-        if (0 < $weeks) {
-            $str .= $weeks . ' semaine' . ($weeks > 1 ? 's' : '');
+        if (7 > $diffInDays) {
+            return sprintf('%d jour%s', $diffInDays, $diffInDays > 1 ? 's': '');
+        }
+
+        if (0 < $weekCount) {
+            $str .= $weekCount . ' semaine' . ($weekCount > 1 ? 's' : '');
         }
         if (0 < $leftDays) {
             $str .= ' et ' . $leftDays . ' jour' . ($leftDays > 1 ? 's' : '');

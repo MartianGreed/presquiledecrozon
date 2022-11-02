@@ -127,6 +127,8 @@
         "fakerphp/faker": "^1.19",
         "infection/infection": "^0.25.5",
         "league/flysystem-adapter-test-utilities": "^2.3",
+        "phpspec/prophecy": "^1.15",
+        "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^1.8",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.12.10",

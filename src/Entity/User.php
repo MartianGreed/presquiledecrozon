@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -55,6 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
 
     public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->rentals = new ArrayCollection();
         $this->discounts = new ArrayCollection();
 
