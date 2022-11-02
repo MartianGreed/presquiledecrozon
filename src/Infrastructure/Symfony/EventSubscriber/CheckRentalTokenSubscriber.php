@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 final class CheckRentalTokenSubscriber implements EventSubscriberInterface
 {
     private const CREATE_RENTAL_PATH_PREFIX = '/deposez-votre-annonce';
+    private const PREVIEW_RENTAL_PATH = '/previsualisation/annonce';
 
     public function __construct(
         private readonly ApplicationTokenGenerator $applicationTokenGenerator,
@@ -30,7 +31,11 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
 
     final public function onKernelController(ControllerEvent $event): ?Response
     {
-        if (!str_starts_with($event->getRequest()->getPathInfo(), self::CREATE_RENTAL_PATH_PREFIX)) {
+        if (!(
+            !str_starts_with($event->getRequest()->getPathInfo(), self::CREATE_RENTAL_PATH_PREFIX)
+            xor !str_starts_with($event->getRequest()->getPathInfo(), self::PREVIEW_RENTAL_PATH)
+        )
+        ) {
             return null;
         }
 

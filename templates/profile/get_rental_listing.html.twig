@@ -24,7 +24,10 @@
                             <div class="type">{{ rental.configuration.type.label }}</div>
                         </div>
                         <div class="rental__list__item__inner__actions">
-                            <div><a href="{{ path('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"><i class="far fa-edit"></i></a></div>
+                            <div class="rental__list__item__inner__actions__top">
+                                <div><a href="{{ path('app_preview_rental', { token: generate_token(rental.id), id: rental.id }) }}" target="_blank"><i class="far fa-eye"></i> Prévisualiser</a></div>
+                                <div><a href="{{ path('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"><i class="far fa-edit"></i></a></div>
+                            </div>
                             <label
                                     data-controller="toggle-publish-rental"
                                     data-toggle-publish-rental-api-uri-value="{{ path('app_rental_toggle_publish', { id: rental.id }) }}"

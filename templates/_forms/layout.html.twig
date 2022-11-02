@@ -154,7 +154,7 @@
 {%- endblock checkbox_row -%}
 
 {%- block choice_widget_collapsed -%}
-    {%- if icon is not null -%}
+    {%- if icon is defined and icon is not null -%}
         {%- set prepend = true -%}
         {%- set append = false -%}
         {% set input_group_text_class = 'input-group-text' ~ (append ? ' appended' : '') ~ (prepend ? ' prepended' : '') %}

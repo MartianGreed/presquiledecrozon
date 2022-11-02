@@ -26,6 +26,9 @@
 
                 &__actions {
                     @apply flex flex-col items-center md:items-end justify-between;
+                    &__top {
+                        @apply flex flex-row gap-3;
+                    }
                 }
             }
         }
