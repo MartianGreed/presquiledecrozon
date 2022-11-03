@@ -10,6 +10,10 @@
 
                 &__picture {
                     @apply mx-auto;
+
+                    .no-picture {
+                        @apply bg-gray-300 h-[150px] w-[150px] flex text-center items-center;
+                    }
                 }
 
                 &__content {

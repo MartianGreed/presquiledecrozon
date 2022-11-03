@@ -2,6 +2,7 @@
 
 namespace App\Controller\Rental;
 
+use App\Domain\Booking\BookingPriceSimulatorService;
 use App\Domain\Booking\BookingValidator;
 use App\Domain\Booking\Exception\BookingDoesNotFullfillOwnerPreferencesException;
 use App\Domain\Booking\Exception\CannotBookOwnRentalException;
@@ -27,6 +28,7 @@ use Symfony\Component\Routing\Annotation\Route;
 final class RentalDetailController extends AbstractController
 {
     public function __construct(
+        private readonly BookingPriceSimulatorService $simulatorService,
         private readonly RentalRepository $rentalRepository,
         private readonly BookingRepository $bookingRepository,
         private readonly EntityManagerInterface $manager,
@@ -92,6 +94,9 @@ final class RentalDetailController extends AbstractController
                     $endAt,
                     intval($form->get('peopleCount')->getData()),
                 );
+
+                $booking = $this->simulatorService->aggregatePrices($booking);
+
             } catch (RentalNotAvailableForPeriodException | BookingDoesNotFullfillOwnerPreferencesException | CannotBookOwnRentalException $e) {
                 return $this->handleBookingDomainErrors($rental, $form, new FormError($e->getMessage()), 'startAt');
             } catch (TooManyPeopleInBookingException $e) {

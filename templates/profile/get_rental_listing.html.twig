@@ -17,7 +17,11 @@
                 <div class="rental__list__item {{ rental.status.value }}">
                     <div class="rental__list__item__inner">
                         <div class="rental__list__item__inner__picture">
-                            <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 150, w: 150, crop: true }) }}" alt="">
+                            {% if rental.gallery is not null %}
+                                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 150, w: 150, crop: true }) }}" alt="">
+                            {% else %}
+                                <div class="no-picture">Pas de photo enregistrée</div>
+                            {% endif %}
                         </div>
                         <div class="rental__list__item__inner__content">
                             <div class="title">{{ rental.description.title }}</div>

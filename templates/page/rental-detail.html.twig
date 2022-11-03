@@ -11,46 +11,87 @@
 
 {% set content_class = 'rental_details' %}
 {% block body %}
-    <div class="rental_details__slideshow__container" data-controller="lightbox" data-lightbox-options-value='{"selector": "div.slideshow__item"}'>
-        <div class="slideshow__cover slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.cover, 'file') }}">
-            <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true }) }}"
-                 alt=""/>
-        </div>
-        {% for i in 0..3 %}
-            <div class="slideshow__image slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media') }}">
-                <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true }) }}"
+    {% if rental.gallery is not null %}
+        <div class="rental_details__slideshow__container" data-controller="lightbox" data-lightbox-options-value='{"selector": "div.slideshow__item"}'>
+            <div class="slideshow__cover slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.cover, 'file') }}">
+                <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true }) }}"
                      alt=""/>
             </div>
-            {% if i == 1 %}
-                <div class="slideshow__details">
-                    <div class="item">
-                        <div class="count">
-                            {{ rental.configuration.peopleCount }}
-                        </div>
-                        <div class="text">
-                            personnes
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="count">
-                            {{ rental.configuration.bedrooms.count }}
-                        </div>
-                        <div class="text">
-                            chambres
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="count">
-                            {{ rental.configuration.bedCount }}
-                        </div>
-                        <div class="text">
-                            lits
-                        </div>
-                    </div>
+            {% for i in 0..3 %}
+                <div class="slideshow__image slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media') }}">
+                    <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true }) }}"
+                         alt=""/>
                 </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+                {% if i == 1 %}
+                    <div class="slideshow__details">
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.peopleCount }}
+                            </div>
+                            <div class="text">
+                                personnes
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.bedrooms.count }}
+                            </div>
+                            <div class="text">
+                                chambres
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.bedCount }}
+                            </div>
+                            <div class="text">
+                                lits
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="rental_details__slideshow__container">
+            <div class="slideshow__cover slideshow__item">
+                <div class="no-picture"></div>
+            </div>
+            {% for i in 0..3 %}
+                <div class="slideshow__image slideshow__item">
+                    <div class="no-picture"></div>
+                </div>
+                {% if i == 1 %}
+                    <div class="slideshow__details">
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.peopleCount }}
+                            </div>
+                            <div class="text">
+                                personnes
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.bedrooms.count }}
+                            </div>
+                            <div class="text">
+                                chambres
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="count">
+                                {{ rental.configuration.bedCount }}
+                            </div>
+                            <div class="text">
+                                lits
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
     <div
             class="rental_details__content__container"
             data-controller="rental--detail"

@@ -4,17 +4,19 @@
 
         .slideshow__cover {
             @apply row-span-2 col-span-6 md:col-span-3;
-
-            img {
-                @apply object-cover h-full w-full;
-            }
         }
 
         .slideshow__image {
             @apply hidden md:block md:col-span-2;
+        }
 
+
+        .slideshow__cover, .slideshow__image {
             img {
                 @apply object-cover h-full w-full;
+            }
+            .no-picture {
+                @apply object-cover h-full w-full bg-gray-300;
             }
         }
 
