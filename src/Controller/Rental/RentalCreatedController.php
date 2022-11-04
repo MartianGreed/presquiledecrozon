@@ -25,7 +25,7 @@ final class RentalCreatedController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
-        if ($rental->isPublished()) {
+        if ($rental->isPublished() || $rental->hasActiveSubscription()) {
             return $this->redirectToRoute('app_profile_rental');
         }
 

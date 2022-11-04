@@ -83,4 +83,9 @@ class RentalSubscription implements Identity
             ->setPaidAt(new \DateTime('now'))
         ;
     }
+
+    final public function isStillRunning(): bool
+    {
+        return null !== $this->expiresAt && $this->expiresAt > new \DateTime('now');
+    }
 }

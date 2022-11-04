@@ -207,6 +207,11 @@ class Rental implements Identity
         return (!$this->isPublished() && 0 < count($paidSubscriptions)) || (!$this->isPublished() && null !== $this->activeSubscription);
     }
 
+    final public function hasActiveSubscription(): bool
+    {
+        return null !== $this->activeSubscription && $this->activeSubscription->isStillRunning();
+    }
+
     final public function publish(): self
     {
         $publishedAt = new \DateTime('now');
