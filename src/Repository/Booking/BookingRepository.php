@@ -88,6 +88,7 @@ class BookingRepository extends ServiceEntityRepository
         /** @var array<Booking> $bookings */
         $bookings = $qb
             ->andWhere($qb->expr()->lt('b.endAt', ':now'))
+            ->andWhere($qb->expr()->isNotNull('b.prices'))
             ->setParameter('now', (new \DateTime())->format('Y-m-d'))
             ->getQuery()
             ->getResult()
@@ -110,6 +111,7 @@ class BookingRepository extends ServiceEntityRepository
                 ),
                 $qb->expr()->gte('b.endAt', ':then')
             )
+            ->andWhere($qb->expr()->isNotNull('b.prices'))
             ->setParameter('now', $now)
             ->setParameter('then', $now)
             ->getQuery()
