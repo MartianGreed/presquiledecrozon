@@ -29,22 +29,22 @@
                     <div class="profile__sidebar__inner__header__since">Membre depuis {{ app.user.createdAt | date('Y') }}</div>
                 </div>
                 <ul class="profile__sidebar__inner__menu">
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_profile_conversation') }}">
                         <a href="{{ path('app_profile_conversation') }}">Messagerie</a>
                     </li>
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_profile_booking') }}">
                         <a href="{{ path('app_profile_booking') }}">Réservations</a>
                     </li>
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_profile_booker_bookings_list') }}">
                         <a href="{{ path('app_profile_booker_bookings_list') }}">Vacances</a>
                     </li>
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_profile_rental') }}">
                         <a href="{{ path('app_profile_rental') }}">Annonces</a>
                     </li>
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_profile_informations') }}">
                         <a href="{{ path('app_profile_informations') }}">Informations</a>
                     </li>
-                    <li class="profile__sidebar__inner__menu-item">
+                    <li class="profile__sidebar__inner__menu-item {{ is_current_route('app_logout') }}">
                         <a href="{{ path('app_logout') }}">Déconnexion</a>
                     </li>
                 </ul>

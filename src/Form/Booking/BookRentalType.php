@@ -63,7 +63,8 @@ final class BookRentalType extends AbstractType
                         max: $peopleCount,
                     ),
                 ],
-                'icon'        => '<i class="fas fa-users"></i>',
+                'icon'        => 'people',
+                'svg'         => true,
             ])
         ;
     }

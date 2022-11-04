@@ -8,6 +8,7 @@ export type DayItem = {
     value: number,
     inMonth: boolean,
     formattedValue: string,
+    isPassed: boolean,
 };
 
 export type CalendarDay = {
@@ -28,6 +29,7 @@ export type CalendarView = {
 
 export type CalendarOptions = {
     months: number,
+    disablePassedDates: boolean,
 }
 
 export type Range = {
@@ -105,6 +107,7 @@ export default class Calendar {
         let days = this.getWeekView(monthDate);
         let date = this.copyDateTime(monthDate);
         let endOfMonth = this.copyDateTime(monthDate).endOf('month');
+        let now = DateTime.now();
         if (1 < date.weekday) {
             date = date.plus({ days: (1 - date.weekday) });
         }
@@ -120,6 +123,7 @@ export default class Calendar {
                  value: date.day,
                  inMonth: date.month === monthDate.month,
                  formattedValue: date.toFormat(DATE_SHORT),
+                 isPassed: this.options.disablePassedDates && date < now,
              }];
              date = date.plus({ day: 1 });
         }
@@ -146,6 +150,7 @@ export default class Calendar {
     private resolveOptions(): CalendarOptions {
         return {
             months: 1,
+            disablePassedDates: false,
         }
     }
 

@@ -31,7 +31,11 @@
             &__menu {
 
                 &-item {
-                    @apply mb-2;
+                    @apply mb-2 text-gray-200;
+
+                    &.is-active {
+                        @apply font-bold text-white;
+                    }
                 }
             }
         }

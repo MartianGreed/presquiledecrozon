@@ -5,53 +5,51 @@
         class="rental_list__item"
         id="rental-list-item-{{ rental.id }}"
 >
-    <div class="rental_list__item__content">
-        <div class="rental_list__item__content__image">
-            <a href="{{ path('app_rental_details', { slug: rental.slug }) }}" target="_blank">
+    <a href="{{ path('app_rental_details', { slug: rental.slug }) }}" target="_blank">
+        <div class="rental_list__item__content">
+            <div class="rental_list__item__content__image">
                 <img
-                        srcset="
+                        data-src="
                             {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }} {{ height }}w
                             {{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 100, w: 100, crop: true }) }} 100w
                         "
                         src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: height, w: width, crop: true }) }}"
                         alt="Photo de la location de {{ rental.owner.profile.fullname }}"
                 />
-            </a>
-            {% if with_favorites %}
-                <button
-                        class="rental_list__item__content__heart"
-                        type="button"
-                        {% if app.user is not null %}
-                            data-controller="rental--favorites"
-                            data-rental--favorites-uri-value="{{ path('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
-                            data-rental--favorites-is-favorite-uri-value="{{ path('app_profile_is_rental_favorite', { id: rental.id }) }}"
-                            data-rental--favorites-is-favorite-value="false"
-                            data-action="click->rental--favorites#addToFavoriteList"
-                        {% endif %}
-                >
-                    <i class="fas fa-heart"></i>
-                </button>
-            {% endif %}
-        </div>
-        <div class="rental_list__item__content__description">
-            <div class="rental_list__item__content__description__container">
-                <div class="rental_list__item__content__description__rental-type">
-                    {{ rental.configuration.type.label }}
-                </div>
-                <div class="rental_list__item__content__description__title">
-                    <a href="{{ path('app_rental_details', { slug: rental.slug }) }}">
+                {% if with_favorites %}
+                    <button
+                            class="rental_list__item__content__heart"
+                            type="button"
+                            {% if app.user is not null %}
+                                data-controller="rental--favorites"
+                                data-rental--favorites-uri-value="{{ path('app_profile_add_rental_to_favorites', { id: rental.id }) }}"
+                                data-rental--favorites-is-favorite-uri-value="{{ path('app_profile_is_rental_favorite', { id: rental.id }) }}"
+                                data-rental--favorites-is-favorite-value="false"
+                                data-action="click->rental--favorites#addToFavoriteList"
+                            {% endif %}
+                    >
+                        <i class="fas fa-heart"></i>
+                    </button>
+                {% endif %}
+            </div>
+            <div class="rental_list__item__content__description">
+                <div class="rental_list__item__content__description__container">
+                    <div class="rental_list__item__content__description__rental-type">
+                        {{ rental.configuration.type.label }}
+                    </div>
+                    <div class="rental_list__item__content__description__title">
                         {{ rental.description.title }}
-                    </a>
+                    </div>
                 </div>
-            </div>
-            <div class="rental_list__item__content__description__footer">
-                <div class="rental_list__item__content__description__footer__people-count">
-                    {{ svg_icon('people') }} {{ rental.configuration.peopleCount }}
-                </div>
-                <div class="rental_list__item__content__description__footer__rate">
-                    {{ rental.weeklyRate }}/sem
+                <div class="rental_list__item__content__description__footer">
+                    <div class="rental_list__item__content__description__footer__people-count">
+                        {{ svg_icon('people') }} {{ rental.configuration.peopleCount }}
+                    </div>
+                    <div class="rental_list__item__content__description__footer__rate">
+                        {{ rental.weeklyRate }}/sem
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 </div>

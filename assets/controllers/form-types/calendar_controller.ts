@@ -91,7 +91,7 @@ export default class extends Controller {
     }
 
     private initCalendar() {
-        this.calendar = new Calendar(null, { months: 4 });
+        this.calendar = new Calendar(null, { months: 4, disablePassedDates: false });
         this.calendarView = this.calendar.getCalendarView();
     }
 

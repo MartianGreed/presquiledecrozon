@@ -14,13 +14,15 @@ final class IconChoiceType extends ChoiceType
         parent::buildView($view, $form, $options);
 
         $view->vars['icon'] = $options['icon'];
+        $view->vars['svg'] = $options['svg'];
     }
 
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefined('icon');
+        $resolver->setDefined(['icon', 'svg']);
         $resolver->setDefault('icon', null);
+        $resolver->setDefault('svg', false);
 
         parent::configureOptions($resolver);
     }

@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import Calendar, {CalendarView, computeCalendar, Range} from '@crozon/calendar';
+import Calendar, { CalendarView, computeCalendar, Range } from '@crozon/calendar';
 
 export default class extends Controller {
     static values = { dates: String };
@@ -23,7 +23,7 @@ export default class extends Controller {
     }
 
     private initCalendar() {
-        this.calendar = new Calendar(null, { months: 4 });
+        this.calendar = new Calendar(null, { months: 4, disablePassedDates: true });
         this.calendarView = this.calendar.getCalendarView();
     }
 

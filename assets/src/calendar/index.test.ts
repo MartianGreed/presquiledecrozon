@@ -19,7 +19,7 @@ describe('Calendar', () => {
     });
 
     it('Generates number of month asked', () => {
-        let calendar = new Calendar(null, { months: 4 });
+        let calendar = new Calendar(null, { months: 4, disablePassedDates: false });
         let calendarView = calendar.getCalendarView();
 
         expect(calendarView.months.length).toBe(4);

@@ -27,7 +27,7 @@ export default class extends Controller {
                 text: 'Si vous masquez votre annonces, elle ne sera plus disponible dans les résultats de recherche.',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#006287',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Oui, masquer mon annonce',
                 cancelButtonText: 'Annuler',
@@ -41,19 +41,21 @@ export default class extends Controller {
 
         let res = await axios.patch(this.apiUriValue, null, { validateStatus: null });
         if (200 === res.status) {
-            await Swal.fire(
-                isDisabled ? 'Annonce masquée' : 'Annonce publiée',
-                isDisabled ? 'À tout moment, vous pouvez la publier à nouveau.' : 'Elle est désormais visible dans la recherche.',
-                'success'
-            );
+            await Swal.fire({
+                title: isDisabled ? 'Annonce masquée' : 'Annonce publiée',
+                text: isDisabled ? 'À tout moment, vous pouvez la publier à nouveau.' : 'Elle est désormais visible dans la recherche.',
+                confirmButtonColor: '#006287',
+                icon: 'success',
+            });
         }
 
         if (403 === res.status) {
-            await Swal.fire(
-                'Action impossible',
-                res.data.message,
-                'error'
-            );
+            await Swal.fire({
+                title: 'Action impossible',
+                text: res.data.message,
+                icon: 'error',
+                confirmButtonColor: '#006287',
+            });
             this.inputTarget.checked = false;
         }
     }

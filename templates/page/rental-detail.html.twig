@@ -15,11 +15,17 @@
         <div class="rental_details__slideshow__container" data-controller="lightbox" data-lightbox-options-value='{"selector": "div.slideshow__item"}'>
             <div class="slideshow__cover slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.cover, 'file') }}">
                 <img src="{{ uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true }) }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: uploaded_asset(rental.gallery.cover, 'file', null, { h: 1000, w: 1000, crop: true })
+                        }) }}
                      alt=""/>
             </div>
             {% for i in 0..3 %}
                 <div class="slideshow__image slideshow__item" data-src="{{ cdn_host }}{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media') }}">
                     <img src="{{ uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true }) }}"
+                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                                src: uploaded_asset(rental.gallery.pictures[i], 'file', 'App\\Entity\\Media', { h: 400, w: 700, crop: true })
+                            }) }}
                          alt=""/>
                 </div>
                 {% if i == 1 %}
@@ -259,9 +265,9 @@
         >
             Veuillez sélectionner les dates pour connaître le montant de la location.
         </div>
-        <div class="book_rental__contact">
-            <a href="#">Contacter {{ rental.owner.profile.firstname }}</a>
-        </div>
+{#        <div class="book_rental__contact">#}
+{#            <a href="#">Contacter {{ rental.owner.profile.firstname }}</a>#}
+{#        </div>#}
         <div class="book_rental__submit">
             <button type="submit" class="button button__blue">Réserver</button>
         </div>

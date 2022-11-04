@@ -161,11 +161,23 @@
         {%- if prepend or append -%}
             <div class="input-group{{ group_class|default('') }}">
                 {%- if prepend -%}
-                    <span class="{{ input_group_text_class }}">{{ icon|raw }}</span>
+                    <span class="{{ input_group_text_class }}">
+                        {% if not(svg) %}
+                            {{ icon|raw }}
+                        {% else %}
+                            {{ svg_icon(icon) }}
+                        {% endif %}
+                    </span>
                 {%- endif -%}
                     {{- parent() -}}
                 {%- if append -%}
-                    <span class="{{ input_group_text_class }}">{{ icon|raw }}</span>
+                    <span class="{{ input_group_text_class }}">
+                        {% if not(svg) %}
+                            {{ icon|raw }}
+                        {% else %}
+                            {{ svg_icon(icon) }}
+                        {% endif %}
+                    </span>
                 {%- endif -%}
             </div>
         {%- endif -%}

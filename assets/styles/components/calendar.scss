@@ -36,6 +36,10 @@
                          &.not-in-month {
                              @apply text-gray-500 cursor-not-allowed bg-white;
                          }
+
+                         &.is-passed {
+                             @apply text-gray-500 cursor-not-allowed bg-white;
+                         }
                      }
                  }
              }

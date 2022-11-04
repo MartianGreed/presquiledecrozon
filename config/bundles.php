@@ -22,4 +22,5 @@ return [
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
     AsyncAws\Symfony\Bundle\AsyncAwsBundle::class => ['all' => true],
     Bref\Symfony\Messenger\BrefMessengerBundle::class => ['all' => true],
+    Symfony\UX\LazyImage\LazyImageBundle::class => ['all' => true],
 ];

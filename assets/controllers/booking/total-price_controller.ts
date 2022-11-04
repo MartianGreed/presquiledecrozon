@@ -14,6 +14,8 @@ export default class extends Controller {
     async connect() {
         this.totalContent = this.totalContent.bind(this);
         this.defaultContent = this.defaultContent.bind(this);
+
+        this.initFormValues();
     }
 
     async formValueChanged(): Promise<void> {
@@ -40,5 +42,21 @@ export default class extends Controller {
 
     private totalContent(): string {
         return `Total <span data-booking--total-price-target="price"></span>`;
+    }
+
+    private initFormValues() {
+        let form = document.querySelector('form[name="book_rental"]') as HTMLFormElement | null;
+        if (null === form) {
+            return;
+        }
+
+        this.formValue = {
+            // @ts-ignore
+            startAt: form.elements.namedItem('book_rental[startAt]')?.value,
+            // @ts-ignore
+            endAt: form.elements.namedItem('book_rental[endAt]')?.value,
+            // @ts-ignore
+            peopleCount: form.elements.namedItem('book_rental[peopleCount]')?.value,
+        };
     }
 }

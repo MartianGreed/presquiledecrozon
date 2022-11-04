@@ -53,6 +53,9 @@ export function printDayItem(rangeList: Array<Range>): (day: DayItem) => string 
         if (!day.inMonth) {
             classList = [...classList, 'not-in-month'];
         }
+        if (day.isPassed) {
+            classList = [...classList, 'is-passed'];
+        }
 
         if(isInRange(rangeList, day.formattedValue)) {
             classList = [...classList, 'in-range'];

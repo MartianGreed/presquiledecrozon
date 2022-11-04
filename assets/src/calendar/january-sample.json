@@ -13,37 +13,43 @@
               "label": "27",
               "value": 27,
               "inMonth": false,
-              "formattedValue": "27/12/2021"
+              "formattedValue": "27/12/2021",
+              "isPassed": false
             },
             {
               "label": "03",
               "value": 3,
               "inMonth": true,
-              "formattedValue": "03/01/2022"
+              "formattedValue": "03/01/2022",
+              "isPassed": false
             },
             {
               "label": "10",
               "value": 10,
               "inMonth": true,
-              "formattedValue": "10/01/2022"
+              "formattedValue": "10/01/2022",
+              "isPassed": false
             },
             {
               "label": "17",
               "value": 17,
               "inMonth": true,
-              "formattedValue": "17/01/2022"
+              "formattedValue": "17/01/2022",
+              "isPassed": false
             },
             {
               "label": "24",
               "value": 24,
               "inMonth": true,
-              "formattedValue": "24/01/2022"
+              "formattedValue": "24/01/2022",
+              "isPassed": false
             },
             {
               "label": "31",
               "value": 31,
               "inMonth": true,
-              "formattedValue": "31/01/2022"
+              "formattedValue": "31/01/2022",
+              "isPassed": false
             }
           ]
         },
@@ -55,37 +61,43 @@
               "label": "28",
               "value": 28,
               "inMonth": false,
-              "formattedValue": "28/12/2021"
+              "formattedValue": "28/12/2021",
+              "isPassed": false
             },
             {
               "label": "04",
               "value": 4,
               "inMonth": true,
-              "formattedValue": "04/01/2022"
+              "formattedValue": "04/01/2022",
+              "isPassed": false
             },
             {
               "label": "11",
               "value": 11,
               "inMonth": true,
-              "formattedValue": "11/01/2022"
+              "formattedValue": "11/01/2022",
+              "isPassed": false
             },
             {
               "label": "18",
               "value": 18,
               "inMonth": true,
-              "formattedValue": "18/01/2022"
+              "formattedValue": "18/01/2022",
+              "isPassed": false
             },
             {
               "label": "25",
               "value": 25,
               "inMonth": true,
-              "formattedValue": "25/01/2022"
+              "formattedValue": "25/01/2022",
+              "isPassed": false
             },
             {
               "label": "01",
               "value": 1,
               "inMonth": false,
-              "formattedValue": "01/02/2022"
+              "formattedValue": "01/02/2022",
+              "isPassed": false
             }
           ]
         },
@@ -97,37 +109,43 @@
               "label": "29",
               "value": 29,
               "inMonth": false,
-              "formattedValue": "29/12/2021"
+              "formattedValue": "29/12/2021",
+              "isPassed": false
             },
             {
               "label": "05",
               "value": 5,
               "inMonth": true,
-              "formattedValue": "05/01/2022"
+              "formattedValue": "05/01/2022",
+              "isPassed": false
             },
             {
               "label": "12",
               "value": 12,
               "inMonth": true,
-              "formattedValue": "12/01/2022"
+              "formattedValue": "12/01/2022",
+              "isPassed": false
             },
             {
               "label": "19",
               "value": 19,
               "inMonth": true,
-              "formattedValue": "19/01/2022"
+              "formattedValue": "19/01/2022",
+              "isPassed": false
             },
             {
               "label": "26",
               "value": 26,
               "inMonth": true,
-              "formattedValue": "26/01/2022"
+              "formattedValue": "26/01/2022",
+              "isPassed": false
             },
             {
               "label": "02",
               "value": 2,
               "inMonth": false,
-              "formattedValue": "02/02/2022"
+              "formattedValue": "02/02/2022",
+              "isPassed": false
             }
           ]
         },
@@ -139,37 +157,43 @@
               "label": "30",
               "value": 30,
               "inMonth": false,
-              "formattedValue": "30/12/2021"
+              "formattedValue": "30/12/2021",
+              "isPassed": false
             },
             {
               "label": "06",
               "value": 6,
               "inMonth": true,
-              "formattedValue": "06/01/2022"
+              "formattedValue": "06/01/2022",
+              "isPassed": false
             },
             {
               "label": "13",
               "value": 13,
               "inMonth": true,
-              "formattedValue": "13/01/2022"
+              "formattedValue": "13/01/2022",
+              "isPassed": false
             },
             {
               "label": "20",
               "value": 20,
               "inMonth": true,
-              "formattedValue": "20/01/2022"
+              "formattedValue": "20/01/2022",
+              "isPassed": false
             },
             {
               "label": "27",
               "value": 27,
               "inMonth": true,
-              "formattedValue": "27/01/2022"
+              "formattedValue": "27/01/2022",
+              "isPassed": false
             },
             {
               "label": "03",
               "value": 3,
               "inMonth": false,
-              "formattedValue": "03/02/2022"
+              "formattedValue": "03/02/2022",
+              "isPassed": false
             }
           ]
         },
@@ -181,37 +205,43 @@
               "label": "31",
               "value": 31,
               "inMonth": false,
-              "formattedValue": "31/12/2021"
+              "formattedValue": "31/12/2021",
+              "isPassed": false
             },
             {
               "label": "07",
               "value": 7,
               "inMonth": true,
-              "formattedValue": "07/01/2022"
+              "formattedValue": "07/01/2022",
+              "isPassed": false
             },
             {
               "label": "14",
               "value": 14,
               "inMonth": true,
-              "formattedValue": "14/01/2022"
+              "formattedValue": "14/01/2022",
+              "isPassed": false
             },
             {
               "label": "21",
               "value": 21,
               "inMonth": true,
-              "formattedValue": "21/01/2022"
+              "formattedValue": "21/01/2022",
+              "isPassed": false
             },
             {
               "label": "28",
               "value": 28,
               "inMonth": true,
-              "formattedValue": "28/01/2022"
+              "formattedValue": "28/01/2022",
+              "isPassed": false
             },
             {
               "label": "04",
               "value": 4,
               "inMonth": false,
-              "formattedValue": "04/02/2022"
+              "formattedValue": "04/02/2022",
+              "isPassed": false
             }
           ]
         },
@@ -223,37 +253,43 @@
               "label": "01",
               "value": 1,
               "inMonth": true,
-              "formattedValue": "01/01/2022"
+              "formattedValue": "01/01/2022",
+              "isPassed": false
             },
             {
               "label": "08",
               "value": 8,
               "inMonth": true,
-              "formattedValue": "08/01/2022"
+              "formattedValue": "08/01/2022",
+              "isPassed": false
             },
             {
               "label": "15",
               "value": 15,
               "inMonth": true,
-              "formattedValue": "15/01/2022"
+              "formattedValue": "15/01/2022",
+              "isPassed": false
             },
             {
               "label": "22",
               "value": 22,
               "inMonth": true,
-              "formattedValue": "22/01/2022"
+              "formattedValue": "22/01/2022",
+              "isPassed": false
             },
             {
               "label": "29",
               "value": 29,
               "inMonth": true,
-              "formattedValue": "29/01/2022"
+              "formattedValue": "29/01/2022",
+              "isPassed": false
             },
             {
               "label": "05",
               "value": 5,
               "inMonth": false,
-              "formattedValue": "05/02/2022"
+              "formattedValue": "05/02/2022",
+              "isPassed": false
             }
           ]
         },
@@ -265,37 +301,43 @@
               "label": "02",
               "value": 2,
               "inMonth": true,
-              "formattedValue": "02/01/2022"
+              "formattedValue": "02/01/2022",
+              "isPassed": false
             },
             {
               "label": "09",
               "value": 9,
               "inMonth": true,
-              "formattedValue": "09/01/2022"
+              "formattedValue": "09/01/2022",
+              "isPassed": false
             },
             {
               "label": "16",
               "value": 16,
               "inMonth": true,
-              "formattedValue": "16/01/2022"
+              "formattedValue": "16/01/2022",
+              "isPassed": false
             },
             {
               "label": "23",
               "value": 23,
               "inMonth": true,
-              "formattedValue": "23/01/2022"
+              "formattedValue": "23/01/2022",
+              "isPassed": false
             },
             {
               "label": "30",
               "value": 30,
               "inMonth": true,
-              "formattedValue": "30/01/2022"
+              "formattedValue": "30/01/2022",
+              "isPassed": false
             },
             {
               "label": "06",
               "value": 6,
               "inMonth": false,
-              "formattedValue": "06/02/2022"
+              "formattedValue": "06/02/2022",
+              "isPassed": false
             }
           ]
         }
