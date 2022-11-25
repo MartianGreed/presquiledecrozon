@@ -52,7 +52,7 @@
                 {{ booking.prices.totalPrice }}
             </div>
             <div class="see-details">
-                <a href="#">Voir les détails de la réservation</a>
+                <a href="{{ path('app_profile_booking_details', { id: booking.id }) }}">Voir les détails de la réservation</a>
             </div>
         </div>
     </div>

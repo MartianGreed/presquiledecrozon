@@ -49,7 +49,7 @@
                 @apply flex justify-between flex-col md:flex-row;
 
                 .people-count {
-                    @apply text-gray-700 font-light;
+                    @apply flex gap-2 text-gray-700 font-light;
                 }
                 .price {
                     @apply text-blue font-semibold;

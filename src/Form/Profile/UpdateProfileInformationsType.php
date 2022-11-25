@@ -41,6 +41,7 @@ final class UpdateProfileInformationsType extends AbstractType
             ->add('birthdate', DateType::class, [
                 'html5' => true,
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('picture', MediaType::class, [
                 'required' => false,

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Booking;
 
+use App\Controller\WithUserTrait;
 use App\Domain\Booking\BookingPriceSimulatorService;
 use App\Domain\Booking\BookingService;
 use App\Domain\Booking\Status;
@@ -10,7 +11,6 @@ use App\Entity\Booking\Booking;
 use App\Entity\Conversation\Conversation;
 use App\Entity\Conversation\Message;
 use App\Form\Booking\ConfirmBookingType;
-use App\Util\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class BookingConfirmationController extends AbstractController
 {
+    use WithUserTrait;
+
     public function __construct(
         private readonly BookingPriceSimulatorService $simulatorService,
         private readonly BookingService $bookingService,
@@ -32,6 +34,9 @@ final class BookingConfirmationController extends AbstractController
     #[ParamConverter('booking', Booking::class)]
     public function __invoke(Request $request, Booking $booking): Response
     {
+        if ($booking->getBooker()->getId() !== $this->getUser()->getId()) {
+            throw $this->createAccessDeniedException('You cannot access this resource');
+        }
         if (Status::INITIALISED !== $booking->getStatus()) {
             throw $this->createNotFoundException('Booking not found');
         }

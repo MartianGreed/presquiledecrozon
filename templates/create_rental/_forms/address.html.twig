@@ -3,7 +3,7 @@
     {{ form_row(form.address2, { label: 'Appartement, bâtiment (facultatif)' }) }}
     {{ form_row(form.town, { label: 'Commune' }) }}
 
-    <div class="flex justify-end gap-4 mt-6">
+    <div class="flex justify-end gap-4 mt-6" data-controller="back">
         <button type="button" class="button button__outlined__grey" data-action="back#back">Retour</button>
         <button type="submit" class="button button__blue">Sauvegarder et continuer</button>
     </div>

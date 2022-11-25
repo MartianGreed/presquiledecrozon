@@ -19,6 +19,7 @@
             }
 
             &__content {
+                @apply flex flex-col grow;
                 .top {
                     @apply flex justify-between;
                     .name {

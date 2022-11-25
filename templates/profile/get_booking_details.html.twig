@@ -1,0 +1,36 @@
+{% extends 'profile/profile_layout.html.twig' %}
+
+{% block title %}Réservation{% endblock %}
+{% block page_title 'Détails de la réservation' %}
+{% set content_class = 'confirm_booking' %}
+
+{% block profile_main %}
+    <div class="rental__container">
+        <h1 class="confirm_booking__title">Récapitulatif de réservation</h1>
+
+        <div class="separator no-mb">
+            <span>
+                La réservation
+            </span>
+        </div>
+
+        <div class="confirm_booking__recap">
+            <div class="no-mb dates">
+                {{ vm.bookingDuration }} du <span class="date-item">{{ vm.startAt | raw }}</span> au <span class="date-item">{{ vm.endAt | raw }}</span>
+            </div>
+        </div>
+        <div class="no-mb">
+            Nombre de personnes : {{ vm.peopleCount }}
+        </div>
+        <div class="no-mb">
+            Montant total : {{ vm.totalPrice }}
+        </div>
+
+        <div class="mt-12 separator confirm_booking__duration">
+            <span>
+                Informations sur le locataire
+            </span>
+        </div>
+
+    </div>
+{% endblock %}

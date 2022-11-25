@@ -1,4 +1,6 @@
 .rental_details {
+    @apply pb-12;
+
     &__slideshow__container {
         @apply grid grid-cols-8 gap-2;
 
@@ -46,7 +48,7 @@
 
             .sidebar__menu {
                 .sidebar__menu__item {
-                    @apply text-gray-700 my-6 list-disc cursor-pointer hover:text-blue hover:underline;
+                    @apply text-gray-700 my-6 list-disc cursor-pointer hover:text-blue;
                     &.active {
                         @apply text-blue;
                     }
