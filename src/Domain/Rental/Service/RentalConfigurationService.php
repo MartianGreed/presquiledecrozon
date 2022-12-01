@@ -65,7 +65,7 @@ final class RentalConfigurationService
                     throw new \LogicException('Bed with ID: ' . $bedId . ' does not exists');
                 }
 
-                $bedroom->addBed($bed);
+                $bedroom->addBed($bed, $bedCount);
             }
 
             $configuration->addBedroom($bedroom);

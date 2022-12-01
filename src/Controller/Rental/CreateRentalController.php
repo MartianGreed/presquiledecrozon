@@ -11,7 +11,6 @@ use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Condition;
 use App\Entity\Rental\Description;
-use App\Entity\Rental\Gallery;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
@@ -21,7 +20,6 @@ use App\Form\Rental\RentalDescriptionType;
 use App\Form\Rental\RentalFurnituresType;
 use App\Form\Rental\RentalInformationsType;
 use App\Form\Rental\RentalMapType;
-use App\Form\Rental\RentalPicturesType;
 use App\Form\Rental\RentalPreferencesType;
 use App\Form\Rental\RentalPricesType;
 use App\Form\Rental\RentalTaxType;
@@ -61,7 +59,7 @@ final class CreateRentalController extends AbstractController
                 /** @var ConfigurationDTO $data */
                 $data = $form->getData();
                 $configurationService->createConfiguration($rental, $data);
-            } catch (\Exception) {
+            } catch (\Exception $e) {
                 $form->addError(new FormError('Nous avons eu un probleme lors de l\'enregistrement de la configuration de votre logement.'));
 
                 return $this->renderForm('create_rental/configuration.html.twig', [

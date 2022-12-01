@@ -3,7 +3,7 @@
         "@babel/core": "^7.16.7",
         "@babel/preset-env": "^7.16.8",
         "@babel/preset-typescript": "^7.16.7",
-        "@symfony/ux-lazy-image": "file:vendor/symfony/ux-lazy-image/Resources/assets",
+        "@symfony/ux-lazy-image": "file:vendor/symfony/ux-lazy-image/assets",
         "@types/axios": "^0.14.0",
         "@types/google.maps": "^3.47.2",
         "@types/jest": "^27.0.3",

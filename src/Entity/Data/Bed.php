@@ -7,7 +7,6 @@ use App\Entity\Identity;
 use App\Entity\IdentityTrait;
 use App\Repository\Data\BedRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: BedRepository::class)]
 class Bed implements \Stringable, Identity
@@ -63,5 +62,13 @@ class Bed implements \Stringable, Identity
         $this->size = $size;
 
         return $this;
+    }
+
+    public function getDimensions(): ?string
+    {
+        if (null === $this->size) {
+            return null;
+        }
+        return $this->size->getDimensions();
     }
 }

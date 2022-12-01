@@ -29,11 +29,7 @@ final class ConfigurationDTO
 
             $self->bedrooms[] = [];
             foreach ($bedroom->getBeds() as $bed) {
-                if (!array_key_exists((string) $bed->getId(), $self->bedrooms[$i])) {
-                    $self->bedrooms[$i][$bed->getId()] = 0;
-                }
-
-                ++$self->bedrooms[$i][$bed->getId()];
+                $self->bedrooms[$i][$bed->getBed()->getId()] = $bed->getCount();
             }
         }
 

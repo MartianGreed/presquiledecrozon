@@ -9,7 +9,6 @@ use App\Repository\Rental\BedroomRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Polyfill\Intl\Idn\Idn;
 
 #[ORM\Entity(repositoryClass: BedroomRepository::class)]
 class Bedroom implements \Stringable, Identity
@@ -20,8 +19,9 @@ class Bedroom implements \Stringable, Identity
     #[ORM\JoinColumn(nullable: false)]
     private Configuration $configuration;
 
-    /** @var ArrayCollection<int, Bed> */
-    #[ORM\ManyToMany(targetEntity: Bed::class)]
+    /** @var ArrayCollection<int, BedroomBed> */
+    #[ORM\OneToMany(targetEntity: BedroomBed::class, mappedBy: 'bedroom', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Collection $beds;
 
     public function __construct()
@@ -42,12 +42,9 @@ class Bedroom implements \Stringable, Identity
         return $this->beds;
     }
 
-    public function addBed(Bed $bed): self
+    public function addBed(Bed $bed, int $count): self
     {
-        if (!$this->beds->contains($bed)) {
-            $this->beds[] = $bed;
-        }
-
+        $this->beds[] = BedroomBed::new($this, $bed, $count);
         return $this;
     }
 
@@ -56,6 +53,15 @@ class Bedroom implements \Stringable, Identity
         $this->beds->removeElement($bed);
 
         return $this;
+    }
+
+    public function clearBedroom(): void
+    {
+        foreach ($this->beds as $bed) {
+            $bed->setBedroom(null);
+        }
+
+        $this->beds = new ArrayCollection();
     }
 
 

@@ -86,6 +86,9 @@ class Configuration implements Identity
 
     public function clearBedrooms(): void
     {
+        foreach ($this->bedrooms as $bedroom) {
+            $bedroom->clearBedroom();
+        }
         $this->bedrooms = new ArrayCollection();
     }
 
