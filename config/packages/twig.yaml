@@ -3,6 +3,10 @@ twig:
     form_themes:
         - 'tailwind_2_layout.html.twig'
         - '_forms/layout.html.twig'
+    paths:
+      '%kernel.project_dir%/assets/styles': styles
+      '%kernel.project_dir%/assets/images': images
+
 
     globals:
         app_locale: '%kernel.default_locale%'

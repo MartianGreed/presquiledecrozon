@@ -1,0 +1,28 @@
+{% apply inky_to_html|inline_css(source('@styles/email-template.css')) %}
+    <container>
+        <row class="header">
+            <wapper>
+                <columns></columns>
+                <columns>
+                    <p class="text-center">
+                        <img src={{ email.image('@images/logo.png')}} alt="Logo"/>
+                    </p>
+                </columns>
+                <columns></columns>
+            </wapper>
+            <spacer size="8"></spacer>
+            <wrapper>
+                <img src={{ email.image('@images/ui/email-bg.jpg')}} alt="Logo"/>
+            </wrapper>
+        </row>
+    </container>
+    <container>
+            {% block email_content %}{% endblock %}
+    </container>
+    <container>
+        <row class="mail-footer">
+            <spacer size="8"></spacer>
+            <p>Ceci est un email automatique. N'y répondez pas directement.</p>
+        </row>
+    </container>
+{% endapply %}

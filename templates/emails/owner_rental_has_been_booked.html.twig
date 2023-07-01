@@ -1,2 +1,10 @@
-<h1>Nouvelle demande de réservation</h1>
-<p>Vous disposez de 48h pour prendre en compte et valider la réservation</p>
+{% extends 'emails/base.html.twig' %}
+
+{% block email_content %}
+    <row>
+        <columns>
+            <h1>Nouvelle demande de réservation</h1>
+            <p>Vous disposez de 48h pour prendre en compte et valider la réservation</p>
+        </columns>
+    </row>
+{% endblock %}

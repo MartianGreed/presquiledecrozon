@@ -1,2 +1,10 @@
-<h1>Votre demande de réservation a bien été prise en compte</h1>
-<p>Le propriétaire dispose de 48h pour prendre en compte votre réservation.</p>
+{% extends 'emails/base.html.twig' %}
+
+{% block email_content %}
+    <row>
+        <colums>
+            <h1>Votre demande de réservation a bien été prise en compte</h1>
+            <p>Le propriétaire dispose de 48h pour prendre en compte votre réservation.</p>
+        </columns>
+    </row>
+{% endblock %}

@@ -1,1 +1,9 @@
-<h1>Votre demande de réservation à malheureusement été annulée...</h1>
+{% extends 'emails/base.html.twig' %}
+
+{% block email_content %}
+    <row>
+        <columns>
+            <h1>Votre demande de réservation à malheureusement été annulée...</h1>
+        </coluns>
+    </row>
+{% endblock %}

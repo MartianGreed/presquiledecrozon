@@ -1,44 +1,30 @@
-{% apply inky_to_html %}
-    <container>
-        <row class="header">
-            <columns>
-                <spacer size="16"></spacer>
-                <h1 class="text-center"><h1>Votre annonce a bien été publiée !</h1></h1>
-            </columns>
-        </row>
-        <row>
-            <columns>
-                <spacer size="16"></spacer>
-                <p>
-                    Votre logement est désormais affiché sur le site et peut dès à présent être réservé.
-                </p>
-            </columns>
-        </row>
-        <row>
-            <columns>
-                <div class="text-left">
-                    <p>Détails de l'annonce :</p>
-                    <ul>
-                        <li>Titre : {{ rental.description.title }}</li>
-                        <li>Prix journalier : {{ rental.dailyRate }}</li>
-                        <li>Prix hebdomadaire : {{ rental.weeklyRate }}</li>
-                        {% if rental.prices is not empty %}
-                            {% for price in rental.prices %}
-                                <li>Période du {{ price.startAt|date }} au {{ price.endAt|date }} : {{ price.dailyRate }} / {{ price.weeklyRate }}</li>
-                            {% endfor %}
-                        {% endif %}
-                        <li>Lien de votre annonce : {{ url('app_rental_details', { slug: rental.slug }) }}</li>
-                    </ul>
-                </div>
-                <div>
-                    <small>
-                        Toutes ces informations peuvent être modifiées depuis votre espace personnel ou par le biais de ce lien :
-                    </small>
-                    <a href="{{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"> Modifier mon annonce</a>
-                    <br>
-                    <small>Si le lien ne fonctionne pas, vous pouvez copier/coller l'adresse suivante dans votre navigateur. {{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}</small>
-                </div>
-            </columns>
-        </row>
-    </container>
-{% endapply %}
+{% extends 'emails/base.html.twig' %}
+
+{% block email_content %}
+<row>
+    <columns>
+        <div class="text-left">
+            <p>Détails de l'annonce :</p>
+            <ul>
+                <li>Titre : {{ rental.description.title }}</li>
+                <li>Prix journalier : {{ rental.dailyRate }}</li>
+                <li>Prix hebdomadaire : {{ rental.weeklyRate }}</li>
+                {% if rental.prices is not empty %}
+                    {% for price in rental.prices %}
+                        <li>Période du {{ price.startAt|date }} au {{ price.endAt|date }} : {{ price.dailyRate }} / {{ price.weeklyRate }}</li>
+                    {% endfor %}
+                {% endif %}
+                <li>Lien de votre annonce : {{ url('app_rental_details', { slug: rental.slug }) }}</li>
+            </ul>
+        </div>
+        <div>
+            <small>
+                Toutes ces informations peuvent être modifiées depuis votre espace personnel ou par le biais de ce lien :
+            </small>
+            <a href="{{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}"> Modifier mon annonce</a>
+            <br>
+            <small>Si le lien ne fonctionne pas, vous pouvez copier/coller l'adresse suivante dans votre navigateur. {{ url('app_create_rental', { token: generate_token(rental.id), id: rental.id }) }}</small>
+        </div>
+    </columns>
+</row>
+{% endblock %}
