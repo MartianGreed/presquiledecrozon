@@ -19,7 +19,7 @@ final class RequestResetPasswordTest extends PantherTestCase
     {
         $this->client->request('GET', '/reinitialisation-mot-de-passe');
 
-        self::assertSelectorExists('form[name="request_reset_password"]');
-        self::assertSelectorExists('input[id="request_reset_password_email"]');
+        $this->assertSelectorIsVisible('form[name="request_reset_password"]');
+        $this->assertSelectorIsVisible('input[id="request_reset_password_email"]');
     }
 }

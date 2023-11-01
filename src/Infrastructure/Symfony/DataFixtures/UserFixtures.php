@@ -41,14 +41,14 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
 
             $profile
                 ->setFirstname($this->faker->firstName($title))
-                ->setLastname($this->faker->lastName)
-                ->setBirthdate($this->faker->dateTimeThisCentury)
-                ->setCellphone(str_replace(' ', '', $this->faker->phoneNumber))
+                ->setLastname($this->faker->lastName())
+                ->setBirthdate($this->faker->dateTimeThisCentury())
+                ->setCellphone(str_replace(' ', '', $this->faker->phoneNumber()))
                 ->setGender($gender)
             ;
 
             $user
-                ->setEmail($this->faker->email)
+                ->setEmail($this->faker->email())
                 ->setRoles(['ROLE_USER'])
                 ->setProfile($profile)
             ;

@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 final class StringExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('excerpt', [$this, 'excerpt']),

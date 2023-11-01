@@ -134,7 +134,7 @@ final class Storage
             $path = substr($path, 1);
         }
 
-        return sprintf('/%s/%s', $this->storageZoneName, $path);
+        return sprintf('%s/%s', $this->storageZoneName, $path);
     }
 
     /** @return array<string, mixed> */

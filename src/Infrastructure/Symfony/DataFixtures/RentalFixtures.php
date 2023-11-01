@@ -27,7 +27,6 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -65,7 +64,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $this->fetchData($manager);
 
-        for ($i = 0; $i < 150; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $user = $this->getReference(UserFixtures::USER_REFERENCE . $i);
             assert($user instanceof User);
 
@@ -104,8 +103,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $configuration
             ->setType($this->rentalTypes[array_rand($this->rentalTypes)])
             ->setPeopleCount($this->faker->randomDigit())
-            ->setRental($rental)
-        ;
+            ->setRental($rental);
 
         $bedroomCount = 1;
         if (2 < $count) {
@@ -115,9 +113,9 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         for ($i = 0; $i < $bedroomCount; $i++) {
             $bedroom = new Bedroom();
 
-            $bedroom->addBed($this->beds[array_rand($this->beds)]);
+            $bedroom->addBed($this->beds[array_rand($this->beds)], $this->faker->randomDigit());
             if ($bedroomCount < 2) {
-                $bedroom->addBed($this->beds[array_rand($this->beds)]);
+                $bedroom->addBed($this->beds[array_rand($this->beds)], $this->faker->randomDigit());
             }
 
             $manager->persist($bedroom);
@@ -166,10 +164,9 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $address = new Address();
         $address
-            ->setAddress($this->faker->streetAddress)
+            ->setAddress($this->faker->streetAddress())
             ->setTown($this->towns[array_rand($this->towns)])
-            ->setRental($rental)
-        ;
+            ->setRental($rental);
 
         $rental->saveAddress($address);
 
@@ -206,8 +203,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
             ->addPicture($this->createMedia('2.jpg'))
             ->addPicture($this->createMedia('3.jpg'))
             ->addPicture($this->createMedia('4.jpg'))
-            ->addPicture($this->createMedia('5.jpg'))
-        ;
+            ->addPicture($this->createMedia('5.jpg'));
 
         $rental = $rental->createGallery($gallery);
         $manager->persist($gallery);
@@ -223,8 +219,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
             ->setAcceptedLastBooking(RentalPreferences::acceptedLastBookingChoices()[array_rand(RentalPreferences::acceptedLastBookingChoices())])
             ->setMaxTimeBeforeBooking(RentalPreferences::maxTimeBeforeBookingChoices()[array_rand(RentalPreferences::maxTimeBeforeBookingChoices())])
             ->setBeginBookingAt(RentalPreferences::beginBookingAt()[array_rand(RentalPreferences::beginBookingAt())])
-            ->setEndBookingAt(RentalPreferences::endBookingAt()[array_rand(RentalPreferences::endBookingAt())])
-        ;
+            ->setEndBookingAt(RentalPreferences::endBookingAt()[array_rand(RentalPreferences::endBookingAt())]);
 
         $rental->setPreferences($preferences);
         $manager->persist($preferences);
@@ -254,8 +249,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $tax = new Tax();
         $tax->setLocalTax('1,2%')
             ->setCleaningTax(new Price(50))
-            ->setLinensTax(new Price(15))
-        ;
+            ->setLinensTax(new Price(15));
 
         foreach ($this->linens as $linen) {
             $tax->addLinen($linen);
@@ -290,8 +284,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
         $rental
             ->setDailyRate(new Price($this->faker->numberBetween(50, 70)))
-            ->setWeeklyRate(new Price($this->faker->numberBetween(500, 700)))
-        ;
+            ->setWeeklyRate(new Price($this->faker->numberBetween(500, 700)));
 
         return $rental;
     }
@@ -304,8 +297,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
             ->setAnimalsAccepted($this->faker->boolean())
             ->setSmokingAllowed($this->faker->boolean())
             /** @phpstan-ignore-next-line */
-            ->setAdditionnalRules($this->faker->sentences())
-        ;
+            ->setAdditionnalRules($this->faker->sentences());
         $rental = $rental->setCondition($condition);
 
         $manager->persist($condition);
@@ -319,8 +311,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $media = (new Media())
             ->setFile($file)
             ->setName($file->getFilename())
-            ->setSize($file->getSize())
-        ;
+            ->setSize($file->getSize());
 
         $this->uploadHandler->upload($media, 'file');
 

@@ -11,15 +11,15 @@ use App\Message\RentalHasBeenBooked;
 use App\MessageHandler\Traits\RentalFetcherTrait;
 use App\Repository\Booking\BookingRepository;
 use App\Repository\Rental\RentalRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Mime\Address;
 
-final class RentalHasBeenBookedHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+final class RentalHasBeenBookedHandler
 {
     use RentalFetcherTrait;
 

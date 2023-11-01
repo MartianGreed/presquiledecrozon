@@ -9,12 +9,13 @@ use App\Manager\ImageCacheManagerInterface;
 use App\Message\ResizeRentalPictures;
 use App\Repository\Rental\GalleryRepository;
 use App\Service\ImageResizerServiceInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 /**
  * @phpstan-import-type ResizeOption from PictureResizerOptions
  */
-final class ResizeRentalPicturesHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+final class ResizeRentalPicturesHandler
 {
     public function __construct(
         private readonly GalleryRepository $galleryRepository,

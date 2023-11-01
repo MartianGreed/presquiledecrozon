@@ -11,10 +11,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Mime\Address;
 
-final class BookingHasBeenConfirmedHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+final class BookingHasBeenConfirmedHandler
 {
     public function __construct(
         private readonly BookingRepository $bookingRepository,

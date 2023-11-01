@@ -7,7 +7,7 @@ use Twig\TwigFilter;
 
 final class PriceExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('price', [$this, 'displayPrice']),

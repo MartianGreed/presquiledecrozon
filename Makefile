@@ -1,13 +1,14 @@
 start:
 	docker-compose -p presquiledecrozon up -d
-	symfony serve
+	symfony serve -d
 
 stop:
 	docker-compose -p presquiledecrozon stop
+	symfony server:stop
 
 fixtures:
-	php bin/console doctrine:fixtures:load --group=data
-	php bin/console doctrine:fixtures:load --group=rental --append
+	symfony console doctrine:fixtures:load --group=data
+	symfony console doctrine:fixtures:load --group=rental --append
 
 test:
 	vendor/bin/phpunit
