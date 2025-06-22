@@ -1,9 +1,9 @@
 start:
-	docker-compose -p presquiledecrozon up -d
+	docker compose -p presquiledecrozon up -d
 	symfony serve -d
 
 stop:
-	docker-compose -p presquiledecrozon stop
+	docker compose -p presquiledecrozon stop
 	symfony server:stop
 
 fixtures:

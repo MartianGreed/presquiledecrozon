@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\VichUploader\ImageCacheManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -37,11 +36,16 @@ final class MediaService
         $options = $this->resolveOptions($options);
 
         if (!$this->cacheManager->has($obj, $fieldName, $className, $options)) {
-            $this->resizer->resize(
-                $this->cacheManager->getSourceFilePath($obj, $fieldName, $className, $options),
-                $this->cacheManager->getPath($obj, $fieldName, $className, $options),
-                $options
-            );
+            try {
+                $this->resizer->resize(
+                    $this->cacheManager->getSourceFilePath($obj, $fieldName, $className, $options),
+                    $this->cacheManager->getPath($obj, $fieldName, $className, $options),
+                    $options
+                );
+            } catch (\Throwable $e) {
+                // If resizing fails, return the original asset URL
+                return (string) $this->helper->asset($obj, $fieldName, $className);
+            }
         }
 
         return $this->cdnHost . $this->cacheManager->getPath($obj, $fieldName, $className, $options);
