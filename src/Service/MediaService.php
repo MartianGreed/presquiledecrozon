@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\VichUploader\ImageCacheManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -30,7 +31,19 @@ final class MediaService
     public function assetHelper($obj, ?string $fieldName = null, ?string $className = null, array $options = []): string
     {
         if (0 === \count($options)) {
-            return (string) $this->helper->asset($obj, $fieldName, $className);
+            $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
+            
+            // Extract the path from the URL (remove protocol and host)
+            $parsedUrl = parse_url($assetUrl);
+            $path = $parsedUrl['path'] ?? '';
+            
+            // If we have a valid path, prepend the CDN host
+            if ($path !== '') {
+                return rtrim($this->cdnHost, '/') . $path;
+            }
+            
+            // Fallback to original URL if parsing fails
+            return $assetUrl;
         }
 
         $options = $this->resolveOptions($options);
@@ -43,12 +56,20 @@ final class MediaService
                     $options
                 );
             } catch (\Throwable $e) {
-                // If resizing fails, return the original asset URL
-                return (string) $this->helper->asset($obj, $fieldName, $className);
+                // If resizing fails, return the original asset URL with CDN host
+                $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
+                $parsedUrl = parse_url($assetUrl);
+                $path = $parsedUrl['path'] ?? '';
+                
+                if ($path !== '') {
+                    return rtrim($this->cdnHost, '/') . $path;
+                }
+                
+                return $assetUrl;
             }
         }
 
-        return $this->cdnHost . $this->cacheManager->getPath($obj, $fieldName, $className, $options);
+        return rtrim($this->cdnHost, '/') . '/' . ltrim($this->cacheManager->getPath($obj, $fieldName, $className, $options), '/');
     }
 
     /**
