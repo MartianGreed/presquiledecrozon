@@ -5,7 +5,7 @@ namespace App\Controller\Booking;
 use App\Domain\Booking\BookingPriceSimulatorService;
 use App\Domain\Booking\BookingRequest;
 use App\Entity\Rental\Rental;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ final class GetBookingPriceController extends AbstractController
     }
 
     #[Route('/booking/price/{id}', name: 'app_booking_price', methods: [Request::METHOD_POST])]
-    #[ParamConverter('rental', Rental::class)]
+    #[MapEntity('rental')]
     public function __invoke(Request $request, Rental $rental): Response
     {
         try {

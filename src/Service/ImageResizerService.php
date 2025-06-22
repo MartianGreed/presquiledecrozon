@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\BunnyCDN\BunnyCDNAdapter;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use League\Flysystem\Config;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +19,7 @@ final class ImageResizerService implements ImageResizerServiceInterface
 
     public function __construct(private readonly BunnyCDNAdapter $storage)
     {
-        $this->imageManager = new ImageManager(['driver' => 'imagick']);
+        $this->imageManager = new ImageManager(new Driver());
         $this->resolver = new OptionsResolver();
     }
 
@@ -31,14 +32,14 @@ final class ImageResizerService implements ImageResizerServiceInterface
 
         $stream = $this->storage->readStream($img);
 
-        $image = $this->imageManager->make($stream);
+        $image = $this->imageManager->read($stream);
         if ($options['crop']) {
-            $image->fit(intval($options['w']), intval($options['h']));
+            $image->cover(intval($options['w']), intval($options['h']));
         } else {
-            $image->resize(intval($options['w']), intval($options['h']));
+            $image->scale(intval($options['w']), intval($options['h']));
         }
 
-        $this->storage->write($cachePath, $image->encode('jpeg')->stream(), (new Config())->withDefaults([]));
+        $this->storage->write($cachePath, $image->toJpeg()->toString(), (new Config())->withDefaults([]));
     }
 
     /**

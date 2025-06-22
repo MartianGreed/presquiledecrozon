@@ -34,7 +34,7 @@ class RegionFixtures extends Fixture implements DependentFixtureInterface, Fixtu
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             CountryFixtures::class,

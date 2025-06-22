@@ -43,7 +43,7 @@ class PostalCodeFixtures extends Fixture implements DependentFixtureInterface, F
         return (new PostalCode())->setCode($code)->setDepartment($department);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             DepartmentFixtures::class,

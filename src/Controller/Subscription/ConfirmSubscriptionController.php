@@ -7,7 +7,7 @@ use App\Domain\Subscription\ConfirmationMessage;
 use App\Entity\Rental\Rental;
 use App\Repository\Subscription\RentalSubscriptionRepository;
 use App\Service\StripeService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Stripe\Charge;
 use Stripe\Exception\ApiErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,7 @@ final class ConfirmSubscriptionController extends AbstractController
     }
 
     #[Route('/abonnement/confirm/{rentalId}', name: 'app_confirm_subscription')]
-    #[ParamConverter('rental', class: Rental::class, options: ['id' => 'rentalId'])]
+    #[MapEntity('rental', mapping: ['rentalId' => 'id'])]
     public function __invoke(Request $request, Rental $rental): Response
     {
         try {

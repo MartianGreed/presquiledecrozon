@@ -45,7 +45,7 @@ class TownFixtures extends Fixture implements DependentFixtureInterface, Fixture
         return $town;
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             PostalCodeFixtures::class

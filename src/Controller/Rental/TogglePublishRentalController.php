@@ -5,7 +5,7 @@ namespace App\Controller\Rental;
 use App\Domain\Rental\Service\RentalService;
 use App\Entity\Rental\Rental;
 use App\Message\RentalHasBeenPublished;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ final class TogglePublishRentalController extends AbstractController
     }
 
     #[Route('/rental/{id}/toggle-publish', name: 'app_rental_toggle_publish', methods: ['PATCH'])]
-    #[ParamConverter('rental', class: Rental::class)]
+    #[MapEntity('rental')]
     public function __invoke(Request $request, Rental $rental): Response
     {
         if (!$rental->isPublishable() && !$rental->isPublished()) {

@@ -26,6 +26,13 @@ final class BunnyCDNAdapter implements FilesystemAdapter
         return $this->storage->fileExists($path);
     }
 
+    public function directoryExists(string $path): bool
+    {
+        $path = $this->prefixer->prefixPath($path);
+        // In BunnyCDN, directories are virtual and exist if they have any files
+        return $this->storage->fileExists($path);
+    }
+
     public function write(string $path, string $contents, Config $config): void
     {
         $path = $this->prefixer->prefixPath($path);

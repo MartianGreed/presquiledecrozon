@@ -12,7 +12,7 @@ use App\Entity\Conversation\Conversation;
 use App\Entity\Conversation\Message;
 use App\Form\Booking\ConfirmBookingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ final class BookingConfirmationController extends AbstractController
     }
 
     #[Route('/reservation/{id}/confirmation', name: 'app_confirm_booking')]
-    #[ParamConverter('booking', Booking::class)]
+    #[MapEntity('booking')]
     public function __invoke(Request $request, Booking $booking): Response
     {
         if ($booking->getBooker()->getId() !== $this->getUser()->getId()) {

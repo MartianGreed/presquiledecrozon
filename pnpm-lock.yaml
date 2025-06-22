@@ -29,12 +29,6 @@ importers:
       '@symfony/stimulus-bridge':
         specifier: ^3.2.1
         version: 3.2.3(@hotwired/stimulus@3.2.2)
-      '@symfony/ux-dropzone':
-        specifier: file:vendor/symfony/ux-dropzone/Resources/assets
-        version: file:vendor/symfony/ux-dropzone/Resources/assets(@hotwired/stimulus@3.2.2)
-      '@symfony/ux-turbo':
-        specifier: file:vendor/symfony/ux-turbo/Resources/assets
-        version: file:vendor/symfony/ux-turbo/Resources/assets(@hotwired/stimulus@3.2.2)(@hotwired/turbo@7.3.0)
       '@symfony/webpack-encore':
         specifier: ^3.0.0
         version: 3.1.0
@@ -90,9 +84,15 @@ importers:
       '@jest/types':
         specifier: ^29.6.3
         version: 29.6.3
+      '@symfony/ux-dropzone':
+        specifier: file:vendor/symfony/ux-dropzone/assets
+        version: file:vendor/symfony/ux-dropzone/assets(@hotwired/stimulus@3.2.2)
       '@symfony/ux-lazy-image':
         specifier: file:vendor/symfony/ux-lazy-image/assets
         version: file:vendor/symfony/ux-lazy-image/assets(@hotwired/stimulus@3.2.2)
+      '@symfony/ux-turbo':
+        specifier: file:vendor/symfony/ux-turbo/assets
+        version: file:vendor/symfony/ux-turbo/assets(@hotwired/stimulus@3.2.2)(@hotwired/turbo@7.3.0)
       '@types/axios':
         specifier: ^0.14.0
         version: 0.14.4
@@ -1021,8 +1021,8 @@ packages:
     peerDependencies:
       '@hotwired/stimulus': ^3.0
 
-  '@symfony/ux-dropzone@file:vendor/symfony/ux-dropzone/Resources/assets':
-    resolution: {directory: vendor/symfony/ux-dropzone/Resources/assets, type: directory}
+  '@symfony/ux-dropzone@file:vendor/symfony/ux-dropzone/assets':
+    resolution: {directory: vendor/symfony/ux-dropzone/assets, type: directory}
     peerDependencies:
       '@hotwired/stimulus': ^3.0.0
 
@@ -1031,11 +1031,11 @@ packages:
     peerDependencies:
       '@hotwired/stimulus': ^3.0.0
 
-  '@symfony/ux-turbo@file:vendor/symfony/ux-turbo/Resources/assets':
-    resolution: {directory: vendor/symfony/ux-turbo/Resources/assets, type: directory}
+  '@symfony/ux-turbo@file:vendor/symfony/ux-turbo/assets':
+    resolution: {directory: vendor/symfony/ux-turbo/assets, type: directory}
     peerDependencies:
       '@hotwired/stimulus': ^3.0.0
-      '@hotwired/turbo': ^7.0.1
+      '@hotwired/turbo': ^7.1.1 || ^8.0
 
   '@symfony/webpack-encore@3.1.0':
     resolution: {integrity: sha512-9vM+8dnWoyrtKS23uFpB4sawYFwin8WQIHglXHFq1glT+Atv9KTv0+ZgoqaD0+D4k4D+9Z1cq4skBADtElgZeg==}
@@ -5243,7 +5243,7 @@ snapshots:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
 
-  '@symfony/ux-dropzone@file:vendor/symfony/ux-dropzone/Resources/assets(@hotwired/stimulus@3.2.2)':
+  '@symfony/ux-dropzone@file:vendor/symfony/ux-dropzone/assets(@hotwired/stimulus@3.2.2)':
     dependencies:
       '@hotwired/stimulus': 3.2.2
 
@@ -5251,7 +5251,7 @@ snapshots:
     dependencies:
       '@hotwired/stimulus': 3.2.2
 
-  '@symfony/ux-turbo@file:vendor/symfony/ux-turbo/Resources/assets(@hotwired/stimulus@3.2.2)(@hotwired/turbo@7.3.0)':
+  '@symfony/ux-turbo@file:vendor/symfony/ux-turbo/assets(@hotwired/stimulus@3.2.2)(@hotwired/turbo@7.3.0)':
     dependencies:
       '@hotwired/stimulus': 3.2.2
       '@hotwired/turbo': 7.3.0
