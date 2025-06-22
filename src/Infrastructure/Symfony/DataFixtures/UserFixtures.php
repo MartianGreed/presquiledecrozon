@@ -32,7 +32,7 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 150; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $profile = new Profile();
 

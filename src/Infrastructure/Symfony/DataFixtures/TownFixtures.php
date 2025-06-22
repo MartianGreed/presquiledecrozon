@@ -14,11 +14,11 @@ class TownFixtures extends Fixture implements DependentFixtureInterface, Fixture
     public function load(ObjectManager $manager): void
     {
         /** @var PostalCode $postal29160 */
-        $postal29160 = $this->getReference(PostalCodeFixtures::POSTAL_29160);
+        $postal29160 = $this->getReference(PostalCodeFixtures::POSTAL_29160, PostalCode::class);
         /** @var PostalCode $postal29560 */
-        $postal29560 = $this->getReference(PostalCodeFixtures::POSTAL_29560);
+        $postal29560 = $this->getReference(PostalCodeFixtures::POSTAL_29560, PostalCode::class);
         /** @var PostalCode $postal29570 */
-        $postal29570 = $this->getReference(PostalCodeFixtures::POSTAL_29570);
+        $postal29570 = $this->getReference(PostalCodeFixtures::POSTAL_29570, PostalCode::class);
 
         $this->createTown($manager, 'Crozon', 'crozon', '29042', $postal29160);
         $this->createTown($manager, 'Camaret-sur-Mer', 'camaret-sur-mer', '29022', $postal29570);

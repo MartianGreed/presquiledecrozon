@@ -18,7 +18,7 @@ class PostalCodeFixtures extends Fixture implements DependentFixtureInterface, F
     public function load(ObjectManager $manager): void
     {
         /** @var Department $department */
-        $department = $this->getReference(DepartmentFixtures::DEPARTMENT_FINISTERE);
+        $department = $this->getReference(DepartmentFixtures::DEPARTMENT_FINISTERE, Department::class);
 
         /** @var PostalCode $postal29160 */
         $postal29160 = $this->createPostalCode('29160', $department);

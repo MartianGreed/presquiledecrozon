@@ -36,3 +36,6 @@ yarn-error.log
 ###> bref/symfony-bridge ###
 /.serverless/
 ###< bref/symfony-bridge ###
+
+# Local uploads directory (used in development)
+/public/uploads/

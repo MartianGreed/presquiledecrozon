@@ -16,7 +16,7 @@ class DepartmentFixtures extends Fixture implements DependentFixtureInterface, F
     public function load(ObjectManager $manager): void
     {
         /** @var Region $region */
-        $region = $this->getReference(RegionFixtures::REGION_BRETAGNE);
+        $region = $this->getReference(RegionFixtures::REGION_BRETAGNE, Region::class);
         $department = new Department();
 
         $department

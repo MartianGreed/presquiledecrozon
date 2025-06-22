@@ -27,6 +27,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -47,6 +48,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private SluggerInterface $slugger;
     private UploadHandler $uploadHandler;
+    private LoggerInterface $logger;
 
     #[Required]
     public function setSlugger(SluggerInterface $slugger): void
@@ -60,12 +62,18 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $this->uploadHandler = $handler;
     }
 
+    #[Required]
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
     public function load(ObjectManager $manager): void
     {
         $this->fetchData($manager);
 
-        for ($i = 0; $i < 50; $i++) {
-            $user = $this->getReference(UserFixtures::USER_REFERENCE . $i);
+        for ($i = 0; $i < 10; $i++) {
+            $user = $this->getReference(UserFixtures::USER_REFERENCE . $i, User::class);
             assert($user instanceof User);
 
             for ($j = 0; $j < 2; $j++) {
@@ -307,15 +315,47 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private function createMedia(string $name): Media
     {
-        $file = new UploadedFile(__DIR__ . '/fixtures/rental/' . $name, $name, 'image/jpeg');
-        $media = (new Media())
-            ->setFile($file)
-            ->setName($file->getFilename())
-            ->setSize($file->getSize());
+        $filePath = __DIR__ . '/fixtures/rental/' . $name;
+        
+        if (!file_exists($filePath)) {
+            $this->logger->error('Fixture image not found', ['path' => $filePath]);
+            throw new \RuntimeException(sprintf('Fixture image not found: %s', $filePath));
+        }
+        
+        try {
+            $file = new UploadedFile($filePath, $name, 'image/jpeg', null, true);
+            $media = (new Media())
+                ->setFile($file)
+                ->setName($file->getFilename())
+                ->setSize($file->getSize());
 
-        $this->uploadHandler->upload($media, 'file');
+            $this->logger->info('Uploading fixture image to CDN', [
+                'filename' => $name,
+                'size' => $file->getSize(),
+            ]);
+            
+            $this->uploadHandler->upload($media, 'file');
+            
+            $this->logger->info('Successfully uploaded fixture image to CDN', [
+                'filename' => $name,
+                'media_id' => $media->getId(),
+            ]);
 
-        return $media;
+            return $media;
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to upload fixture image to CDN', [
+                'filename' => $name,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            // Re-throw the exception to fail the fixture loading
+            throw new \RuntimeException(
+                sprintf('Failed to upload image %s to CDN: %s', $name, $e->getMessage()),
+                0,
+                $e
+            );
+        }
     }
 
     public static function getGroups(): array

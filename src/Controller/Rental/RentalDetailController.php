@@ -112,9 +112,9 @@ final class RentalDetailController extends AbstractController
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
         }
 
-        return $this->renderForm('page/rental-detail.html.twig', [
+        return $this->render('page/rental-detail.html.twig', [
             'rental' => $rental,
-            'form' => $form,
+            'form' => $form->createView(),
             'bookings' => $this->bookingRepository->getBookingRanges((string) $rental->getId()),
         ]);
     }

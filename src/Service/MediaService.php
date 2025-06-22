@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\VichUploader\ImageCacheManager;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -19,6 +20,8 @@ final class MediaService
         private readonly ImageCacheManager $cacheManager,
         private readonly ImageResizerService $resizer,
         private readonly string $cdnHost,
+        #[Autowire('%kernel.environment%')]
+        private readonly string $environment,
     ) {
         $this->resolver = new OptionsResolver();
     }
@@ -33,17 +36,34 @@ final class MediaService
         if (0 === \count($options)) {
             $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
             
-            // Extract the path from the URL (remove protocol and host)
-            $parsedUrl = parse_url($assetUrl);
-            $path = $parsedUrl['path'] ?? '';
-            
-            // If we have a valid path, prepend the CDN host
-            if ($path !== '') {
-                return rtrim($this->cdnHost, '/') . $path;
+            // If VichUploader returns null or empty string, return empty
+            if (empty($assetUrl)) {
+                return '';
             }
             
-            // Fallback to original URL if parsing fails
-            return $assetUrl;
+            // In dev environment with local storage, return the URL as-is
+            if ($this->environment === 'dev' && str_starts_with($assetUrl, '/uploads/')) {
+                return $assetUrl;
+            }
+            
+            // If it's already an absolute URL with a host, extract just the path
+            if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
+                $parsedUrl = parse_url($assetUrl);
+                $path = $parsedUrl['path'] ?? '';
+                
+                // If we have a valid path, prepend the CDN host
+                if ($path !== '') {
+                    return rtrim($this->cdnHost, '/') . $path;
+                }
+            }
+            
+            // If it's already a relative path starting with /, prepend CDN host
+            if (str_starts_with($assetUrl, '/')) {
+                return rtrim($this->cdnHost, '/') . $assetUrl;
+            }
+            
+            // For any other format, prepend CDN host with a slash
+            return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
         }
 
         $options = $this->resolveOptions($options);
@@ -58,14 +78,25 @@ final class MediaService
             } catch (\Throwable $e) {
                 // If resizing fails, return the original asset URL with CDN host
                 $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
-                $parsedUrl = parse_url($assetUrl);
-                $path = $parsedUrl['path'] ?? '';
                 
-                if ($path !== '') {
-                    return rtrim($this->cdnHost, '/') . $path;
+                if (empty($assetUrl)) {
+                    return '';
                 }
                 
-                return $assetUrl;
+                // Handle the URL the same way as non-resized images
+                if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
+                    $parsedUrl = parse_url($assetUrl);
+                    $path = $parsedUrl['path'] ?? '';
+                    if ($path !== '') {
+                        return rtrim($this->cdnHost, '/') . $path;
+                    }
+                }
+                
+                if (str_starts_with($assetUrl, '/')) {
+                    return rtrim($this->cdnHost, '/') . $assetUrl;
+                }
+                
+                return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
             }
         }
 

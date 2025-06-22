@@ -55,7 +55,7 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface, Fixtu
     private function createLinensForCategory(ObjectManager $manager, array $names, string $categoryKey): void
     {
         /** @var LinensCategory $category */
-        $category = $this->getReference($categoryKey);
+        $category = $this->getReference($categoryKey, LinensCategory::class);
         foreach ($names as $item) {
             $linen = (new Linens())->setLabel($item);
             $category->addLinen($linen);

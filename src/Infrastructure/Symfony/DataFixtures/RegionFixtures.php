@@ -18,7 +18,7 @@ class RegionFixtures extends Fixture implements DependentFixtureInterface, Fixtu
         $region = new Region();
 
         /** @var Country $country */
-        $country = $this->getReference(CountryFixtures::COUNTRY_FRANCE);
+        $country = $this->getReference(CountryFixtures::COUNTRY_FRANCE, Country::class);
 
         $region
             ->setName('Bretagne')

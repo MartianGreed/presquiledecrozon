@@ -75,3 +75,6 @@ services:
     App\Command\ImportSqlCommand:
         arguments:
             $rootDir: '%kernel.project_dir%'
+    App\Command\TestCdnUploadCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

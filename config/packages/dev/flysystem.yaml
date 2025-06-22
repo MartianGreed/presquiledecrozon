@@ -1,0 +1,31 @@
+# Local storage configuration for development environment
+# This overrides the production CDN configuration to use local file storage
+# Comment out or delete this file to test CDN uploads in development
+
+flysystem:
+    storages:
+        default.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/public/uploads'
+                permissions:
+                    file:
+                        public: 0644
+                        private: 0600
+                    dir:
+                        public: 0755
+                        private: 0700
+        rental.storage:
+            adapter: 'local'
+            options:
+                directory: '%kernel.project_dir%/public/uploads/rental'
+                permissions:
+                    file:
+                        public: 0644
+                        private: 0600
+                    dir:
+                        public: 0755
+                        private: 0700
+                
+# Note: When using local storage, MediaService will automatically
+# generate local URLs instead of CDN URLs
