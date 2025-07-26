@@ -6,7 +6,9 @@ final class Type
 {
     /**
      * @template T
+     *
      * @param ?T $var
+     *
      * @return T
      */
     public static function assertNotNull($var)

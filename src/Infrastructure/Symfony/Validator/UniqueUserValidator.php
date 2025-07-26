@@ -14,7 +14,6 @@ final class UniqueUserValidator extends ConstraintValidator
 
     /**
      * @param UniqueUser $constraint
-     *
      */
     public function validate(mixed $value, Constraint $constraint): void
     {

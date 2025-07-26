@@ -11,16 +11,16 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     // get parameters
     $parameters = $containerConfigurator->parameters();
     $parameters->set(Option::PATHS, [
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__.'/src',
+        __DIR__.'/tests',
     ]);
 
     // Define what rule sets will be applied
     $containerConfigurator->import(LevelSetList::UP_TO_PHP_81);
 
     // get services (needed for register a single rule)
-     $services = $containerConfigurator->services();
+    $services = $containerConfigurator->services();
 
     // register a single rule
-     $services->set(TypedPropertyRector::class);
+    $services->set(TypedPropertyRector::class);
 };

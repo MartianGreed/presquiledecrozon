@@ -48,7 +48,7 @@ final class FileObject
 
     public function getFilePath(): string
     {
-        return $this->path . $this->objectName;
+        return $this->path.$this->objectName;
     }
 
     public function getPath(): string

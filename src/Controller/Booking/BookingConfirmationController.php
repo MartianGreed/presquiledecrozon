@@ -53,6 +53,7 @@ final class BookingConfirmationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$this->bookingService->isRentalAvailableForBooking($booking->getRental(), $booking)) {
                 $form->addError(new FormError('Ce logement semble ne pas etre disponible durant cette période.'));
+
                 return $this->render('booking/confirmation.html.twig', [
                     'vm' => $confirmation,
                     'form' => $form,
@@ -61,14 +62,14 @@ final class BookingConfirmationController extends AbstractController
 
             $peopleCount = $form->get('peopleCount')->getData();
             $ownerMessage = $form->get('ownerMessage')->getData();
-            
+
             if (!is_numeric($peopleCount)) {
                 throw new \RuntimeException('People count must be numeric');
             }
             if (!is_string($ownerMessage)) {
                 throw new \RuntimeException('Owner message must be a string');
             }
-            
+
             $booking->confirm((int) $peopleCount);
             // Create conversation between two users.
             $conversation = Conversation::initWithMessage(

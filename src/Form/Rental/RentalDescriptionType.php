@@ -22,7 +22,7 @@ final class RentalDescriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Description::class
+            'data_class' => Description::class,
         ]);
     }
 }

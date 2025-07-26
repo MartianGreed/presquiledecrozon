@@ -32,7 +32,7 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
 
     public function load(ObjectManager $manager): void
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $user = new User();
             $profile = new Profile();
 
@@ -55,7 +55,7 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
 
             $user->setPassword($this->passwordHasher->hashPassword($user, '123S3curedP4ssw0rd'));
 
-            $this->addReference(self::USER_REFERENCE . $i, $user);
+            $this->addReference(self::USER_REFERENCE.$i, $user);
 
             $manager->persist($profile);
             $manager->persist($user);

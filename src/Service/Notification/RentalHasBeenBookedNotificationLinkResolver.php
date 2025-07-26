@@ -14,8 +14,8 @@ final class RentalHasBeenBookedNotificationLinkResolver implements NotificationL
     public function __construct(
         private readonly AdminUrlGenerator $urlGenerator,
         private readonly BookingRepository $bookingRepository,
-    )
-    {}
+    ) {
+    }
 
     public function resolve(Notification $entity): ResolvedNotificationLink
     {

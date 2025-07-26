@@ -27,7 +27,6 @@ final class UploadRentalPictureType extends AbstractType
             ])
             ->add('index', IntegerType::class)
         ;
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

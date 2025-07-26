@@ -22,12 +22,13 @@ class Notification
         private readonly \DateTime $createdAt,
         #[ORM\Column(type: 'datetime', nullable: true)]
         private ?\DateTime $readAt = null,
-    ) {}
+    ) {
+    }
 
     public static function create(Identity $targetEntity, string $label, \DateTime $createdAt): Notification
     {
         return new self(
-            (string)$targetEntity->getId(),
+            (string) $targetEntity->getId(),
             \get_class($targetEntity),
             $label,
             $createdAt,

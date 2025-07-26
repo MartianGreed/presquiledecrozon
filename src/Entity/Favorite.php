@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FavoriteRepository::class)]
 class Favorite
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\ManyToOne(targetEntity: Rental::class)]
     #[ORM\JoinColumn(nullable: false, unique: true)]

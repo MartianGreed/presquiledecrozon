@@ -31,6 +31,7 @@ final class NotificationRepository extends ServiceEntityRepository
                             ->getQuery()
                             ->getResult()
         ;
+
         return $notifications;
     }
 

@@ -43,7 +43,6 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
         /** @var ?User $user */
         $user = $this->tokenStorage->getToken()?->getUser();
 
-
         if (null === $user) {
             return;
         }

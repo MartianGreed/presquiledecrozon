@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Admin\Field;
 
-use App\Form\Types\RentalStatusType;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 

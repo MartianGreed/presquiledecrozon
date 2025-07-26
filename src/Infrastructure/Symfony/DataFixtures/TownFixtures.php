@@ -36,7 +36,7 @@ class TownFixtures extends Fixture implements DependentFixtureInterface, Fixture
         string $name,
         string $slug,
         string $inseeCode,
-        PostalCode $postalCode
+        PostalCode $postalCode,
     ): Town {
         $town = (new Town())->setName($name)->setSlug($slug)->setInseeCode($inseeCode)->setPostalCode($postalCode);
 
@@ -48,7 +48,7 @@ class TownFixtures extends Fixture implements DependentFixtureInterface, Fixture
     public function getDependencies(): array
     {
         return [
-            PostalCodeFixtures::class
+            PostalCodeFixtures::class,
         ];
     }
 

@@ -42,14 +42,14 @@ final class Confirmation
 
         $str = '';
         if (7 > $diffInDays) {
-            return sprintf('%d jour%s', $diffInDays, $diffInDays > 1 ? 's': '');
+            return sprintf('%d jour%s', $diffInDays, $diffInDays > 1 ? 's' : '');
         }
 
         if (0 < $weekCount) {
-            $str .= $weekCount . ' semaine' . ($weekCount > 1 ? 's' : '');
+            $str .= $weekCount.' semaine'.($weekCount > 1 ? 's' : '');
         }
         if (0 < $leftDays) {
-            $str .= ' et ' . $leftDays . ' jour' . ($leftDays > 1 ? 's' : '');
+            $str .= ' et '.$leftDays.' jour'.($leftDays > 1 ? 's' : '');
         }
 
         return $str;
@@ -72,7 +72,7 @@ final class Confirmation
 
     private function getFormattedDate(\DateTimeInterface $dateTime): string
     {
-        return '<span class="days">' . $dateTime->format('d') . '</span>' . $dateTime->format('M');
+        return '<span class="days">'.$dateTime->format('d').'</span>'.$dateTime->format('M');
     }
 
     public function getRentalTitle(): string

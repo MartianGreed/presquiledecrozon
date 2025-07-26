@@ -19,6 +19,9 @@ fixtures:
 test:
 	vendor/bin/phpunit
 
+format:
+	vendor/bin/php-cs-fixer fix
+
 test_class:
 	vendor/bin/phpunit --filter $(filter)
 

@@ -16,7 +16,6 @@ final class GeocodingServiceTest extends TestCase
     private MockObject $clientMock;
     private GeocodingService $service;
 
-
     public function setUp(): void
     {
         $this->clientMock = $this->createMock(HttpClientInterface::class);
@@ -57,7 +56,7 @@ final class GeocodingServiceTest extends TestCase
     private function createResponseInterfaceMock(): ResponseInterface
     {
         /** @var string $responseContent */
-        $responseContent = file_get_contents(dirname(__DIR__, 3) . '/samples/google/lezargol.json');
+        $responseContent = file_get_contents(dirname(__DIR__, 3).'/samples/google/lezargol.json');
 
         $responseMock = $this->createMock(ResponseInterface::class);
 

@@ -18,7 +18,7 @@ class RegisterUserType extends AbstractType
             ->add('email', EmailType::class)
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'invalid_message' => 'Les mots de passe doivent être identiques.'
+                'invalid_message' => 'Les mots de passe doivent être identiques.',
             ])
         ;
     }

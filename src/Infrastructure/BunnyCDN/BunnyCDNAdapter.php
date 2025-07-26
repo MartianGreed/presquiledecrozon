@@ -23,12 +23,14 @@ final class BunnyCDNAdapter implements FilesystemAdapter
     public function fileExists(string $path): bool
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->storage->fileExists($path);
     }
 
     public function directoryExists(string $path): bool
     {
         $path = $this->prefixer->prefixPath($path);
+
         // In BunnyCDN, directories are virtual and exist if they have any files
         return $this->storage->fileExists($path);
     }
@@ -49,12 +51,14 @@ final class BunnyCDNAdapter implements FilesystemAdapter
     public function read(string $path): string
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->storage->downloadFile($path)->getContentAsString();
     }
 
     public function readStream(string $path)
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->storage->downloadFile($path)->getContentAsResource();
     }
 
@@ -85,24 +89,28 @@ final class BunnyCDNAdapter implements FilesystemAdapter
     public function visibility(string $path): FileAttributes
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->fetchFileMetadata($path);
     }
 
     public function mimeType(string $path): FileAttributes
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->fetchFileMetadata($path);
     }
 
     public function lastModified(string $path): FileAttributes
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->fetchFileMetadata($path);
     }
 
     public function fileSize(string $path): FileAttributes
     {
         $path = $this->prefixer->prefixPath($path);
+
         return $this->fetchFileMetadata($path);
     }
 
@@ -144,6 +152,7 @@ final class BunnyCDNAdapter implements FilesystemAdapter
     {
         $path = $this->prefixer->prefixPath($path);
         $object = $this->storage->getObject($path);
+
         return FileAttributesFactory::from($object);
     }
 }

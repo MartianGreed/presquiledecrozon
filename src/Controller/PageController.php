@@ -14,9 +14,8 @@ class PageController extends AbstractController
     #[Route('/', name: 'app_homepage')]
     public function index(
         RentalRepository $rentalRepository,
-        SubscriptionRepository $subscriptionRepository
-    ): Response
-    {
+        SubscriptionRepository $subscriptionRepository,
+    ): Response {
         $subscription = null;
         try {
             $subscription = $subscriptionRepository->findDefaultSubscription();

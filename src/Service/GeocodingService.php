@@ -51,14 +51,14 @@ final class GeocodingService implements GeocodingServiceInterface
     {
         $formatted = $address->getAddress();
         if (null !== $address->getAddress2()) {
-            $formatted .= ',+' . $address->getAddress2();
+            $formatted .= ',+'.$address->getAddress2();
         }
 
         $town = $this->getTownObjectFromAddress($address);
 
-        $formatted .= ',+' . $town->getName();
-        $formatted .= ',+' . $town->getPostalCode()->getCode();
-        $formatted .= ',+' . $town->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName();
+        $formatted .= ',+'.$town->getName();
+        $formatted .= ',+'.$town->getPostalCode()->getCode();
+        $formatted .= ',+'.$town->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName();
 
         return $formatted;
     }

@@ -9,7 +9,7 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 
 final class MappingComponent
 {
-    /** @var array<string, string> $mapping */
+    /** @var array<string, string> */
     private array $mapping;
     private string $prefix;
     private readonly OptionsResolver $resolver;
@@ -19,7 +19,7 @@ final class MappingComponent
         array $options,
         private readonly StorageInterface $storage,
         private readonly ?NamerInterface $name = null,
-        private readonly ?DirectoryNamerInterface $directoryNamer = null
+        private readonly ?DirectoryNamerInterface $directoryNamer = null,
     ) {
         $this->resolver = new OptionsResolver();
         $this->computeOptions($options);
@@ -62,6 +62,7 @@ final class MappingComponent
 
     /**
      * @param array<string, string> $options
+     *
      * @return array<string, string>
      */
     private function resolveOptions(array $options): array

@@ -14,7 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: DiscountRepository::class)]
 class Discount implements \Stringable, Identity
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\Column(type: 'string', length: 10)]
     private string $type;

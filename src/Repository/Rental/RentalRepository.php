@@ -6,9 +6,7 @@ use App\Domain\Exception\EntityNotFoundException;
 use App\Domain\Exception\RentalNotFoundException;
 use App\Domain\Rental\Status;
 use App\Entity\Rental\Rental;
-use App\Entity\Rental\Unavailability;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -56,7 +54,7 @@ class RentalRepository extends ServiceEntityRepository
         ;
 
         if (null === $rental) {
-            throw new EntityNotFoundException('No unpublished rental found for user :' . $userId);
+            throw new EntityNotFoundException('No unpublished rental found for user :'.$userId);
         }
 
         return $rental;
@@ -70,7 +68,7 @@ class RentalRepository extends ServiceEntityRepository
         /** @var array<Rental> $rentals */
         $rentals = $qb
             ->where($qb->expr()->eq('r.owner', "'$userId'"))
-            ->andWhere($qb->expr()->neq('r.status', "'" . Status::DRAFT->value . "'"))
+            ->andWhere($qb->expr()->neq('r.status', "'".Status::DRAFT->value."'"))
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
@@ -110,7 +108,6 @@ class RentalRepository extends ServiceEntityRepository
         ;
     }
 
-
     public function fetchRentalDetails(string $slug): Rental
     {
         $qb = $this->getBaseQueryBuilder();
@@ -118,7 +115,7 @@ class RentalRepository extends ServiceEntityRepository
 
         /** @var ?Rental $rental */
         $rental = $qb
-            ->where($qb->expr()->eq('r.slug', "'" . $slug . "'"))
+            ->where($qb->expr()->eq('r.slug', "'".$slug."'"))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -176,7 +173,6 @@ class RentalRepository extends ServiceEntityRepository
 
         return 0 < $unavailabilites;
     }
-
 
     private function addEntitiesJoin(QueryBuilder $qb): QueryBuilder
     {

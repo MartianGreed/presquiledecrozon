@@ -29,6 +29,7 @@ class BedroomBed implements Identity
         $self->bedroom = $bedroom;
         $self->bed = $bed;
         $self->count = $count;
+
         return $self;
     }
 
@@ -40,6 +41,7 @@ class BedroomBed implements Identity
     public function setBedroom(?Bedroom $bedroom): self
     {
         $this->bedroom = $bedroom;
+
         return $this;
     }
 

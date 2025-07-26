@@ -21,7 +21,7 @@ class FetchRentalGeolocationHandlerTest extends TestCase
     private MockObject $repository;
     private MockObject $geocodingService;
     private MockObject $manager;
-    
+
     private FetchRentalGeolocationHandler $handler;
 
     public function setUp(): void

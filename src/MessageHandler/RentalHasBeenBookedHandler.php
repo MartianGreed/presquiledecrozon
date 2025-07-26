@@ -30,8 +30,7 @@ final class RentalHasBeenBookedHandler
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly string $emailSender,
-    )
-    {
+    ) {
     }
 
     public function __invoke(RentalHasBeenBooked $message): void
@@ -45,7 +44,8 @@ final class RentalHasBeenBookedHandler
         $booking = $this->bookingRepository->find($message->bookingId);
 
         if (null === $booking) {
-            $this->logger->error('Booking not found with id : ' . $message->bookingId);
+            $this->logger->error('Booking not found with id : '.$message->bookingId);
+
             return;
         }
 
@@ -62,7 +62,7 @@ final class RentalHasBeenBookedHandler
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address((string)$rental->getOwner()?->getEmail()))
+            ->to(new Address((string) $rental->getOwner()?->getEmail()))
             ->subject('Nouvelle demande de réservation')
             ->htmlTemplate('emails/owner_rental_has_been_booked.html.twig')
         ;
@@ -74,7 +74,7 @@ final class RentalHasBeenBookedHandler
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address((string)$booking->getBooker()->getEmail()))
+            ->to(new Address((string) $booking->getBooker()->getEmail()))
             ->subject('Votre réservation a bien été prise en compte')
             ->htmlTemplate('emails/booker_rental_has_been_booked.html.twig')
         ;

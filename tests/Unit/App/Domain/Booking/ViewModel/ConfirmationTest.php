@@ -53,7 +53,6 @@ final class ConfirmationTest extends TestCase
         yield ['2 semaines', '2022-11-10', '2022-11-24'];
         yield ['3 semaines', '2022-11-10', '2022-12-01'];
         yield ['3 semaines et 6 jours', '2022-11-10', '2022-12-07'];
-
     }
 
     /** @return ObjectProphecy<BookingValidator> */

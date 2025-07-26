@@ -72,11 +72,11 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $this->fetchData($manager);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             /** @var User $user */
-            $user = $this->getReference(UserFixtures::USER_REFERENCE . $i, User::class);
+            $user = $this->getReference(UserFixtures::USER_REFERENCE.$i, User::class);
 
-            for ($j = 0; $j < 2; $j++) {
+            for ($j = 0; $j < 2; ++$j) {
                 $rental = Rental::new($user);
 
                 $rental = $this->createConfiguration($rental, $manager);
@@ -118,7 +118,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
             $bedroomCount = $count / 2;
         }
 
-        for ($i = 0; $i < $bedroomCount; $i++) {
+        for ($i = 0; $i < $bedroomCount; ++$i) {
             $bedroom = new Bedroom();
 
             $bedroom->addBed($this->beds[array_rand($this->beds)], $this->faker->randomDigit());
@@ -141,7 +141,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $furnitures = array_rand($this->furnitures, $this->faker->numberBetween(5, \count($this->furnitures)));
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         foreach ($furnitures as $furniture) {
             $rental->addFurniture($this->furnitures[$furniture]);
         }
@@ -158,7 +158,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $description = new Description();
 
         $description->setTitle($this->faker->sentence(15, true));
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         $description->setDescription($this->faker->paragraphs(5, true));
 
         $rental->saveDescription($description);
@@ -238,9 +238,9 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     private function createUnavailabilities(Rental $rental, ObjectManager $manager): Rental
     {
         $range = $this->faker->randomDigit();
-        for ($i = 0; $i < $range; $i++) {
+        for ($i = 0; $i < $range; ++$i) {
             $startDate = $this->faker->dateTimeBetween('now', '+1 years');
-            $endDate = $startDate->add(new \DateInterval('P' . $this->faker->randomDigit() . 'D'));
+            $endDate = $startDate->add(new \DateInterval('P'.$this->faker->randomDigit().'D'));
 
             $unavailability = (new Unavailability())->setStartAt($startDate)->setEndAt($endDate)->setRental($rental);
 
@@ -274,20 +274,19 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
     {
         $rental->savePrices(new ArrayCollection([
             (new \App\Entity\Rental\Price())
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line */
                 ->setRangeStart(\DateTime::createFromFormat('d/m', '15/06'))
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line */
                 ->setRangeEnd(\DateTime::createFromFormat('d/m', '15/07'))
                 ->setDailyRate(new Price($this->faker->numberBetween(60, 110)))
                 ->setWeeklyRate(new Price($this->faker->numberBetween(600, 1100))),
             (new \App\Entity\Rental\Price())
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line */
                 ->setRangeStart(\DateTime::createFromFormat('d/m', '16/07'))
-                /** @phpstan-ignore-next-line */
+                /* @phpstan-ignore-next-line */
                 ->setRangeEnd(\DateTime::createFromFormat('d/m', '15/09'))
                 ->setDailyRate(new Price($this->faker->numberBetween(70, 120)))
                 ->setWeeklyRate(new Price($this->faker->numberBetween(700, 1200))),
-
         ]));
 
         $rental
@@ -304,7 +303,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $condition
             ->setAnimalsAccepted($this->faker->boolean())
             ->setSmokingAllowed($this->faker->boolean())
-            /** @phpstan-ignore-next-line */
+            /* @phpstan-ignore-next-line */
             ->setAdditionnalRules($this->faker->sentences());
         $rental = $rental->setCondition($condition);
 
@@ -315,13 +314,13 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private function createMedia(string $name): Media
     {
-        $filePath = __DIR__ . '/fixtures/rental/' . $name;
-        
+        $filePath = __DIR__.'/fixtures/rental/'.$name;
+
         if (!file_exists($filePath)) {
             $this->logger->error('Fixture image not found', ['path' => $filePath]);
             throw new \RuntimeException(sprintf('Fixture image not found: %s', $filePath));
         }
-        
+
         try {
             $file = new UploadedFile($filePath, $name, 'image/jpeg', null, true);
             $media = (new Media())
@@ -333,9 +332,9 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
                 'filename' => $name,
                 'size' => $file->getSize(),
             ]);
-            
+
             $this->uploadHandler->upload($media, 'file');
-            
+
             $this->logger->info('Successfully uploaded fixture image to CDN', [
                 'filename' => $name,
                 'media_id' => $media->getId(),
@@ -348,13 +347,9 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            
+
             // Re-throw the exception to fail the fixture loading
-            throw new \RuntimeException(
-                sprintf('Failed to upload image %s to CDN: %s', $name, $e->getMessage()),
-                0,
-                $e
-            );
+            throw new \RuntimeException(sprintf('Failed to upload image %s to CDN: %s', $name, $e->getMessage()), 0, $e);
         }
     }
 

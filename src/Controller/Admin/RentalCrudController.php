@@ -35,12 +35,13 @@ class RentalCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        if ($pageName === Crud::PAGE_INDEX) {
+        if (Crud::PAGE_INDEX === $pageName) {
             yield IdField::new('id')->onlyOnIndex();
             yield TextField::new('description.title', 'Titre');
             yield TextField::new('configuration.type.label', 'Type');
             yield TextField::new('address.town.name', 'Commune');
             yield RentalStatusField::new('status');
+
             return;
         }
 
@@ -48,12 +49,12 @@ class RentalCrudController extends AbstractCrudController
         yield FormField::addPanel('Configuration');
         yield AssociationField::new('configuration.type')
                     ->setCrudController(RentalTypeCrudController::class)
-                ;
+        ;
         yield NumberField::new('configuration.peopleCount');
         yield CollectionField::new('configuration.bedrooms')
                     ->setEntryType(AdminBedroomType::class)
                     ->setEntryIsComplex(true)
-                ;
+        ;
 
         yield FormField::addPanel('Equipements');
         yield AssociationField::new('furnitures')->setCrudController(FurnitureCrudController::class);
@@ -70,14 +71,14 @@ class RentalCrudController extends AbstractCrudController
         yield AssociationField::new('address.town')
                     ->setCrudController(TownCrudController::class)
                     ->setRequired(true)
-                ;
+        ;
 
         yield FormField::addTab('Photos');
         yield MediaField::new('gallery.cover');
         yield CollectionField::new('gallery.pictures')
                 ->setEntryType(MediaType::class)
                 ->setEntryIsComplex(true)
-            ;
+        ;
 
         yield FormField::addTab('Disponibilités');
         yield FormField::addPanel('Préférences');
@@ -85,28 +86,28 @@ class RentalCrudController extends AbstractCrudController
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::acceptedLastBookingChoices())
                     ->setRequired(true)
-                ;
+        ;
         yield ChoiceField::new('preferences.maxTimeBeforeBooking')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::maxTimeBeforeBookingChoices())
                     ->setRequired(true)
-                ;
+        ;
         yield ChoiceField::new('preferences.beginBookingAt')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::beginBookingAt())
                     ->setRequired(true)
-                ;
+        ;
         yield ChoiceField::new('preferences.endBookingAt')
                     ->setColumns(6)
                     ->setChoices(RentalPreferences::endBookingAt())
                     ->setRequired(true)
-                ;
+        ;
 
         yield FormField::addPanel('Périodes d\'indisponibilité');
         yield CollectionField::new('unavailabilities')
                     ->setEntryType(UnavailabilityType::class)
                     ->setEntryIsComplex(true)
-                ;
+        ;
 
         yield FormField::addTab('Tarifs');
         yield PriceField::new('weeklyRate', 'Tarif de base à la semaine')->setColumns(6);
@@ -116,13 +117,13 @@ class RentalCrudController extends AbstractCrudController
         yield TextField::new('tax.localTax');
         yield PriceField::new('tax.cleaningTax');
         yield PriceField::new('tax.linensTax');
-//                yield AssociationField::new('tax.linens')
-//                    ->setCrudController(LinensCrudController::class)
-//                ;
+        //                yield AssociationField::new('tax.linens')
+        //                    ->setCrudController(LinensCrudController::class)
+        //                ;
         yield FormField::addPanel('Tranches tarifaires');
         yield CollectionField::new('prices')
                     ->setEntryIsComplex(true)
                     ->setEntryType(PricesType::class)
-                ;
+        ;
     }
 }

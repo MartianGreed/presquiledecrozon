@@ -9,7 +9,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 final class UploadPictureConstraintValidator extends ConstraintValidator
 {
     /**
-     * @param UploadedPicture $value
+     * @param UploadedPicture         $value
      * @param UploadPictureConstraint $constraint
      */
     public function validate(mixed $value, Constraint $constraint): void

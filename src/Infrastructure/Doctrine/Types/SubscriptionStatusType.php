@@ -27,7 +27,7 @@ final class SubscriptionStatusType extends AbstractEnumType
         $value = SubscriptionStatus::tryFrom($value);
 
         if (null === $value) {
-            throw new NotSupported('Status does not support ' . $value . ' value');
+            throw new NotSupported('Status does not support '.$value.' value');
         }
 
         return $value;

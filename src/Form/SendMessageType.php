@@ -16,11 +16,10 @@ final class SendMessageType extends AbstractType
             ->add('message', TextareaType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Ecrivez votre message'
+                    'placeholder' => 'Ecrivez votre message',
                 ],
             ])
             ->add('conversation_id', HiddenType::class, [
-
             ])
         ;
     }

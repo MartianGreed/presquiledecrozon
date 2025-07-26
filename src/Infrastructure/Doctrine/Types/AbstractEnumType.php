@@ -15,10 +15,10 @@ abstract class AbstractEnumType extends Type
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         $values = array_map(static function ($val) {
-            return "'" . $val->value . "'";
+            return "'".$val->value."'";
         }, $this->getCases());
 
-        return "ENUM(" . implode(", ", $values) . ")";
+        return 'ENUM('.implode(', ', $values).')';
     }
 
     /**
@@ -34,10 +34,10 @@ abstract class AbstractEnumType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
-        
+
         return $value->value;
     }
 

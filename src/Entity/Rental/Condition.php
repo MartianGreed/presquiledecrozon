@@ -18,7 +18,7 @@ class Condition implements Identity
     #[ORM\Column(type: 'boolean')]
     private bool $smokingAllowed = false;
 
-    /** @var array<int, string>  */
+    /** @var array<int, string> */
     #[ORM\Column(type: 'array')]
     private array $additionnalRules = [];
 

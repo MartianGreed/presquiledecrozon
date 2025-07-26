@@ -77,6 +77,7 @@ trait BookingAccessorTrait
     final public function setPrices(BookingPrices $prices): self
     {
         $this->prices = $prices;
+
         return $this;
     }
 
@@ -88,6 +89,7 @@ trait BookingAccessorTrait
     final public function setStatus(Status $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 

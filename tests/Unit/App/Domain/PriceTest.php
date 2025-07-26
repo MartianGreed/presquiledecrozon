@@ -36,12 +36,13 @@ final class PriceTest extends TestCase
     public static function providePrices(): array
     {
         return [
-           [89, 8900, 89.0, '89,00 €'],
-           [75.0, 7500, 75.0, '75,00 €'],
-           [15.1333, 1513, 15.1333, '15,13 €'],
-           [50.512, 5051, 50.512, '50,51 €'],
+            [89, 8900, 89.0, '89,00 €'],
+            [75.0, 7500, 75.0, '75,00 €'],
+            [15.1333, 1513, 15.1333, '15,13 €'],
+            [50.512, 5051, 50.512, '50,51 €'],
         ];
     }
+
     /** @return array<array{float, float, int}> */
     public static function provideAdd(): array
     {

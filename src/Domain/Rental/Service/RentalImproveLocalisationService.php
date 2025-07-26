@@ -21,7 +21,7 @@ final class RentalImproveLocalisationService
     public function improveLocalisation(
         Rental $rental,
         GeolocationDTO $geolocationDTO,
-        LocationSuggestion $suggestedLocalisation
+        LocationSuggestion $suggestedLocalisation,
     ): Rental {
         if ('' === $suggestedLocalisation->suggestions || null === $suggestedLocalisation->suggestions) {
             throw new \DomainException('No need to improve localisation if no suggestion has been chosen');

@@ -13,7 +13,6 @@ trait IdentityTrait
     #[ORM\Column(type: 'uuid', unique: true)]
     private ?string $id = null;
 
-
     public function getId(): ?string
     {
         return $this->id;

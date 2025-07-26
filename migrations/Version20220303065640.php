@@ -28,6 +28,5 @@ final class Version20220303065640 extends AbstractMigration
         $this->addSql('CREATE TYPE "booking_status" AS ENUM(\'initialised\', \'booked\', \'confirmed\', \'done\')');
         $this->addSql('ALTER TABLE booking ALTER COLUMN "status" TYPE "booking_status" USING status::text::booking_status');
         $this->addSql('DROP TYPE "booking_status_old"');
-
     }
 }

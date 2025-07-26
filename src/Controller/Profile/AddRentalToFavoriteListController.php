@@ -18,8 +18,7 @@ final class AddRentalToFavoriteListController extends AbstractController
     public function __construct(
         private readonly RentalRepository $rentalRepository,
         private readonly FavoriteRepository $favoriteRepository,
-    )
-    {
+    ) {
     }
 
     #[Route('/mon-compte/coup-de-coeur/{id}', name: 'app_profile_add_rental_to_favorites', methods: ['POST'])]
@@ -36,6 +35,7 @@ final class AddRentalToFavoriteListController extends AbstractController
             }
 
             $this->favoriteRepository->removeFromFavoriteList($id, (string) $this->getUser()->getId());
+
             return new JsonResponse(['removed' => true], Response::HTTP_OK);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_ACCEPTABLE);

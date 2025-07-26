@@ -21,6 +21,7 @@ final class GetRentalListingController extends AbstractController
     public function __invoke(Request $request): Response
     {
         $rentals = $this->rentalRepository->findUserRentals((string) $this->getUser()->getId());
+
         return $this->render('profile/get_rental_listing.html.twig', [
             'rentals' => $rentals,
         ]);

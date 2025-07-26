@@ -6,8 +6,6 @@ use App\Entity\Media;
 use App\Service\MediaService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 use Vich\UploaderBundle\Form\Type\VichImageType;
@@ -30,7 +28,7 @@ final class MediaType extends AbstractType
             'required' => $options['required'],
             'constraints' => [
                 new Image(maxSize: '5M'),
-            ]
+            ],
         ]);
     }
 

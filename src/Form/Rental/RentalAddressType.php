@@ -21,7 +21,7 @@ final class RentalAddressType extends AbstractType
             ])
             ->add('town', EntityType::class, [
                 'class' => Town::class,
-                'choice_label' => static fn (Town $town) => sprintf('(%s) %s', $town->getPostalCode()->getCode(), $town->getName())
+                'choice_label' => static fn (Town $town) => sprintf('(%s) %s', $town->getPostalCode()->getCode(), $town->getName()),
             ])
         ;
     }

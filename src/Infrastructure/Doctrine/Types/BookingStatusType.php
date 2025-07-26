@@ -22,7 +22,7 @@ final class BookingStatusType extends AbstractEnumType
     {
         $value = Status::tryFrom((string) $value);
         if (null === $value) {
-            throw new NotSupported('Status does not support ' . $value . ' value');
+            throw new NotSupported('Status does not support '.$value.' value');
         }
 
         return $value;

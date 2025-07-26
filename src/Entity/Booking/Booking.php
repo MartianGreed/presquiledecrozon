@@ -19,7 +19,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking implements Identity
 {
-    use IdentityTrait, TimestampabbleTrait, BookingAccessorTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
+    use BookingAccessorTrait;
 
     #[ORM\Column(type: 'date')]
     private \DateTimeInterface $startAt;
@@ -56,7 +58,7 @@ class Booking implements Identity
         User $booker,
         \DateTimeInterface $startAt,
         \DateTimeInterface $endAt,
-        int $peopleCount
+        int $peopleCount,
     ): self {
         if ($booker->getId() === $rental->getOwner()?->getId()) {
             throw new CannotBookOwnRentalException();
@@ -72,7 +74,6 @@ class Booking implements Identity
             ->setStatus(Status::INITIALISED)
         ;
     }
-
 
     final public function confirm(int $peopleCount): self
     {

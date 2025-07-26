@@ -19,11 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
 final class UploadRentalPictureController extends AbstractController
 {
     use WithUserTrait;
+
     public function __construct(
         private readonly RentalRepository $rentalRepository,
         private readonly RentalPictureService $rentalPictureService,
-    )
-    {
+    ) {
     }
 
     #[Route('/rental/upload/{id}', name: 'app_rental_upload_picture', methods: [Request::METHOD_POST])]

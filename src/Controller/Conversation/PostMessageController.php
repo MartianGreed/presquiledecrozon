@@ -23,6 +23,7 @@ final class PostMessageController extends AbstractController
         private readonly EntityManagerInterface $manager,
     ) {
     }
+
     #[Route('/api/conversation/message', name: 'api_post_message', methods: [Request::METHOD_POST])]
     public function __invoke(Request $request): Response
     {
@@ -32,7 +33,7 @@ final class PostMessageController extends AbstractController
             try {
                 $conversationId = $form->get('conversation_id')->getData();
                 $messageContent = $form->get('message')->getData();
-                
+
                 if (!is_string($conversationId)) {
                     throw new \RuntimeException('Conversation ID must be a string');
                 }

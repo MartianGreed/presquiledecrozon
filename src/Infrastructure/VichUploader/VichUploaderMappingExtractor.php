@@ -19,7 +19,7 @@ final class VichUploaderMappingExtractor
     public function __construct(
         private readonly ContainerInterface $container,
         private readonly ContainerBagInterface $parameterBag,
-        private readonly StorageInterface $storage
+        private readonly StorageInterface $storage,
     ) {
     }
 
@@ -44,6 +44,7 @@ final class VichUploaderMappingExtractor
 
     /**
      * @param object|array<string, mixed> $obj
+     *
      * @return array<string, string>
      */
     public function getMapping($obj, ?string $fieldName, ?string $className): array
@@ -63,7 +64,7 @@ final class VichUploaderMappingExtractor
         $mappings = $this->parameterBag->get('vich_uploader.mappings');
 
         if (!\array_key_exists($mappingName, $mappings)) {
-            throw new \RuntimeException('VichUploader mapping not found : ' . $mappingName . '. Check your configuration at path: vich_uploader.mappings');
+            throw new \RuntimeException('VichUploader mapping not found : '.$mappingName.'. Check your configuration at path: vich_uploader.mappings');
         }
 
         return $mappings[$mappingName];
@@ -71,6 +72,7 @@ final class VichUploaderMappingExtractor
 
     /**
      * @param object $obj
+     *
      * @phpstan-ignore-next-line
      */
     private function getReflectionClass($obj): \ReflectionClass
@@ -108,6 +110,7 @@ final class VichUploaderMappingExtractor
                 throw new \RuntimeException('Entity is not uploadable.');
             }
             $attr = array_shift($attribute);
+
             return $attr;
         }
 
@@ -125,7 +128,6 @@ final class VichUploaderMappingExtractor
 
     /**
      * @param VichConfigService $namer
-     *
      */
     private function getNamer(array $namer): ?NamerInterface
     {

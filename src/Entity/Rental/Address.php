@@ -26,7 +26,6 @@ class Address implements Identity
     #[ORM\OneToOne(mappedBy: 'address', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
 
-
     public function getAddress(): ?string
     {
         return $this->address;

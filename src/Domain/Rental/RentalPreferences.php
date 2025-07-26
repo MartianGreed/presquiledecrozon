@@ -8,10 +8,10 @@ final class RentalPreferences
     public static function acceptedLastBookingChoices(): array
     {
         return [
-             'La veille' => 'P1D',
-             '3 jours à l\'avance' => 'P3D',
-             '5 jours à l\'avance' => 'P5D',
-             'Une semaine à l\'avance' => 'P7D',
+            'La veille' => 'P1D',
+            '3 jours à l\'avance' => 'P3D',
+            '5 jours à l\'avance' => 'P5D',
+            'Une semaine à l\'avance' => 'P7D',
         ];
     }
 

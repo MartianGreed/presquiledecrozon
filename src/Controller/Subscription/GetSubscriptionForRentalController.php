@@ -69,6 +69,7 @@ final class GetSubscriptionForRentalController extends AbstractController
                     throw new \RuntimeException('Discount code must be a string');
                 }
                 $this->discountService->applyDiscountCode($rentalSubscription, $discountCode);
+
                 return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
             }
 

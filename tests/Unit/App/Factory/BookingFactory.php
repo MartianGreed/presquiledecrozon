@@ -8,7 +8,6 @@ use App\Domain\Booking\BookingValidator;
 use App\Entity\Booking\Booking;
 use App\Entity\Rental\Rental;
 use App\Entity\User;
-use DateTime;
 
 final class BookingFactory
 {
@@ -16,9 +15,9 @@ final class BookingFactory
         BookingValidator $validator,
         Rental $rental,
         User $booker,
-        DateTime $startAt,
-        DateTime $endAt,
-        int $peopleCount
+        \DateTime $startAt,
+        \DateTime $endAt,
+        int $peopleCount,
     ): Booking {
         return Booking::init($validator, $rental, $booker, $startAt, $endAt, $peopleCount);
     }

@@ -19,7 +19,6 @@ final class RentalExtension extends AbstractExtension
     /**
      * @param PaginationInterface<int, Rental> $pagination
      *
-     * @return string
      * @throws \JsonException
      */
     public function getMarkersList(PaginationInterface $pagination): string
@@ -31,7 +30,7 @@ final class RentalExtension extends AbstractExtension
                 'id' => $rental->getId(),
                 'lat' => $rental->getGeolocation()?->getCoordinates()['lat'],
                 'lng' => $rental->getGeolocation()?->getCoordinates()['lng'],
-                'amount' => $rental->getWeeklyRate()?->__toString() . '/sem',
+                'amount' => $rental->getWeeklyRate()?->__toString().'/sem',
                 'title' => $rental->getDescription()?->getTitle(),
             ];
         }

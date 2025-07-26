@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Media;
-use App\Entity\Rental\Price;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

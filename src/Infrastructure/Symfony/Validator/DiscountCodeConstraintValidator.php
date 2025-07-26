@@ -21,11 +21,12 @@ final class DiscountCodeConstraintValidator extends ConstraintValidator
         }
 
         $codeValue = is_scalar($value) ? (string) $value : '';
-        
+
         /** @var ?Discount $discount */
         $discount = $this->discountRepository->findOneBy(['code' => $codeValue]);
         if (null === $discount) {
             $this->buildViolation($codeValue, $constraint->existsMessage);
+
             return;
         }
 

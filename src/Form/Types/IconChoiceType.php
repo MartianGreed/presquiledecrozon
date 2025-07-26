@@ -17,7 +17,6 @@ final class IconChoiceType extends ChoiceType
         $view->vars['svg'] = $options['svg'];
     }
 
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefined(['icon', 'svg']);

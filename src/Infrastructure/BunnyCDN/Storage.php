@@ -20,9 +20,9 @@ final class Storage
 
     public function getBaseUrl(): string
     {
-        return $this->storageZoneRegion === 'de' || !$this->storageZoneRegion
+        return 'de' === $this->storageZoneRegion || !$this->storageZoneRegion
             ? 'https://storage.bunnycdn.com/'
-            : 'https://' . $this->storageZoneRegion . '.storage.bunnycdn.com/';
+            : 'https://'.$this->storageZoneRegion.'.storage.bunnycdn.com/';
     }
 
     public function getStorageObjects(string $path): Reply
@@ -37,7 +37,7 @@ final class Storage
         $response = $this->makeResponse($this->doRequest(FilePathUtil::getParentDirectory($path), RequestMethod::GET, isDirectory: true));
 
         if (200 !== $response->getStatusCode()) {
-            throw new FileNotFoundException('File not found for path :' . $path);
+            throw new FileNotFoundException('File not found for path :'.$path);
         }
         /** @phpstan-ignore-next-line */
         $object = array_filter($response->getContent(), static fn (FileObject $item): bool => $item->getFilename() === $fileName);
@@ -45,7 +45,7 @@ final class Storage
         /** @var FileObject|null $res */
         $res = array_shift($object);
         if (null === $res) {
-            throw new FileNotFoundException('File not found for path :' . $path);
+            throw new FileNotFoundException('File not found for path :'.$path);
         }
 
         return $res;
@@ -58,9 +58,9 @@ final class Storage
         $response = $this->makeResponse($this->doRequest(FilePathUtil::getParentDirectory($path), RequestMethod::GET, isDirectory: true));
 
         return 200 === $response->getStatusCode()
-            /** @phpstan-ignore-next-line */
+            /* @phpstan-ignore-next-line */
             && !empty(array_filter($response->getContent(), static fn (FileObject $item): bool => $item->getFilename() === $fileName))
-            ;
+        ;
     }
 
     public function deleteObject(string $path): Reply
@@ -86,7 +86,7 @@ final class Storage
 
         return $this->client->request(
             $method->value,
-            $this->getBaseUrl() . $normalizedPath,
+            $this->getBaseUrl().$normalizedPath,
             $this->buildRequestData($method, $content),
         );
     }
@@ -107,6 +107,7 @@ final class Storage
             }
 
             $data = array_map(static fn ($i) => FileObject::fromArray($i), $responseArray);
+
             return new Reply($statusCode, $data);
         } catch (\Exception $e) {
             if (404 === $e->getCode()) {
@@ -143,7 +144,7 @@ final class Storage
         $data = [
             'headers' => [
                 'AccessKey' => $this->apiAccessKey,
-            ]
+            ],
         ];
 
         if (null !== $content) {

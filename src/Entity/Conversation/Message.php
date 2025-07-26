@@ -7,23 +7,23 @@ use App\Entity\IdentityTrait;
 use App\Entity\TimestampabbleTrait;
 use App\Entity\User;
 use App\Repository\Conversation\MessageRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message implements \Stringable, Identity
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\Column(type: 'text')]
     private string $message;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $sendAt;
+    private \DateTimeImmutable $sendAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?DateTimeImmutable $readAt = null;
+    private ?\DateTimeImmutable $readAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -38,7 +38,7 @@ class Message implements \Stringable, Identity
         return (new self())
             ->setSender($sender)
             ->setMessage($message)
-            ->setSendAt(new DateTimeImmutable())
+            ->setSendAt(new \DateTimeImmutable())
         ;
     }
 
@@ -59,24 +59,24 @@ class Message implements \Stringable, Identity
         return $this;
     }
 
-    public function getSendAt(): ?DateTimeImmutable
+    public function getSendAt(): ?\DateTimeImmutable
     {
         return $this->sendAt;
     }
 
-    public function setSendAt(DateTimeImmutable $sendAt): self
+    public function setSendAt(\DateTimeImmutable $sendAt): self
     {
         $this->sendAt = $sendAt;
 
         return $this;
     }
 
-    public function getReadAt(): ?DateTimeImmutable
+    public function getReadAt(): ?\DateTimeImmutable
     {
         return $this->readAt;
     }
 
-    public function setReadAt(DateTimeImmutable $readAt): self
+    public function setReadAt(\DateTimeImmutable $readAt): self
     {
         $this->readAt = $readAt;
 
@@ -103,6 +103,7 @@ class Message implements \Stringable, Identity
     public function setConversation(Conversation $conversation): self
     {
         $this->conversation = $conversation;
+
         return $this;
     }
 }

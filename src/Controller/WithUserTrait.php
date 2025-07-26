@@ -16,6 +16,7 @@ trait WithUserTrait
         }
 
         assert($user instanceof User);
+
         return $user;
     }
 }

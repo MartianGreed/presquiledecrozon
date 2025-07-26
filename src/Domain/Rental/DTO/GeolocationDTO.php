@@ -43,11 +43,10 @@ final class GeolocationDTO
     {
         $coordinates = $geolocation->getCoordinates();
 
-
         /** @var Meta $meta */
         $meta = $coordinates['meta'];
 
-        return self::new((float)$coordinates['lat'], (float)$coordinates['lng'], $meta);
+        return self::new((float) $coordinates['lat'], (float) $coordinates['lng'], $meta);
     }
 
     /** @return Meta */

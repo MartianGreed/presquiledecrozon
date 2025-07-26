@@ -9,7 +9,6 @@ use App\Message\FetchRentalGeolocation;
 use App\Repository\Rental\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 /**
  * @phpstan-import-type GeolocationDTOArray from GeolocationDTO
@@ -20,7 +19,7 @@ final class FetchRentalGeolocationHandler
     public function __construct(
         private readonly RentalRepository $rentalRepository,
         private readonly GeocodingServiceInterface $geocodingService,
-        private readonly EntityManagerInterface $manager
+        private readonly EntityManagerInterface $manager,
     ) {
     }
 

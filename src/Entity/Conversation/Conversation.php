@@ -17,7 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ConversationRepository::class)]
 class Conversation implements Identity
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -27,7 +28,7 @@ class Conversation implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private User $receiver;
 
-    /** @var ArrayCollection<int, Message>  */
+    /** @var ArrayCollection<int, Message> */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $messages;
@@ -112,6 +113,7 @@ class Conversation implements Identity
     public function setBooking(Booking $booking): self
     {
         $this->booking = $booking;
+
         return $this;
     }
 }

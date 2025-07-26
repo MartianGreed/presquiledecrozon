@@ -19,7 +19,7 @@ final class ImportSqlCommand extends Command
 
     public function __construct(
         private readonly string $rootDir,
-        private readonly Connection $connection
+        private readonly Connection $connection,
     ) {
         parent::__construct();
     }
@@ -43,6 +43,7 @@ final class ImportSqlCommand extends Command
             if (!is_string($file)) {
                 throw new \RuntimeException('File option must be a string');
             }
+
             return $this->handleImportSingleFile($file);
         }
 
@@ -50,6 +51,7 @@ final class ImportSqlCommand extends Command
             if (!is_string($raw)) {
                 throw new \RuntimeException('Raw option must be a string');
             }
+
             return $this->handleRawSqlImport($raw);
         }
 
@@ -73,19 +75,21 @@ final class ImportSqlCommand extends Command
         try {
             $this->connection->executeStatement(str_replace(PHP_EOL, '', $file->getContents()));
         } catch (\Exception $e) {
-            $this->io->error('Failed to import : ' . $file->getFilename() . PHP_EOL . $e->getMessage());
+            $this->io->error('Failed to import : '.$file->getFilename().PHP_EOL.$e->getMessage());
         }
     }
 
     private function handleRawSqlImport(string $raw): int
     {
         $this->io->error('Not implemented yet !');
+
         return Command::FAILURE;
     }
 
     private function handleImportSingleFile(string $file): int
     {
         $this->io->error('Not implemented yet !');
+
         return Command::FAILURE;
     }
 }

@@ -1,3 +1,5 @@
-<?php // test.encrypt.public on Wed, 01 Nov 2023 08:59:36 +0000
+<?php
+
+// test.encrypt.public on Wed, 01 Nov 2023 08:59:36 +0000
 
 return "\xCD~\x9B\xCF\xBE\x2B\x07\xE26\xFF\xAA\xD8\x0A\x1C\xF4\x1C\xAEx\xB5\x22\xF0\x15\x2F\xFC\x13b\xCC\xFF\x7CT\x14P";

@@ -31,7 +31,6 @@ final class ResizeRentalPicturesHandler
             throw new GalleryNotFound($message->galleryId);
         }
 
-
         foreach (PictureResizerOptions::getOptions() as $option) {
             /** @var Media $cover */
             $cover = $gallery->getCover();

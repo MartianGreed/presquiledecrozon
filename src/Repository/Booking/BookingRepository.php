@@ -238,7 +238,7 @@ class BookingRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->gte('b.confirmedAt', ':timeAgo'))
             ->setParameters([
                 'confirmed' => Status::CONFIRMED->value,
-                'timeAgo' => $dt->format('Y-m-d H:i:s')
+                'timeAgo' => $dt->format('Y-m-d H:i:s'),
             ])
             ->getQuery()
             ->getResult()

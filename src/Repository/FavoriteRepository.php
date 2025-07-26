@@ -51,7 +51,7 @@ class FavoriteRepository extends ServiceEntityRepository
             ->andWhere($qb->expr()->eq('f.rental', ':rentalId'))
             ->setParameters([
                 'personaId' => $personaId,
-                'rentalId'  => $rentalId,
+                'rentalId' => $rentalId,
             ])
             ->setMaxResults(1)
             ->getQuery()
@@ -80,7 +80,7 @@ class FavoriteRepository extends ServiceEntityRepository
                 1 => $rentalId,
                 2 => $personaId,
                 3 => $now,
-                4 =>$now,
+                4 => $now,
             ])
         ;
 

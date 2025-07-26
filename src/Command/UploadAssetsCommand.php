@@ -18,7 +18,7 @@ final class UploadAssetsCommand extends Command
 
     public function __construct(
         private readonly Storage $storage,
-        private readonly string $rootDirectory
+        private readonly string $rootDirectory,
     ) {
         parent::__construct();
     }
@@ -48,22 +48,21 @@ final class UploadAssetsCommand extends Command
         $this->io->note('Uploading bundles assets...');
         $this->handleAssetDirectory($finder, 'bundles');
 
-
         return Command::SUCCESS;
     }
 
     private function handleAssetDirectory(Finder $finder, string $directory): void
     {
         $files = $finder->in([
-            $this->rootDirectory . '/public/' . $directory,
+            $this->rootDirectory.'/public/'.$directory,
         ])->files();
 
         foreach ($files->getIterator() as $staticAsset) {
             /** @var SplFileInfo $staticAsset */
             $path = $staticAsset->getRealPath();
             $handler = fopen(strval($path), 'rb');
-            $this->storage->uploadFile('static/'. $directory .'/'.$staticAsset->getRelativePathname(), $handler);
-            /** @phpstan-ignore-next-line  */
+            $this->storage->uploadFile('static/'.$directory.'/'.$staticAsset->getRelativePathname(), $handler);
+            /* @phpstan-ignore-next-line */
             fclose($handler);
         }
     }

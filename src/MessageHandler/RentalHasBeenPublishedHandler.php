@@ -26,8 +26,7 @@ final class RentalHasBeenPublishedHandler
         private readonly LoggerInterface $logger,
         private readonly MailerInterface $mailer,
         private readonly string $emailSender,
-    )
-    {
+    ) {
     }
 
     public function __invoke(RentalHasBeenPublished $message): void
@@ -42,7 +41,7 @@ final class RentalHasBeenPublishedHandler
         // Email owner to confirm rental has been published
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address((string)$rental->getOwner()?->getEmail()))
+            ->to(new Address((string) $rental->getOwner()?->getEmail()))
             ->subject('Votre annonce à bien été publiée !')
             ->htmlTemplate('emails/rental_has_been_published.html.twig')
             ->context([

@@ -33,7 +33,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/deposez-votre-annonce')]
 final class CreateRentalController extends AbstractController
 {
-    use WithUserTrait, WithQueryParamsRedirectTrait;
+    use WithUserTrait;
+    use WithQueryParamsRedirectTrait;
 
     public function __construct(private readonly RentalService $rentalService)
     {
@@ -191,25 +192,25 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
-//        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
-//        $form->handleRequest($request);
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            /** @var Gallery $gallery */
-//            $gallery = $form->getData();
-//
-//            try {
-//                $rental = $this->rentalService->savePictures($rental, $gallery);
-//            } catch (\Exception) {
-//                return $this->render('create_rental/pictures.html.twig', [
-//                    'form' => $form,
-//                ]);
-//            }
-//
-//            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
-//        }
+        //        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
+        //        $form->handleRequest($request);
+        //        if ($form->isSubmitted() && $form->isValid()) {
+        //            /** @var Gallery $gallery */
+        //            $gallery = $form->getData();
+        //
+        //            try {
+        //                $rental = $this->rentalService->savePictures($rental, $gallery);
+        //            } catch (\Exception) {
+        //                return $this->render('create_rental/pictures.html.twig', [
+        //                    'form' => $form,
+        //                ]);
+        //            }
+        //
+        //            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
+        //        }
 
         return $this->render('create_rental/pictures.html.twig', [
-//            'form' => $form,
+            //            'form' => $form,
             'rental' => $rental,
             'next_step_url' => $this->getUrl('app_create_rental_availabilities', $request->query->all()),
         ]);
@@ -229,6 +230,7 @@ final class CreateRentalController extends AbstractController
             $preferences = $form->getData();
 
             $this->rentalService->savePreferences($rental, $preferences);
+
             return $this->redirectToRouteWithQueryParams('app_create_rental_calendar', $request->query->all());
         }
 
@@ -236,7 +238,6 @@ final class CreateRentalController extends AbstractController
             'form' => $form,
         ]);
     }
-
 
     #[Route('/calendrier', name: 'app_create_rental_calendar')]
     public function calendar(Request $request, ?Rental $rental): Response
@@ -249,6 +250,7 @@ final class CreateRentalController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->rentalService->saveUnavailabilities($rental, $rental->getUnavailabilities()->toArray());
+
             return $this->redirectToRouteWithQueryParams('app_create_rental_taxes', $request->query->all());
         }
 
@@ -270,6 +272,7 @@ final class CreateRentalController extends AbstractController
             /** @var Tax $tax */
             $tax = $form->getData();
             $this->rentalService->saveTax($rental, $tax);
+
             return $this->redirectToRouteWithQueryParams('app_create_rental_prices', $request->query->all());
         }
 
@@ -292,6 +295,7 @@ final class CreateRentalController extends AbstractController
             $rental = $form->getData();
             $rental->savePrices($rental->getPrices());
             $this->rentalService->saveEntity($rental);
+
             return $this->redirectToRouteWithQueryParams('app_create_rental_conditions', $request->query->all());
         }
 
@@ -313,6 +317,7 @@ final class CreateRentalController extends AbstractController
             /** @var Condition $condition */
             $condition = $form->getData();
             $this->rentalService->saveConditions($rental, $condition);
+
             return $this->redirectToRouteWithQueryParams('app_rental_created', $request->query->all());
         }
 

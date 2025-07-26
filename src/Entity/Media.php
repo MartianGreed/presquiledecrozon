@@ -13,7 +13,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[Vich\Uploadable]
 class Media
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[Vich\UploadableField(mapping: 'rental', fileNameProperty: 'name', size: 'size')]
     private File|UploadedFile|null $file = null;
@@ -76,6 +77,7 @@ class Media
     public function setAlt(?string $alt): Media
     {
         $this->alt = $alt;
+
         return $this;
     }
 }

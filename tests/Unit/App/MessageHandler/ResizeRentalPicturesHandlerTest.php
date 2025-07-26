@@ -28,7 +28,7 @@ final class ResizeRentalPicturesHandlerTest extends TestCase
         $this->galleryRepository = $this->createMock(GalleryRepository::class);
         $this->imageResizerService = $this->createMock(ImageResizerServiceInterface::class);
         $this->imageCacheManager = $this->createMock(ImageCacheManagerInterface::class);
-        
+
         $this->handler = new ResizeRentalPicturesHandler($this->galleryRepository, $this->imageResizerService, $this->imageCacheManager);
     }
 
@@ -44,7 +44,6 @@ final class ResizeRentalPicturesHandlerTest extends TestCase
     {
         $gallery = self::createGallery();
         $this->galleryRepository->expects($this->once())->method('find')->with('aValidId')->willReturn($gallery);
-
 
         $this->imageResizerService->expects($this->exactly($gallery->getPicturesCount() * count(PictureResizerOptions::getOptions())))->method('resize');
 

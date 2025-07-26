@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormInterface;
 
 final class FormErrorsToArrayFormatter
 {
-    /** @return array{array<string, string>} */
+    /** @return array<int|string, string|array<mixed>> */
     public static function format(FormInterface $form): array
     {
         $errors = [];
@@ -20,7 +20,6 @@ final class FormErrorsToArrayFormatter
             $errors[$childForm->getName()] = $childErrors;
         }
 
-        /** @var array{array<string, string>} $errors */
         return $errors;
     }
 }

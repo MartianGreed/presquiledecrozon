@@ -23,6 +23,7 @@ final class BookingPrices implements \Stringable
                 'count' => $daysCount - (7 * ($daysCount % 7)),
                 'price' => $daily,
             ];
+
             return $this;
         }
 
@@ -47,6 +48,7 @@ final class BookingPrices implements \Stringable
             $tmpPrice = $price['price']->times($price['count']);
             $totalPrice = $totalPrice->add($tmpPrice->getAmount());
         }
+
         return $totalPrice;
     }
 
@@ -59,6 +61,7 @@ final class BookingPrices implements \Stringable
     private function setPrices(array $prices): self
     {
         $this->prices = $prices;
+
         return $this;
     }
 

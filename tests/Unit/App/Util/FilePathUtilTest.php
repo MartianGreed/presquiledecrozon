@@ -30,7 +30,6 @@ class FilePathUtilTest extends TestCase
         $this->assertEquals('test.png', FilePathUtil::getFileName('images/project/test.png'));
     }
 
-
     public function testStartsWith(): void
     {
         $this->assertTrue(FilePathUtil::startsWith('./test', '.'));

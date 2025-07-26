@@ -7,8 +7,8 @@ use App\Domain\Subscription\ConfirmationMessage;
 use App\Entity\Rental\Rental;
 use App\Repository\Subscription\RentalSubscriptionRepository;
 use App\Service\StripeService;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Stripe\Exception\ApiErrorException;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +31,7 @@ final class ConfirmSubscriptionController extends AbstractController
             if ('succeeded' === $status) {
                 try {
                     $rentalSubscription = $this->rentalSubscriptionRepository->findSubscriptionForRental((string) $rental->getId());
-                    
+
                     $chargeId = $paymentIntent->latest_charge;
                     if (null === $chargeId) {
                         return $this->redirectWithError($rental);
@@ -56,6 +56,7 @@ final class ConfirmSubscriptionController extends AbstractController
     private function redirectWithError(Rental $rental): Response
     {
         $this->addFlash('error', 'Nous avons eu un soucis lors de l\'enregistrement de votre commande. Veuillez nous contacter.');
+
         return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
     }
 }

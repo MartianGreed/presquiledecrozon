@@ -13,17 +13,14 @@ final class PriceType extends IntegerType
         return 'price';
     }
 
-    /**
-     * @param mixed $value
-     * @return Price|null
-     */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?Price
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
-        
+
         $intValue = is_numeric($value) ? (int) $value : 0;
+
         return new Price($intValue / 100);
     }
 

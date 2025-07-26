@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ProfileRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
@@ -130,12 +129,12 @@ class Profile
     public function setAccount(?User $account): self
     {
         // unset the owning side of the relation if necessary
-        if ($account === null && $this->account !== null) {
+        if (null === $account && null !== $this->account) {
             $this->account->setProfile(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($account !== null && $account->getProfile() !== $this) {
+        if (null !== $account && $account->getProfile() !== $this) {
             $account->setProfile($this);
         }
 
@@ -152,11 +151,12 @@ class Profile
     public function setPicture(Media $media): self
     {
         $this->picture = $media;
+
         return $this;
     }
 
     final public function getFullName(): string
     {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->firstname.' '.$this->lastname;
     }
 }

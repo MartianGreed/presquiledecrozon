@@ -10,7 +10,7 @@ final class BookingRequest
         public readonly Rental $rental,
         public readonly \DateTimeInterface $startAt,
         public readonly \DateTimeInterface $endAt,
-        public readonly int $peopleCount
+        public readonly int $peopleCount,
     ) {
     }
 

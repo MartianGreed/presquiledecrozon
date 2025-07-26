@@ -73,6 +73,7 @@ class Town implements \Stringable, Identity
     public function setPostalCode(PostalCode $postalCode): self
     {
         $this->postalCode = $postalCode;
+
         return $this;
     }
 }

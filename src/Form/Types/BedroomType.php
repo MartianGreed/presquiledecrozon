@@ -21,8 +21,8 @@ final class BedroomType extends AbstractType
             $builder->add((string) $bed->getId(), CounterType::class, [
                 'label' => $label,
                 'attr' => [
-                    'data-action' => 'form-types--bedroom#changeBedCount'
-                ]
+                    'data-action' => 'form-types--bedroom#changeBedCount',
+                ],
             ]);
         }
     }

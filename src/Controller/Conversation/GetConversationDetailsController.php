@@ -40,7 +40,7 @@ final class GetConversationDetailsController extends AbstractController
                 'message' => $m?->getMessage(),
                 'read_at' => $m?->getReadAt()?->getTimestamp(),
                 'send_at' => $m?->getSendAt()?->getTimestamp(),
-                'sender_id' => $m?->getSender()?->getId()
+                'sender_id' => $m?->getSender()?->getId(),
             ])->toArray(),
         ]);
     }

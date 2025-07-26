@@ -12,7 +12,7 @@ final class DiscountApplier
         return match ($discount->getType()) {
             '€' => $this->applyFixDiscount((int) $discount->getAmount()->getAmount(), $amount),
             '%' => $this->applyPercentageDiscount((int) $discount->getAmount()->getAmount(), $amount),
-            default => throw new \DomainException('Type ' . $discount->getType() . ' is not implemented yet.'),
+            default => throw new \DomainException('Type '.$discount->getType().' is not implemented yet.'),
         };
     }
 

@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 /**
- * @phpstan-import-type ResizeOption from PictureResizerOptions
+ * @phpstan-import-type ResizeOption from \App\Domain\Rental\PictureResizerOptions
  */
 final class MediaService
 {
@@ -28,45 +28,45 @@ final class MediaService
     }
 
     /**
-     * @param array<string, mixed>|object $obj
+     * @param array<string, mixed>|object       $obj
      * @param ResizeOption|array<string, mixed> $options
-     *
      */
     public function assetHelper($obj, ?string $fieldName = null, ?string $className = null, array $options = []): string
     {
         if (0 === \count($options)) {
             $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
-            
+
             // If VichUploader returns null or empty string, return empty
             if (empty($assetUrl)) {
                 return '';
             }
-            
+
             // In dev environment, always return the URL as-is without CDN
-            if ($this->environment === 'dev') {
-                $mappedAsset =$this->assetMapper->getAsset($assetUrl);
-                return null === $mappedAsset ? "" : $mappedAsset->publicPath;
+            if ('dev' === $this->environment) {
+                $mappedAsset = $this->assetMapper->getAsset($assetUrl);
+
+                return null === $mappedAsset ? '' : $mappedAsset->publicPath;
             }
-            
+
             // In production, prepend CDN host
             // If it's already an absolute URL with a host, extract just the path
             if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
                 $parsedUrl = parse_url($assetUrl);
                 $path = $parsedUrl['path'] ?? '';
-                
+
                 // If we have a valid path, prepend the CDN host
-                if ($path !== '') {
-                    return rtrim($this->cdnHost, '/') . $path;
+                if ('' !== $path) {
+                    return rtrim($this->cdnHost, '/').$path;
                 }
             }
-            
+
             // If it's already a relative path starting with /, prepend CDN host
             if (str_starts_with($assetUrl, '/')) {
-                return rtrim($this->cdnHost, '/') . $assetUrl;
+                return rtrim($this->cdnHost, '/').$assetUrl;
             }
-            
+
             // For any other format, prepend CDN host with a slash
-            return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
+            return rtrim($this->cdnHost, '/').'/'.ltrim($assetUrl, '/');
         }
 
         $options = $this->resolveOptions($options);
@@ -81,47 +81,49 @@ final class MediaService
             } catch (\Throwable $e) {
                 // If resizing fails, return the original asset URL
                 $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
-                
+
                 if (empty($assetUrl)) {
                     return '';
                 }
-                
+
                 // In dev environment, return local path without CDN host
-                if ($this->environment === 'dev') {
-          $mappedAsset =$this->assetMapper->getAsset($assetUrl);
-                    return null === $mappedAsset ? "" : $mappedAsset->publicPath;
+                if ('dev' === $this->environment) {
+                    $mappedAsset = $this->assetMapper->getAsset($assetUrl);
+
+                    return null === $mappedAsset ? '' : $mappedAsset->publicPath;
                 }
-                
+
                 // In production, handle the URL the same way as non-resized images
                 if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
                     $parsedUrl = parse_url($assetUrl);
                     $path = $parsedUrl['path'] ?? '';
-                    if ($path !== '') {
-                        return rtrim($this->cdnHost, '/') . $path;
+                    if ('' !== $path) {
+                        return rtrim($this->cdnHost, '/').$path;
                     }
                 }
-                
+
                 if (str_starts_with($assetUrl, '/')) {
-                    return rtrim($this->cdnHost, '/') . $assetUrl;
+                    return rtrim($this->cdnHost, '/').$assetUrl;
                 }
-                
-                return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
+
+                return rtrim($this->cdnHost, '/').'/'.ltrim($assetUrl, '/');
             }
         }
 
         $cachePath = $this->cacheManager->getPath($obj, $fieldName, $className, $options);
-        
+
         // In dev environment, return local path without CDN host
-        if ($this->environment === 'dev') {
+        if ('dev' === $this->environment) {
             return $cachePath;
         }
-        
+
         // In production, prepend CDN host
-        return rtrim($this->cdnHost, '/') . '/' . ltrim($cachePath, '/');
+        return rtrim($this->cdnHost, '/').'/'.ltrim($cachePath, '/');
     }
 
     /**
      * @param ResizeOption|array<string, mixed> $options
+     *
      * @return ResizeOption
      */
     private function resolveOptions(array $options): array
@@ -133,6 +135,7 @@ final class MediaService
 
         /** @var ResizeOption $options */
         $options = $this->resolver->resolve($options);
+
         return $options;
     }
 }

@@ -27,8 +27,7 @@ final class NotificationController extends AbstractCrudController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly AdminUrlGenerator $urlGenerator,
-    )
-    {
+    ) {
     }
 
     public static function getEntityFqcn(): string
@@ -62,7 +61,7 @@ final class NotificationController extends AbstractCrudController
         SearchDto $searchDto,
         EntityDto $entityDto,
         FieldCollection $fields,
-        FilterCollection $filters
+        FilterCollection $filters,
     ): QueryBuilder {
         $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
@@ -74,13 +73,14 @@ final class NotificationController extends AbstractCrudController
     public function markAsRead(AdminContext $context): RedirectResponse
     {
         $notification = $context->getEntity()->getInstance();
-        if (!$notification instanceof \App\Entity\Notification) {
+        if (!$notification instanceof Notification) {
             throw new \RuntimeException('Expected Notification entity');
         }
 
         $notification->markAsRead(new \DateTime());
 
         $this->entityManager->flush();
+
         return $this->redirect($this->urlGenerator->setController(__CLASS__)->setAction(Action::INDEX)->generateUrl());
     }
 }

@@ -6,6 +6,7 @@ final class FilePathUtil
 {
     /**
      * @param non-empty-string $separator
+     *
      * @return list<string>
      */
     public static function splitPath(string $path, string $separator = '/'): array
@@ -24,6 +25,7 @@ final class FilePathUtil
     public static function getFileName(string $path): string
     {
         $parts = self::splitPath($path);
+
         return (string) end($parts);
     }
 
@@ -35,10 +37,10 @@ final class FilePathUtil
     public static function endsWith(string $haystack, string $needle): bool
     {
         $length = strlen($needle);
-        if ($length === 0) {
+        if (0 === $length) {
             return true;
         }
 
-        return (substr($haystack, -$length) === $needle);
+        return substr($haystack, -$length) === $needle;
     }
 }

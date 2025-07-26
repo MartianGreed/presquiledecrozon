@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
 
             $email = (new TemplatedEmail())
                 ->from($emailSender)
-                ->to(new Address((string)$user->getEmail()))
+                ->to(new Address((string) $user->getEmail()))
                 ->subject('Votre inscription a bien été prise en compte !')
                 ->htmlTemplate('emails/user_registered.html.twig')
             ;
@@ -89,6 +89,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $email = $form->get('email')->getData();
             $resetPasswordService->resetPassword(is_string($email) ? $email : '');
+
             return $this->redirectToRoute('app_request_reset_password_success');
         }
 

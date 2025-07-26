@@ -44,7 +44,7 @@ class RentalSubscriptionRepository extends ServiceEntityRepository
             ->join('rs.subscription', 's')
             ->leftJoin('rs.discount', 'd')
             ->where($qb->expr()->eq('rs.rental', "'$rentalId'"))
-            ->andWhere($qb->expr()->eq('rs.status', "'" . SubscriptionStatus::DRAFT->value . "'"))
+            ->andWhere($qb->expr()->eq('rs.status', "'".SubscriptionStatus::DRAFT->value."'"))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
@@ -54,7 +54,8 @@ class RentalSubscriptionRepository extends ServiceEntityRepository
             throw new RentalSubscriptionNotFound($rentalId);
         }
 
-        /** @var RentalSubscription $res */
+        assert($res instanceof RentalSubscription);
+
         return $res;
     }
 }

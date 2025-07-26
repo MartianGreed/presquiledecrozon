@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\BunnyCDN\BunnyCDNAdapter;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use League\Flysystem\Config;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -35,7 +35,7 @@ final class ImageResizerService implements ImageResizerServiceInterface
         $image = $this->imageManager->read($stream);
         $width = is_numeric($options['w']) ? (int) $options['w'] : 0;
         $height = is_numeric($options['h']) ? (int) $options['h'] : 0;
-        
+
         if ($options['crop']) {
             $image->cover($width, $height);
         } else {
@@ -55,6 +55,7 @@ final class ImageResizerService implements ImageResizerServiceInterface
         $this->resolver->setRequired(['h', 'w', 'crop']);
         /** @var ResizeOption $options */
         $options = $this->resolver->resolve($options);
+
         return $options;
     }
 }

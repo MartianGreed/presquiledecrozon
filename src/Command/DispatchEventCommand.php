@@ -18,7 +18,7 @@ final class DispatchEventCommand extends Command
     private const MESSAGE_FQN_PREFIX = 'App\\Message\\';
 
     private SymfonyStyle $io;
-    /** @var class-string $messageClass */
+    /** @var class-string */
     private string $messageClass;
     private QuestionHelper $helper;
 
@@ -57,6 +57,7 @@ final class DispatchEventCommand extends Command
     {
         if (!$this->messageExists($this->messageClass)) {
             $this->io->error(sprintf('Message named %s does not exists', $this->messageClass));
+
             return Command::FAILURE;
         }
 
@@ -87,7 +88,7 @@ final class DispatchEventCommand extends Command
         if (!is_string($answer) && !is_numeric($answer)) {
             throw new \RuntimeException(sprintf('Answer for %s must be a string or numeric value', $arg));
         }
-        
+
         return (string) $answer;
     }
 
@@ -98,7 +99,7 @@ final class DispatchEventCommand extends Command
         $reflectionClass = new \ReflectionClass($this->getClassFQN($messageClass));
         $constructor = $reflectionClass->getMethod('__construct');
 
-        return array_map(static fn(\ReflectionParameter $p) => $p->getName(), $constructor->getParameters());
+        return array_map(static fn (\ReflectionParameter $p) => $p->getName(), $constructor->getParameters());
     }
 
     private function messageExists(string $messageClass): bool
@@ -108,6 +109,6 @@ final class DispatchEventCommand extends Command
 
     private function getClassFQN(string $messageClass): string
     {
-        return self::MESSAGE_FQN_PREFIX . $messageClass;
+        return self::MESSAGE_FQN_PREFIX.$messageClass;
     }
 }

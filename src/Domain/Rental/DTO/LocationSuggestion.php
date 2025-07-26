@@ -2,10 +2,9 @@
 
 namespace App\Domain\Rental\DTO;
 
-use App\Domain\Rental\DTO\GeolocationDTO;
-
 /**
  * @phpstan-import-type Coordinates from GeolocationDTO
+ *
  * @phpstan-type Bound array{south: float, west: float, north: float, east: float}
  * @phpstan-type AddressComponent array{long_name: string, short_name: string, types: array<int, string>}
  * @phpstan-type Geometry array{bounds: Bound, location: Coordinates, location_type: string, viewport: Bound}
@@ -13,7 +12,7 @@ use App\Domain\Rental\DTO\GeolocationDTO;
  */
 final class LocationSuggestion
 {
-    /** @var Meta|null $meta*/
+    /** @var Meta|null */
     private ?array $meta;
 
     public function __construct(public ?string $suggestions, ?string $meta)

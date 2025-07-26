@@ -21,7 +21,7 @@ final class ConfigurationDTO
         $self->peopleCount = $configuration->getPeopleCount();
         $self->bedroomCount = $configuration->getBedrooms()->count();
 
-        for ($i = 0; $i < $self->bedroomCount; $i++) {
+        for ($i = 0; $i < $self->bedroomCount; ++$i) {
             $bedroom = $configuration->getBedrooms()->get($i);
             if (null === $bedroom) {
                 continue;

@@ -69,6 +69,7 @@ class Bed implements \Stringable, Identity
         if (null === $this->size) {
             return null;
         }
+
         return $this->size->getDimensions();
     }
 }

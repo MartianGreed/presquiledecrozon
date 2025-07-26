@@ -117,7 +117,6 @@ final class RentalService
 
         $this->saveEntity($rental);
 
-
         return $rental;
     }
 
@@ -173,6 +172,7 @@ final class RentalService
             if (null === $rental) {
                 throw new RentalNotFoundException($rentalId);
             }
+
             return $rental;
         } catch (\Exception) {
             throw new RentalNotFoundException($rentalId);

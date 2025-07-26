@@ -13,8 +13,7 @@ final class UserFactory
         string $firstname = 'Valentin',
         string $lastname = 'Dosimont',
         string $phoneNumber = '0782848227',
-    ): User
-    {
+    ): User {
         $user = new User();
         $profile = (new Profile())->setFirstname($firstname)->setLastname($lastname)->setCellphone($phoneNumber);
 

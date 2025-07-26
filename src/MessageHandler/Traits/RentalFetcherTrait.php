@@ -12,11 +12,11 @@ trait RentalFetcherTrait
     final public function withRental(
         RentalRepository $repository,
         LoggerInterface $logger,
-        string $rentalId
+        string $rentalId,
     ): Rental {
         $rental = $repository->find($rentalId);
         if (null === $rental) {
-            $logger->error('Published rental with id : ' . $rentalId . ' not found.');
+            $logger->error('Published rental with id : '.$rentalId.' not found.');
             throw new RentalNotFoundException($rentalId);
         }
 

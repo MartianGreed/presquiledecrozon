@@ -14,8 +14,8 @@ final class ResetPasswordService
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $hasher,
-    )
-    {}
+    ) {
+    }
 
     public function resetPassword(string $token, string $plainPassword): void
     {

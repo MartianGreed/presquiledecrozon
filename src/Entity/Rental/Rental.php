@@ -26,7 +26,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(columns: ['slug'], name: 'slug_idx')]
 class Rental implements Identity
 {
-    use IdentityTrait, TimestampabbleTrait, RentalAccessorTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
+    use RentalAccessorTrait;
 
     #[ORM\Column(type: 'rental_status')]
     private Status $status = Status::DRAFT;
@@ -125,6 +127,7 @@ class Rental implements Identity
     {
         if (null === $this->description) {
             $this->setDescription($description);
+
             return $this;
         }
 
@@ -140,6 +143,7 @@ class Rental implements Identity
     {
         if (null === $this->address) {
             $this->setAddress($address);
+
             return $this;
         }
 
@@ -181,6 +185,7 @@ class Rental implements Identity
     final public function saveTax(Tax $tax): self
     {
         $this->tax = $tax;
+
         return $this;
     }
 
@@ -277,7 +282,7 @@ class Rental implements Identity
         $currentPrices = null;
         $count = 1;
 
-        for ($i = 0; $i <= $periodDiff; $i++) {
+        for ($i = 0; $i <= $periodDiff; ++$i) {
             [$weeklyRate, $dailyRate] = $this->getDayPrice($dateReference);
             [$nextWeeklyRate, $nextDailyRate] = $this->getDayPrice($nextDateReference);
 

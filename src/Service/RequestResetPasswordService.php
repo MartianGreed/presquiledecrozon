@@ -15,8 +15,8 @@ final class RequestResetPasswordService
         private readonly UserRepository $userRepository,
         private readonly ApplicationTokenGenerator $tokenGenerator,
         private readonly RequestResetPasswordMailer $mailer,
-    )
-    {}
+    ) {
+    }
 
     public function resetPassword(string $email): void
     {
@@ -26,7 +26,7 @@ final class RequestResetPasswordService
             return;
         }
 
-        $user->requestResetPassword($this->tokenGenerator->generateRandomToken((string)$user->getId()));
+        $user->requestResetPassword($this->tokenGenerator->generateRandomToken((string) $user->getId()));
         $this->entityManager->flush();
 
         $this->mailer->send($user);

@@ -20,13 +20,13 @@ final class PricesType extends AbstractType
             ])
             ->add('rangeEnd', DateType::class, [
                 'widget' => 'single_text',
-                'label' => 'Fin'
+                'label' => 'Fin',
             ])
             ->add('dailyRate', PriceType::class, [
-                'label' => 'Prix à la nuitée'
+                'label' => 'Prix à la nuitée',
             ])
             ->add('weeklyRate', PriceType::class, [
-                'label' => 'Prix à la semaine'
+                'label' => 'Prix à la semaine',
             ])
         ;
     }

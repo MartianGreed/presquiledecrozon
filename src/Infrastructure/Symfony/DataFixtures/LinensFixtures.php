@@ -50,7 +50,6 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface, Fixtu
 
     /**
      * @param non-empty-array<string> $names
-     *
      */
     private function createLinensForCategory(ObjectManager $manager, array $names, string $categoryKey): void
     {

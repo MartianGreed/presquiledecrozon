@@ -15,7 +15,6 @@ final class ApplicationTokenGenerator
 
     public function generateRandomToken(string $id, int $length = 20): string
     {
-
         $prefix = random_bytes(max(1, intval($length / 2)));
         $suffix = random_bytes(max(1, intval($length / 2)));
 

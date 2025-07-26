@@ -14,7 +14,7 @@ final class ApplyDiscountType extends AbstractType
     {
         $builder->add('discount', TextType::class, [
             'required' => false,
-            'constraints' => [new DiscountCodeConstraint(is_scalar($options['payee_id']) ? (string) $options['payee_id'] : '')]
+            'constraints' => [new DiscountCodeConstraint(is_scalar($options['payee_id']) ? (string) $options['payee_id'] : '')],
         ]);
     }
 

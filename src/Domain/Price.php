@@ -17,7 +17,7 @@ final class Price implements \Stringable
 
     public function getValue(): int
     {
-        return (int)($this->value * 100);
+        return (int) ($this->value * 100);
     }
 
     public function getCurrency(): Currency
@@ -27,8 +27,8 @@ final class Price implements \Stringable
 
     public function __toString(): string
     {
-        /** @phpstan-ignore-next-line */
-        return (\NumberFormatter::create('fr', \NumberFormatter::CURRENCY))
+        /* @phpstan-ignore-next-line */
+        return \NumberFormatter::create('fr', \NumberFormatter::CURRENCY)
             ->formatCurrency($this->getValue() / 100, $this->currency->getValue())
         ;
     }

@@ -14,12 +14,13 @@ final class BookingHasBeenConfirmedNotificationLinkResolver implements Notificat
     public function __construct(
         private readonly AdminUrlGenerator $urlGenerator,
         private readonly BookingRepository $bookingRepository,
-    )
-    {}
+    ) {
+    }
 
     public function resolve(Notification $entity): ResolvedNotificationLink
     {
         $booking = $this->bookingRepository->find($entity->getTargetId());
+
         return new ResolvedNotificationLink(
             $this->urlGenerator->setController(BookingController::class)->setAction(Action::DETAIL)->setEntityId($booking?->getId())->generateUrl(),
             'Voir la réservation'

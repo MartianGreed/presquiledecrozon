@@ -19,7 +19,7 @@ final class RentalTaxType extends AbstractType
         $builder
             ->add('localTax', TextType::class, [
                 'constraints' => [
-                    new LocalTaxConstraint()
+                    new LocalTaxConstraint(),
                 ],
                 'help' => $this->getHelpTextContent(),
                 'help_html' => true,
@@ -51,6 +51,5 @@ final class RentalTaxType extends AbstractType
     </a>
 </div>
 HTML;
-
     }
 }

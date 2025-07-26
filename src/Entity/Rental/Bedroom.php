@@ -45,6 +45,7 @@ class Bedroom implements \Stringable, Identity
     public function addBed(Bed $bed, int $count): self
     {
         $this->beds[] = BedroomBed::new($this, $bed, $count);
+
         return $this;
     }
 
@@ -66,7 +67,6 @@ class Bedroom implements \Stringable, Identity
 
         $this->beds = new ArrayCollection();
     }
-
 
     public function getConfiguration(): Configuration
     {

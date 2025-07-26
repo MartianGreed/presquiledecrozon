@@ -14,8 +14,7 @@ final class RentalFactory
         User $owner,
         Price $nightlyPrice = new Price(60),
         Price $weeklyPrice = new Price(500),
-    ): Rental
-    {
+    ): Rental {
         return Rental::new($owner)->setDailyRate($nightlyPrice)->setWeeklyRate($weeklyPrice);
     }
 }

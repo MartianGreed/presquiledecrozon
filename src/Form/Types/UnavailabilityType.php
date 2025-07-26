@@ -31,7 +31,7 @@ final class UnavailabilityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Unavailability::class
+            'data_class' => Unavailability::class,
         ]);
     }
 }

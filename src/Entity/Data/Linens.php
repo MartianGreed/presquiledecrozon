@@ -19,7 +19,6 @@ class Linens implements \Stringable, Identity
     #[ORM\JoinColumn(nullable: false)]
     private LinensCategory $category;
 
-
     public function getLabel(): ?string
     {
         return $this->label;

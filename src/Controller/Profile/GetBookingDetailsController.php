@@ -6,7 +6,6 @@ namespace App\Controller\Profile;
 
 use App\Controller\WithUserTrait;
 use App\Domain\Booking\ViewModel\Confirmation;
-use App\Entity\User;
 use App\Repository\Booking\BookingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

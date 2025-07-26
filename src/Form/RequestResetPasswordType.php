@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Symfony\Component\Form\Extension\Core\Type\{EmailType, SubmitType};
-use Symfony\Component\Form\{AbstractType, FormBuilderInterface};
-use Symfony\Component\Validator\Constraints\{NotBlank, NotNull};
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 final class RequestResetPasswordType extends AbstractType
 {
@@ -22,5 +25,4 @@ final class RequestResetPasswordType extends AbstractType
             ->add('submit', SubmitType::class)
         ;
     }
-
 }

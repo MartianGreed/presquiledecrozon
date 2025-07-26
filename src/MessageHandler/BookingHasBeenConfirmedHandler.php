@@ -23,15 +23,15 @@ final class BookingHasBeenConfirmedHandler
         private readonly MailerInterface $mailer,
         private readonly LoggerInterface $logger,
         private readonly string $emailSender,
-    )
-    {
+    ) {
     }
 
     public function __invoke(BookingHasBeenConfirmed $message): void
     {
         $booking = $this->bookingRepository->find($message->bookingId);
         if (null === $booking) {
-            $this->logger->error('Booking not found with id : ' . $message->bookingId);
+            $this->logger->error('Booking not found with id : '.$message->bookingId);
+
             return;
         }
 
@@ -47,7 +47,7 @@ final class BookingHasBeenConfirmedHandler
     {
         $email = (new TemplatedEmail())
             ->from($this->emailSender)
-            ->to(new Address((string)$booking->getBooker()->getEmail()))
+            ->to(new Address((string) $booking->getBooker()->getEmail()))
             ->subject('Votre réservation vient d\'être validée !')
             ->htmlTemplate('emails/booker_booking_has_been_confirmed.html.twig')
         ;

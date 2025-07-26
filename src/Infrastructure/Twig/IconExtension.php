@@ -31,7 +31,7 @@ final class IconExtension extends AbstractExtension
         }
 
         return <<<HTML
-            <object type="image/svg+xml" class="icon icon-{$iconName}"{$attrs} data="{$this->package->getUrl('build/images/icons/' . $iconName . '.svg')}"></object>
+            <object type="image/svg+xml" class="icon icon-{$iconName}"{$attrs} data="{$this->package->getUrl('build/images/icons/'.$iconName.'.svg')}"></object>
         HTML;
     }
 }

@@ -21,6 +21,7 @@ trait TimestampabbleTrait
     final public function setCreatedAt(?\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -32,6 +33,7 @@ trait TimestampabbleTrait
     final public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -40,7 +42,7 @@ trait TimestampabbleTrait
     final public function updatedTimestamps(): void
     {
         $this->setUpdatedAt(new \DateTime('now'));
-        if ($this->createdAt === null) {
+        if (null === $this->createdAt) {
             $this->setCreatedAt(new \DateTime('now'));
         }
     }

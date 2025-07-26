@@ -29,7 +29,6 @@ final class GetMessagesListController extends AbstractController
             'action' => $this->urlGenerator->generate('api_post_message'),
         ]);
 
-
         return $this->render('profile/get_messages_list.html.twig', [
             'conversations' => $this->conversationRepository->getUserConversations($this->getUser()->getId()),
             'form' => $form,

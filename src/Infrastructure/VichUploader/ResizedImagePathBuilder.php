@@ -31,13 +31,14 @@ final class ResizedImagePathBuilder
 
         return sprintf(
             '%d_%d.png',
-            (int) $options['h']/** @phpstan-ignore-line */,
-            (int) $options['w']/** @phpstan-ignore-line */,
+            (int) $options['h']/* @phpstan-ignore-line */,
+            (int) $options['w']/* @phpstan-ignore-line */,
         );
     }
 
     /**
      * @param ResizeOption $options
+     *
      * @return ResizeOption
      */
     private function resolveOptions(array $options): array
@@ -47,6 +48,7 @@ final class ResizedImagePathBuilder
 
         /** @var ResizeOption $options */
         $options = $this->resolver->resolve($options);
+
         return $options;
     }
 }

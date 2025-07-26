@@ -12,12 +12,13 @@ final class RentalHasBeenPublishedNotificationLinkResolver implements Notificati
     public function __construct(
         private readonly RouterInterface $router,
         private readonly RentalRepository $rentalRepository,
-    )
-    {}
+    ) {
+    }
 
     public function resolve(Notification $entity): ResolvedNotificationLink
     {
         $rental = $this->rentalRepository->find($entity->getTargetId());
+
         return new ResolvedNotificationLink(
             $this->router->generate('app_rental_details', ['slug' => $rental?->getSlug()]),
             'Voir l\'annonce'

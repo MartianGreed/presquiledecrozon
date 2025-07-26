@@ -39,7 +39,8 @@ class SubscriptionRepository extends ServiceEntityRepository implements Subscrip
             throw new DefaultSubscriptionNotFound();
         }
 
-        /** @var Subscription $res */
+        assert($res instanceof Subscription);
+
         return $res;
     }
 }

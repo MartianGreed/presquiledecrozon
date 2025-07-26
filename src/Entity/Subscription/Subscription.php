@@ -13,7 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 class Subscription implements Identity
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\Column(type: 'price')]
     private Price $amount;
@@ -56,6 +57,7 @@ class Subscription implements Identity
     final public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 

@@ -7,16 +7,12 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\JsonType;
 use Doctrine\ORM\Exception\NotSupported;
-use JsonException;
 
 final class BedSizeType extends JsonType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
@@ -28,20 +24,20 @@ final class BedSizeType extends JsonType
     }
 
     /**
-     * {@inheritdoc}
      * @param ?string $value
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): mixed
     {
-        if ($value === null || $value === '') {
+        if (null === $value || '' === $value) {
             return null;
         }
 
         try {
             /** @var array<string, int> $sizeObj */
             $sizeObj = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+
             return new BedSize((int) $sizeObj['height'], (int) $sizeObj['width']);
-        } catch (JsonException $e) {
+        } catch (\JsonException $e) {
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }
     }

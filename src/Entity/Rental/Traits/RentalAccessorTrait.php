@@ -18,7 +18,6 @@ use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
 use App\Entity\Rental\Unavailability;
 use App\Entity\Subscription\RentalSubscription;
-use App\Entity\Subscription\Subscription;
 use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,6 +32,7 @@ trait RentalAccessorTrait
     final public function setStatus(Status $status): self
     {
         $this->status = $status;
+
         return $this;
     }
 
@@ -168,6 +168,7 @@ trait RentalAccessorTrait
     final public function removeUnavailability(Unavailability $unavailability): self
     {
         $this->unavailabilities->removeElement($unavailability);
+
         return $this;
     }
 

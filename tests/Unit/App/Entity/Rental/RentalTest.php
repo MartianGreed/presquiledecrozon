@@ -28,7 +28,7 @@ final class RentalTest extends TestCase
         self::assertCount(count($expected->getPrices()), $prices->getPrices());
 
         $count = count($prices->getPrices());
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $actual = $prices->getPrices()[$i];
             $expectedPrices = $expected->getPrices()[$i];
 

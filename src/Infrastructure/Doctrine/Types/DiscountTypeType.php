@@ -22,7 +22,7 @@ final class DiscountTypeType extends AbstractEnumType
     {
         $value = DiscountType::tryFrom((string) $value);
         if (null === $value) {
-            throw new NotSupported('DiscountType does not support ' . $value . ' value');
+            throw new NotSupported('DiscountType does not support '.$value.' value');
         }
 
         return $value;

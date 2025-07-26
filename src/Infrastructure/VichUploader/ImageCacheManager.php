@@ -19,7 +19,7 @@ final class ImageCacheManager implements ImageCacheManagerInterface
     }
 
     /**
-     * @param object|array<string, mixed> $obj
+     * @param object|array<string, mixed>       $obj
      * @param ResizeOption|array<string, mixed> $options
      */
     public function has($obj, ?string $fieldName, ?string $className = null, array $options = []): bool
@@ -31,7 +31,7 @@ final class ImageCacheManager implements ImageCacheManagerInterface
     }
 
     /**
-     * @param object|array<string, mixed> $obj
+     * @param object|array<string, mixed>       $obj
      * @param ResizeOption|array<string, mixed> $options
      */
     public function getPath($obj, ?string $fieldName, ?string $className = null, array $options = []): string
@@ -42,13 +42,12 @@ final class ImageCacheManager implements ImageCacheManagerInterface
     }
 
     /**
-     * @param object|array<string, mixed> $obj
+     * @param object|array<string, mixed>       $obj
      * @param ResizeOption|array<string, mixed> $options
      */
     public function getSourceFilePath($obj, ?string $fieldName, ?string $className = null, array $options = []): string
     {
         $component = $this->mappingExtractor->buildMappingComponent($obj, $fieldName, $className);
-
 
         return (string) $component->getStorage()->resolveUri($obj, $fieldName, $className);
     }

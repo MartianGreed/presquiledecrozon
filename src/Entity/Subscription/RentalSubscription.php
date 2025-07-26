@@ -16,7 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: RentalSubscriptionRepository::class)]
 class RentalSubscription implements Identity
 {
-    use IdentityTrait, TimestampabbleTrait, RentalSubscriptionAccessors;
+    use IdentityTrait;
+    use TimestampabbleTrait;
+    use RentalSubscriptionAccessors;
 
     #[ORM\ManyToOne(targetEntity: Subscription::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
@@ -59,7 +61,7 @@ class RentalSubscription implements Identity
             ->setDiscount(null)
             ->setAmount($subscription->getAmount())
             ->setCreatedAt(new \DateTime('now'))
-            ->setUpdatedAt(new \DateTIme('now'))
+            ->setUpdatedAt(new \DateTime('now'))
         ;
     }
 

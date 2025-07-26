@@ -15,6 +15,7 @@ final class StripeService
     public function createSubscriptionPaymentIntent(RentalSubscription $subscription): PaymentIntent
     {
         $price = $subscription->getAmount();
+
         return $this->stripeClient->paymentIntents->create([
             'amount' => $price->getValue(),
             'currency' => $price->getCurrency()->getValue(),

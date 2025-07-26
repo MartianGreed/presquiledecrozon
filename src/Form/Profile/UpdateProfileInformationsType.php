@@ -33,7 +33,7 @@ final class UpdateProfileInformationsType extends AbstractType
                         message: 'Ce numéro de téléphone n\'est pas valide.'
                     ),
                     new Length(min: 10, max: 13),
-                ]
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,

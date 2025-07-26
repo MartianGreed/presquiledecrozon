@@ -30,7 +30,6 @@ final class RentalConfigurationService
         return $configuration;
     }
 
-
     private function createConfigurationObjectFromDTO(Rental $rental, ConfigurationDTO $configurationDTO): Configuration
     {
         $configuration = (new Configuration())->setRental($rental);
@@ -62,7 +61,7 @@ final class RentalConfigurationService
 
                 $bed = $this->bedRepository->find($bedId);
                 if (null === $bed) {
-                    throw new \LogicException('Bed with ID: ' . $bedId . ' does not exists');
+                    throw new \LogicException('Bed with ID: '.$bedId.' does not exists');
                 }
 
                 $bedroom->addBed($bed, $bedCount);

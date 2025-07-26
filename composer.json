@@ -125,6 +125,7 @@
     "require-dev": {
         "dbrekelmans/bdi": "^1.0",
         "fakerphp/faker": "^1.19",
+        "friendsofphp/php-cs-fixer": "^3.84",
         "infection/infection": "^0.29",
         "league/flysystem-adapter-test-utilities": "^3.0",
         "phpspec/prophecy": "^1.22",

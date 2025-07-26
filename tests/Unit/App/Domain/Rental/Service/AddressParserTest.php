@@ -16,7 +16,6 @@ class AddressParserTest extends TestCase
         self::assertAddressIsCorrectlyParsed(AddressParser::getParts($formattedAddress), $addressParts);
     }
 
-
     /** @return array<int, array<int, array<string, string>|string>> */
     public static function addressProvider(): array
     {

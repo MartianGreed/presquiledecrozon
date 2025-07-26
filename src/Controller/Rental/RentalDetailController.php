@@ -61,12 +61,11 @@ final class RentalDetailController extends AbstractController
         }
 
         $form = $this->createForm(BookRentalType::class, $data, [
-            'rental' => $rental
+            'rental' => $rental,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $formData = [
                 'startAt' => $form->get('startAt')->getData(),
                 'endAt' => $form->get('endAt')->getData(),
@@ -79,6 +78,7 @@ final class RentalDetailController extends AbstractController
             $booker = $this->getUser();
             if (null === $booker) {
                 $request->getSession()->set('_security.main.target_path', $request->getRequestUri());
+
                 return $this->redirectToRoute('app_login');
             }
 
@@ -99,8 +99,7 @@ final class RentalDetailController extends AbstractController
                 );
 
                 $booking = $this->simulatorService->aggregatePrices($booking);
-
-            } catch (RentalNotAvailableForPeriodException | BookingDoesNotFullfillOwnerPreferencesException | CannotBookOwnRentalException $e) {
+            } catch (RentalNotAvailableForPeriodException|BookingDoesNotFullfillOwnerPreferencesException|CannotBookOwnRentalException $e) {
                 return $this->handleBookingDomainErrors($rental, $form, new FormError($e->getMessage()), 'startAt');
             } catch (TooManyPeopleInBookingException $e) {
                 return $this->handleBookingDomainErrors($rental, $form, new FormError($e->getMessage()), 'peopleCount');
@@ -109,7 +108,7 @@ final class RentalDetailController extends AbstractController
             $this->manager->persist($booking);
             $this->manager->flush();
 
-            $this->bus->dispatch(new RentalHasBeenBooked((string)$rental->getId(), (string)$booking->getId(), (string)$booking->getCreatedAt()?->format('Y-m-d H:i:s')));
+            $this->bus->dispatch(new RentalHasBeenBooked((string) $rental->getId(), (string) $booking->getId(), (string) $booking->getCreatedAt()?->format('Y-m-d H:i:s')));
             $request->getSession()->remove('booking-'.$rental->getId());
 
             return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
@@ -126,11 +125,12 @@ final class RentalDetailController extends AbstractController
         Rental $rental,
         FormInterface $form,
         ?FormError $error = null,
-        ?string $field = null
+        ?string $field = null,
     ): Response {
         if (null !== $error && null !== $field) {
             $form->get($field)->addError($error);
         }
+
         return $this->render('page/rental-detail.html.twig', [
             'rental' => $rental,
             'form' => $form,

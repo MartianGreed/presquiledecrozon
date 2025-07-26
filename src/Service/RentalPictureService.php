@@ -13,13 +13,12 @@ final class RentalPictureService
     public function __construct(
         private readonly EntityManagerInterface $manager,
         private readonly RentalService $rentalService,
-    )
-    {
+    ) {
     }
 
     public function uploadPicture(Rental $rental, UploadedPicture $picture): Rental
     {
-        return match($picture->field) {
+        return match ($picture->field) {
             'picture' => $this->handlePictureUpload($rental, $picture),
             'cover' => $this->handleCoverUpload($rental, $picture),
             default => throw new \RuntimeException('This case cannot happen'),

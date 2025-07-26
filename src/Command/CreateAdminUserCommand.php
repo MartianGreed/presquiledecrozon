@@ -3,7 +3,6 @@
 namespace App\Command;
 
 use App\Entity\User;
-use App\Repository\Booking\BookingRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,7 +21,7 @@ final class CreateAdminUserCommand extends Command
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $manager,
-        private readonly UserPasswordHasherInterface $hasher
+        private readonly UserPasswordHasherInterface $hasher,
     ) {
         parent::__construct();
     }
@@ -39,7 +38,6 @@ final class CreateAdminUserCommand extends Command
         $this->addArgument('email', InputArgument::REQUIRED, 'Email of the newborn admin user');
     }
 
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
@@ -50,6 +48,7 @@ final class CreateAdminUserCommand extends Command
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if (null !== $user) {
             $this->io->error('Impossible de recréer un compte pour cet utilisateur.');
+
             return self::FAILURE;
         }
         $password = $this->io->askHidden('Tapez votre mot de passe');

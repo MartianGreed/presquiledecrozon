@@ -78,6 +78,7 @@ trait RentalSubscriptionAccessors
     final public function setProviderChargeId(?string $providerChargeId): self
     {
         $this->providerChargeId = $providerChargeId;
+
         return $this;
     }
 
@@ -113,6 +114,7 @@ trait RentalSubscriptionAccessors
     final public function setIsConsumed(bool $isConsumed): self
     {
         $this->isConsumed = $isConsumed;
+
         return $this;
     }
 
@@ -124,6 +126,7 @@ trait RentalSubscriptionAccessors
     final public function setActiveRental(?Rental $rental): self
     {
         $this->activeRental = $rental;
+
         return $this;
     }
 }

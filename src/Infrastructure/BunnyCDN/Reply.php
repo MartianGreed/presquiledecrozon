@@ -11,7 +11,7 @@ final class Reply
     /** @param Error|Content $content */
     public function __construct(
         private readonly int $statusCode,
-        private readonly array $content
+        private readonly array $content,
     ) {
     }
 

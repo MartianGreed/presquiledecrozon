@@ -27,6 +27,7 @@ final class CountryFactory
             ->setPrefix2('en')
             ->setCountry(self::france())
         ;
+
         return $region;
     }
 

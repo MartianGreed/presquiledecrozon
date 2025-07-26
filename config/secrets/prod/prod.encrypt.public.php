@@ -1,3 +1,5 @@
-<?php // prod.encrypt.public on Wed, 01 Nov 2023 09:00:29 +0000
+<?php
+
+// prod.encrypt.public on Wed, 01 Nov 2023 09:00:29 +0000
 
 return "\xCB\x12\x14\xEF\xB5\x8F\x2A\xC7\x89X\x99b\xAD\xE70\x84\x0E\x8B\x9C\xCE\xDE2\x9F\x90\x89\xC4\x5E\x8AbF\x94Y";

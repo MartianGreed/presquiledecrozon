@@ -21,7 +21,7 @@ final class StringExtension extends AbstractExtension
         $parts = explode(' ', $toExcerpt);
         $tmp = array_slice($parts, 0, $wordsCount);
 
-        return implode(' ', $tmp) . '...';
+        return implode(' ', $tmp).'...';
     }
 
     public function humanFilesize(int $size): string
@@ -31,10 +31,10 @@ final class StringExtension extends AbstractExtension
         $i = 0;
         while (($size / $step) > 0.9) {
             $size /= $step;
-            $i++;
+            ++$i;
         }
 
-        return '<strong>' . round($size, 2) . '</strong>' . ' ' . $units[$i];
+        return '<strong>'.round($size, 2).'</strong> '.$units[$i];
     }
 
     public function replace(string $subject, string $search, string $replacement): string

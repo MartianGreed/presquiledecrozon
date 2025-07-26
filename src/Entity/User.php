@@ -20,7 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
-    use IdentityTrait, TimestampabbleTrait;
+    use IdentityTrait;
+    use TimestampabbleTrait;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\Email]
@@ -92,14 +93,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     public function getUserIdentifier(): string
     {
-        if ($this->email === '') {
+        if ('' === $this->email) {
             throw new \LogicException('User email cannot be empty');
         }
+
         return $this->email;
     }
 
     /**
      * @see UserInterface
+     *
      * @psalm-return array<string>
      */
     public function getRoles(): array
@@ -266,6 +269,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function setResetToken(string $resetToken): self
     {
         $this->resetToken = $resetToken;
+
         return $this;
     }
 
@@ -277,6 +281,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     public function setResetAt(\DateTime $resetAt): self
     {
         $this->resetAt = $resetAt;
+
         return $this;
     }
 

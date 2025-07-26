@@ -15,7 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 final class PreviewRentalController extends AbstractController
 {
     public function __construct(private readonly BookingRepository $bookingRepository)
-    {}
+    {
+    }
 
     #[Route('/previsualisation/annonce', name: 'app_preview_rental')]
     public function __invoke(Request $request, ?Rental $rental): Response
@@ -26,7 +27,7 @@ final class PreviewRentalController extends AbstractController
 
         $form = $this->createForm(BookRentalType::class, null, [
             'rental' => $rental,
-            'action' => $this->generateUrl('app_rental_details', ['slug' => $rental->getSlug()])
+            'action' => $this->generateUrl('app_rental_details', ['slug' => $rental->getSlug()]),
         ]);
 
         return $this->render('page/rental-detail.html.twig', [
