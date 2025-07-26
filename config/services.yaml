@@ -4,77 +4,77 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    cdn_host: '%env(CDN_URL)%'
+  cdn_host: "%env(default::CDN_URL)%"
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            $emailSender: '%env(EMAIL_SENDER)%'
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      $emailSender: "%env(EMAIL_SENDER)%"
 
-    _instanceof:
-        App\Service\Notification\NotificationLinkResolverInterface:
-            tags: ['app.notification.link_resolver']
+  _instanceof:
+    App\Service\Notification\NotificationLinkResolverInterface:
+      tags: ["app.notification.link_resolver"]
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
-            - '../src/Tests/'
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: "../src/"
+    exclude:
+      - "../src/DependencyInjection/"
+      - "../src/Entity/"
+      - "../src/Kernel.php"
+      - "../src/Tests/"
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
 
-    App\Service\GeocodingService:
-        arguments:
-            $apiUrl: '%env(GOOGLE_MAPS_API_URL)%'
-            $apiKey: '%env(GOOGLE_MAPS_API_KEY)%'
+  App\Service\GeocodingService:
+    arguments:
+      $apiUrl: "%env(GOOGLE_MAPS_API_URL)%"
+      $apiKey: "%env(GOOGLE_MAPS_API_KEY)%"
 
-    App\Infrastructure\BunnyCDN\Storage:
-        arguments:
-            $client: '@http_client'
-            $storageZoneName: '%env(BUNNYCDN_BUCKET)%'
-            $apiAccessKey: '%env(BUNNYCDN_API_KEY)%'
-            $storageZoneRegion: '%env(BUNNYCDN_REGION)%'
+  App\Infrastructure\BunnyCDN\Storage:
+    arguments:
+      $client: "@http_client"
+      $storageZoneName: "%env(BUNNYCDN_BUCKET)%"
+      $apiAccessKey: "%env(BUNNYCDN_API_KEY)%"
+      $storageZoneRegion: "%env(BUNNYCDN_REGION)%"
 
-    App\Infrastructure\VichUploader\VichUploaderMappingExtractor:
-        arguments:
-            $container: '@service_container'
-            $parameterBag: '@parameter_bag'
+  App\Infrastructure\VichUploader\VichUploaderMappingExtractor:
+    arguments:
+      $container: "@service_container"
+      $parameterBag: "@parameter_bag"
 
-    App\Service\MediaService:
-        arguments:
-            $cdnHost: '%cdn_host%'
+  App\Service\MediaService:
+    arguments:
+      $cdnHost: "%cdn_host%"
 
-    Stripe\StripeClient:
-        arguments:
-            - '%env(STRIPE_SECRET_KEY)%'
+  Stripe\StripeClient:
+    arguments:
+      - "%env(STRIPE_SECRET_KEY)%"
 
+  App\Service\ApplicationTokenGenerator:
+    arguments:
+      $secret: "%env(APP_SECRET)%"
 
-    App\Service\ApplicationTokenGenerator:
-        arguments:
-            $secret: '%env(APP_SECRET)%'
+  App\Service\NotificationLinkResolverService:
+    arguments:
+      - !tagged_iterator app.notification.link_resolver
 
-    App\Service\NotificationLinkResolverService:
-        arguments:
-            - !tagged_iterator app.notification.link_resolver
+  App\Infrastructure\Twig\IconExtension:
+    arguments:
+      $package: "@asset_mapper.asset_package.inner"
 
-    App\Infrastructure\Twig\IconExtension:
-        arguments:
-            $package: '@assets._default_package'
+  App\Command\UploadAssetsCommand:
+    arguments:
+      $rootDirectory: "%kernel.project_dir%"
+  App\Command\ImportSqlCommand:
+    arguments:
+      $rootDir: "%kernel.project_dir%"
+  App\Command\TestCdnUploadCommand:
+    arguments:
+      $projectDir: "%kernel.project_dir%"
 
-    App\Command\UploadAssetsCommand:
-        arguments:
-            $rootDirectory: '%kernel.project_dir%'
-    App\Command\ImportSqlCommand:
-        arguments:
-            $rootDir: '%kernel.project_dir%'
-    App\Command\TestCdnUploadCommand:
-        arguments:
-            $projectDir: '%kernel.project_dir%'

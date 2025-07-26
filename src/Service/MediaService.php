@@ -2,8 +2,8 @@
 
 namespace App\Service;
 
-use App\Domain\Rental\PictureResizerOptions;
 use App\Infrastructure\VichUploader\ImageCacheManager;
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
@@ -22,6 +22,7 @@ final class MediaService
         private readonly string $cdnHost,
         #[Autowire('%kernel.environment%')]
         private readonly string $environment,
+        private readonly AssetMapperInterface $assetMapper,
     ) {
         $this->resolver = new OptionsResolver();
     }
@@ -41,11 +42,13 @@ final class MediaService
                 return '';
             }
             
-            // In dev environment with local storage, return the URL as-is
-            if ($this->environment === 'dev' && str_starts_with($assetUrl, '/uploads/')) {
-                return $assetUrl;
+            // In dev environment, always return the URL as-is without CDN
+            if ($this->environment === 'dev') {
+                $mappedAsset =$this->assetMapper->getAsset($assetUrl);
+                return null === $mappedAsset ? "" : $mappedAsset->publicPath;
             }
             
+            // In production, prepend CDN host
             // If it's already an absolute URL with a host, extract just the path
             if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
                 $parsedUrl = parse_url($assetUrl);
@@ -76,14 +79,20 @@ final class MediaService
                     $options
                 );
             } catch (\Throwable $e) {
-                // If resizing fails, return the original asset URL with CDN host
+                // If resizing fails, return the original asset URL
                 $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
                 
                 if (empty($assetUrl)) {
                     return '';
                 }
                 
-                // Handle the URL the same way as non-resized images
+                // In dev environment, return local path without CDN host
+                if ($this->environment === 'dev') {
+          $mappedAsset =$this->assetMapper->getAsset($assetUrl);
+                    return null === $mappedAsset ? "" : $mappedAsset->publicPath;
+                }
+                
+                // In production, handle the URL the same way as non-resized images
                 if (str_starts_with($assetUrl, 'http://') || str_starts_with($assetUrl, 'https://')) {
                     $parsedUrl = parse_url($assetUrl);
                     $path = $parsedUrl['path'] ?? '';
@@ -95,11 +104,6 @@ final class MediaService
                 if (str_starts_with($assetUrl, '/')) {
                     return rtrim($this->cdnHost, '/') . $assetUrl;
                 }
-
-        // In dev environment, return local path without CDN host
-        if ($this->environment === 'dev') {
-            return ltrim($assetUrl, '/');
-        }
                 
                 return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
             }
@@ -112,6 +116,7 @@ final class MediaService
             return $cachePath;
         }
         
+        // In production, prepend CDN host
         return rtrim($this->cdnHost, '/') . '/' . ltrim($cachePath, '/');
     }
 
