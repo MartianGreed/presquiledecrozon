@@ -20,22 +20,24 @@ final class DiscountCodeConstraintValidator extends ConstraintValidator
             return;
         }
 
+        $codeValue = is_scalar($value) ? (string) $value : '';
+        
         /** @var ?Discount $discount */
-        $discount = $this->discountRepository->findOneBy(['code' => $value]);
+        $discount = $this->discountRepository->findOneBy(['code' => $codeValue]);
         if (null === $discount) {
-            $this->buildViolation(strval($value), $constraint->existsMessage);
+            $this->buildViolation($codeValue, $constraint->existsMessage);
             return;
         }
 
         if ($discount->getExpiresAt() < new \DateTime('now')) {
-            $this->buildViolation(strval($value), $constraint->expiredMessage);
+            $this->buildViolation($codeValue, $constraint->expiredMessage);
         }
 
         if (
             null !== $discount->getPayee()
             && $discount->getPayee()->getId() !== $constraint->payeeId
         ) {
-            $this->buildViolation(strval($value), $constraint->existsMessage);
+            $this->buildViolation($codeValue, $constraint->existsMessage);
         }
     }
 

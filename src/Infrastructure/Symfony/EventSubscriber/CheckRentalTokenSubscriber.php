@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Repository\Rental\RentalRepository;
 use App\Service\ApplicationTokenGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -27,14 +26,14 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
         return [ControllerEvent::class => ['onKernelController', 125]];
     }
 
-    final public function onKernelController(ControllerEvent $event): ?Response
+    final public function onKernelController(ControllerEvent $event): void
     {
         if (!(
             !str_starts_with($event->getRequest()->getPathInfo(), self::CREATE_RENTAL_PATH_PREFIX)
             xor !str_starts_with($event->getRequest()->getPathInfo(), self::PREVIEW_RENTAL_PATH)
         )
         ) {
-            return null;
+            return;
         }
 
         $request = $event->getRequest();
@@ -46,11 +45,11 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
 
 
         if (null === $user) {
-            return null;
+            return;
         }
 
         if (null === $token && null === $id) {
-            return null;
+            return;
         }
 
         $rental = $this->rentalRepository->find($id);
@@ -63,7 +62,5 @@ final class CheckRentalTokenSubscriber implements EventSubscriberInterface
         }
 
         $request->attributes->set('rental', $rental);
-
-        return null;
     }
 }

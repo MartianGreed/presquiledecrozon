@@ -60,7 +60,7 @@ class Discount implements \Stringable, Identity
         return $this;
     }
 
-    final public function getCode(): ?string
+    final public function getCode(): string
     {
         return $this->code;
     }
@@ -72,7 +72,7 @@ class Discount implements \Stringable, Identity
         return $this;
     }
 
-    final public function getExpiresAt(): ?\DateTimeInterface
+    final public function getExpiresAt(): \DateTimeInterface
     {
         return $this->expiresAt;
     }

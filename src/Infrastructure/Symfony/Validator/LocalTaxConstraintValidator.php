@@ -11,7 +11,8 @@ final class LocalTaxConstraintValidator extends ConstraintValidator
     public function validate(mixed $value, Constraint $constraint): void
     {
         $matches = [];
-        if (!preg_match_all('/(\d+([,.])\d+)([%€])/u', strval($value), $matches)) {
+        $stringValue = is_scalar($value) || is_null($value) ? (string) $value : '';
+        if (!preg_match_all('/(\d+([,.])\d+)([%€])/u', $stringValue, $matches)) {
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }

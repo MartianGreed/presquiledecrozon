@@ -87,7 +87,8 @@ class SecurityController extends AbstractController
         $form = $this->createForm(RequestResetPasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $resetPasswordService->resetPassword(strval($form->get('email')->getData()));
+            $email = $form->get('email')->getData();
+            $resetPasswordService->resetPassword(is_string($email) ? $email : '');
             return $this->redirectToRoute('app_request_reset_password_success');
         }
 
@@ -112,7 +113,8 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $resetPasswordService->resetPassword((string)$request->query->get('token'), strval($form->get('password')->getData()));
+            $password = $form->get('password')->getData();
+            $resetPasswordService->resetPassword((string) $request->query->get('token'), is_string($password) ? $password : '');
 
             return $this->redirectToRoute('app_login');
         }

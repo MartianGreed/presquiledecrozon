@@ -232,7 +232,7 @@ class Rental implements Identity
             $this->activeSubscription->setActiveRental($this);
         }
 
-        if (null !== $this->activeSubscription && $publishedAt < $this->activeSubscription->getExpiresAt()) {
+        if ($publishedAt < $this->activeSubscription->getExpiresAt()) {
             $this->status = Status::PUBLISHED;
             $this->updatedAt = $publishedAt;
         }

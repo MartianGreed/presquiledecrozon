@@ -16,10 +16,6 @@ final class FormErrorsToArrayFormatter
             $errors[] = $error->getMessage();
         }
         foreach ($form->all() as $childForm) {
-            if (!$childForm instanceof FormInterface) {
-                continue;
-            }
-
             $childErrors = self::format($childForm);
             $errors[$childForm->getName()] = $childErrors;
         }

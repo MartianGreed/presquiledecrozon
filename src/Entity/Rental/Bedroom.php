@@ -31,11 +31,11 @@ class Bedroom implements \Stringable, Identity
 
     public function __toString(): string
     {
-        return implode(', ', $this->beds->map(fn (?Bed $bed = null) => $bed?->getLabel())->toArray());
+        return implode(', ', $this->beds->map(fn (BedroomBed $bedroomBed) => $bedroomBed->getBed()->getLabel())->toArray());
     }
 
     /**
-     * @psalm-return ArrayCollection<int, Bed>
+     * @psalm-return ArrayCollection<int, BedroomBed>
      */
     public function getBeds(): Collection
     {
@@ -50,7 +50,10 @@ class Bedroom implements \Stringable, Identity
 
     public function removeBed(Bed $bed): self
     {
-        $this->beds->removeElement($bed);
+        $bedroomBed = $this->beds->filter(fn (BedroomBed $bb) => $bb->getBed() === $bed)->first();
+        if ($bedroomBed instanceof BedroomBed) {
+            $this->beds->removeElement($bedroomBed);
+        }
 
         return $this;
     }

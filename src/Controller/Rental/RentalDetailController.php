@@ -88,13 +88,14 @@ final class RentalDetailController extends AbstractController
             $endAt = $form->get('endAt')->getData();
 
             try {
+                $peopleCount = $form->get('peopleCount')->getData();
                 $booking = Booking::init(
                     $this->bookingValidator,
                     $rental,
                     $booker,
                     $startAt,
                     $endAt,
-                    intval($form->get('peopleCount')->getData()),
+                    is_numeric($peopleCount) ? (int) $peopleCount : 0,
                 );
 
                 $booking = $this->simulatorService->aggregatePrices($booking);

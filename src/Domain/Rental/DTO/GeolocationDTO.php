@@ -44,11 +44,8 @@ final class GeolocationDTO
         $coordinates = $geolocation->getCoordinates();
 
 
-        $meta = [];
-        if (array_key_exists('meta', $coordinates)) {
-            /** @var Meta $meta */
-            $meta = $coordinates['meta'];
-        }
+        /** @var Meta $meta */
+        $meta = $coordinates['meta'];
 
         return self::new((float)$coordinates['lat'], (float)$coordinates['lng'], $meta);
     }

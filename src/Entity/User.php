@@ -87,9 +87,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      *
      * @see UserInterface
      */
+    /**
+     * @return non-empty-string
+     */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -216,12 +219,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __unserialize(array $data): void
     {
-        $this->id = $data['id'] ?? null;
-        $this->email = $data['email'] ?? '';
-        $this->password = $data['password'] ?? '';
-        $this->roles = $data['roles'] ?? ['ROLE_USER'];
+        $this->id = isset($data['id']) && is_string($data['id']) ? $data['id'] : null;
+        $this->email = isset($data['email']) && is_string($data['email']) ? $data['email'] : '';
+        $this->password = isset($data['password']) && is_string($data['password']) ? $data['password'] : '';
+        $this->roles = isset($data['roles']) && is_array($data['roles']) ? $data['roles'] : ['ROLE_USER'];
     }
 
     /** @return ArrayCollection<int, Booking>  */

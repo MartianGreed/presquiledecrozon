@@ -17,7 +17,7 @@ final class RentalExtension extends AbstractExtension
     }
 
     /**
-     * @param PaginationInterface<Rental> $pagination
+     * @param PaginationInterface<int, Rental> $pagination
      *
      * @return string
      * @throws \JsonException
@@ -27,10 +27,6 @@ final class RentalExtension extends AbstractExtension
         $items = [];
 
         foreach ($pagination as $rental) {
-            if (!$rental instanceof Rental) {
-                continue;
-            }
-
             $items[] = [
                 'id' => $rental->getId(),
                 'lat' => $rental->getGeolocation()?->getCoordinates()['lat'],

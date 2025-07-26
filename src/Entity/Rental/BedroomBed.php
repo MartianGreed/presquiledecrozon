@@ -32,6 +32,11 @@ class BedroomBed implements Identity
         return $self;
     }
 
+    public function getBedroom(): ?Bedroom
+    {
+        return $this->bedroom;
+    }
+
     public function setBedroom(?Bedroom $bedroom): self
     {
         $this->bedroom = $bedroom;
