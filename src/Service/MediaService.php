@@ -95,12 +95,24 @@ final class MediaService
                 if (str_starts_with($assetUrl, '/')) {
                     return rtrim($this->cdnHost, '/') . $assetUrl;
                 }
+
+        // In dev environment, return local path without CDN host
+        if ($this->environment === 'dev') {
+            return ltrim($assetUrl, '/');
+        }
                 
                 return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
             }
         }
 
-        return rtrim($this->cdnHost, '/') . '/' . ltrim($this->cacheManager->getPath($obj, $fieldName, $className, $options), '/');
+        $cachePath = $this->cacheManager->getPath($obj, $fieldName, $className, $options);
+        
+        // In dev environment, return local path without CDN host
+        if ($this->environment === 'dev') {
+            return $cachePath;
+        }
+        
+        return rtrim($this->cdnHost, '/') . '/' . ltrim($cachePath, '/');
     }
 
     /**
