@@ -29,7 +29,7 @@ final class ConfirmationTest extends TestCase
         $this->simulatorService = new BookingPriceSimulatorService();
     }
 
-    /** @dataProvider getBookingDates */
+    #[\PHPUnit\Framework\Attributes\DataProvider('getBookingDates')]
     public function testBookingDuration(string $expected, string $start, string $end): void
     {
         $owner = UserFactory::createUser();
@@ -44,7 +44,7 @@ final class ConfirmationTest extends TestCase
         self::assertEquals($expected, $confirmation->getBookingDuration());
     }
 
-    public function getBookingDates(): \Generator
+    public static function getBookingDates(): \Generator
     {
         yield ['2 jours', '2022-11-10', '2022-11-12'];
         yield ['1 jour', '2022-11-10', '2022-11-11'];

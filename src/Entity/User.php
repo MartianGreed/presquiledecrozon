@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable, \Stringable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use IdentityTrait, TimestampabbleTrait;
 
@@ -206,29 +206,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
         return $this;
     }
 
-    public function serialize(): ?string
+    public function __serialize(): array
     {
-        return serialize([
-            $this->id,
-            $this->email,
-            $this->password,
-            $this->roles,
-        ]);
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'password' => $this->password,
+            'roles' => $this->roles,
+        ];
     }
 
-    public function unserialize(string $data)
+    public function __unserialize(array $data): void
     {
-        /** @phpstan-ignore-next-line */
-        [
-            /** @phpstan-ignore-next-line */
-            $this->id,
-            /** @phpstan-ignore-next-line */
-            $this->email,
-            /** @phpstan-ignore-next-line */
-            $this->password,
-            /** @phpstan-ignore-next-line */
-            $this->roles,
-        ] = unserialize($data);
+        $this->id = $data['id'] ?? null;
+        $this->email = $data['email'] ?? '';
+        $this->password = $data['password'] ?? '';
+        $this->roles = $data['roles'] ?? ['ROLE_USER'];
     }
 
     /** @return ArrayCollection<int, Booking>  */

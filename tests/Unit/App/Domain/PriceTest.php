@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PriceTest extends TestCase
 {
-    /** @dataProvider providePrices */
+    #[\PHPUnit\Framework\Attributes\DataProvider('providePrices')]
     public function testItHasValuesAndAmount(float $base, int $value, float $amount, string $strVal): void
     {
         $price = new Price($base);
@@ -17,7 +17,7 @@ final class PriceTest extends TestCase
         self::assertSame($strVal, (string) $price);
     }
 
-    /** @dataProvider provideAdd */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideAdd')]
     public function testAdd(float $base, float $add, int $expected): void
     {
         $price = new Price($base);
@@ -25,7 +25,7 @@ final class PriceTest extends TestCase
         self::assertSame($expected, $price->add($add)->getValue());
     }
 
-    /** @dataProvider provideMinus */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideMinus')]
     public function testMinus(float $base, float $minus, int $expected): void
     {
         $price = new Price($base);
@@ -33,7 +33,7 @@ final class PriceTest extends TestCase
     }
 
     /** @return array<array{float, int, float, string}> */
-    public function providePrices(): array
+    public static function providePrices(): array
     {
         return [
            [89, 8900, 89.0, '89,00 €'],
@@ -43,7 +43,7 @@ final class PriceTest extends TestCase
         ];
     }
     /** @return array<array{float, float, int}> */
-    public function provideAdd(): array
+    public static function provideAdd(): array
     {
         return [
             [89, 10, 9900],
@@ -54,7 +54,7 @@ final class PriceTest extends TestCase
     }
 
     /** @return array<array{float, float, int}> */
-    public function provideMinus(): array
+    public static function provideMinus(): array
     {
         return [
             [89, 10, 7900],

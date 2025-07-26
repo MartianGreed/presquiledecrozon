@@ -9,8 +9,8 @@ class AddressParserTest extends TestCase
 {
     /**
      * @param array<string, string> $addressParts
-     * @dataProvider addressProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('addressProvider')]
     public function testItCanProperlyParseAddress(string $formattedAddress, array $addressParts): void
     {
         self::assertAddressIsCorrectlyParsed(AddressParser::getParts($formattedAddress), $addressParts);
@@ -18,7 +18,7 @@ class AddressParserTest extends TestCase
 
 
     /** @return array<int, array<int, array<string, string>|string>> */
-    public function addressProvider(): array
+    public static function addressProvider(): array
     {
         return [
             ['Lézargol, 29560 Argol, France', ['address' => 'Lézargol', 'postal_code' => '29560', 'town' => 'Argol', 'country' => 'France']],

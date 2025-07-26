@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\E2E;
 
 use Symfony\Component\Panther\{Client, PantherTestCase};
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('e2e')]
 final class RequestResetPasswordTest extends PantherTestCase
 {
     private Client $client;

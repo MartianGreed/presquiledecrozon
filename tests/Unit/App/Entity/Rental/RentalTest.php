@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RentalTest extends TestCase
 {
-    /** @dataProvider rangesProvider */
+    #[\PHPUnit\Framework\Attributes\DataProvider('rangesProvider')]
     public function testGetPricesForRangeReturnsCorrectPrices(string $startAt, string $endAt, int $peopleCount, BookingPrices $expected): void
     {
         $rental = static::createRental();
@@ -38,7 +38,7 @@ final class RentalTest extends TestCase
     }
 
     /** @return array<array{0: string, 1: string, 2: int, 3: BookingPrices}> */
-    public function rangesProvider(): array
+    public static function rangesProvider(): array
     {
         return [
             [
