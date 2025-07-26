@@ -1,9 +1,15 @@
 start:
-	docker compose -p presquiledecrozon up -d
+	podman compose -p presquiledecrozon up -d
 	symfony serve -d
 
+create_db:
+	symfony console doctrine:database:create
+
+migrate:
+	symfony console doctrine:migration:migrate
+
 stop:
-	docker compose -p presquiledecrozon stop
+	podman compose -p presquiledecrozon stop
 	symfony server:stop
 
 fixtures:
