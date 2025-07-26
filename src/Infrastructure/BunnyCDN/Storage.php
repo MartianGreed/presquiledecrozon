@@ -20,9 +20,9 @@ final class Storage
 
     public function getBaseUrl(): string
     {
-        return 'de' === $this->storageZoneRegion || !$this->storageZoneRegion
+        return 'de' === $this->storageZoneRegion || ! $this->storageZoneRegion
             ? 'https://storage.bunnycdn.com/'
-            : 'https://'.$this->storageZoneRegion.'.storage.bunnycdn.com/';
+            : 'https://' . $this->storageZoneRegion . '.storage.bunnycdn.com/';
     }
 
     public function getStorageObjects(string $path): Reply
@@ -37,7 +37,7 @@ final class Storage
         $response = $this->makeResponse($this->doRequest(FilePathUtil::getParentDirectory($path), RequestMethod::GET, isDirectory: true));
 
         if (200 !== $response->getStatusCode()) {
-            throw new FileNotFoundException('File not found for path :'.$path);
+            throw new FileNotFoundException('File not found for path :' . $path);
         }
         /** @phpstan-ignore-next-line */
         $object = array_filter($response->getContent(), static fn (FileObject $item): bool => $item->getFilename() === $fileName);
@@ -45,7 +45,7 @@ final class Storage
         /** @var FileObject|null $res */
         $res = array_shift($object);
         if (null === $res) {
-            throw new FileNotFoundException('File not found for path :'.$path);
+            throw new FileNotFoundException('File not found for path :' . $path);
         }
 
         return $res;
@@ -59,7 +59,7 @@ final class Storage
 
         return 200 === $response->getStatusCode()
             /* @phpstan-ignore-next-line */
-            && !empty(array_filter($response->getContent(), static fn (FileObject $item): bool => $item->getFilename() === $fileName))
+            && array_filter($response->getContent(), static fn (FileObject $item): bool => $item->getFilename() === $fileName) !== []
         ;
     }
 
@@ -86,7 +86,7 @@ final class Storage
 
         return $this->client->request(
             $method->value,
-            $this->getBaseUrl().$normalizedPath,
+            $this->getBaseUrl() . $normalizedPath,
             $this->buildRequestData($method, $content),
         );
     }
@@ -111,7 +111,9 @@ final class Storage
             return new Reply($statusCode, $data);
         } catch (\Exception $e) {
             if (404 === $e->getCode()) {
-                return new Reply(404, ['Message' => $e->getMessage()]);
+                return new Reply(404, [
+                    'Message' => $e->getMessage(),
+                ]);
             }
         }
 
@@ -121,7 +123,7 @@ final class Storage
     private function normalizePath(string $path, bool $isDirectory = false): string
     {
         $path = str_replace('\\', '/', $path);
-        if ($isDirectory && !FilePathUtil::endsWith($path, '/')) {
+        if ($isDirectory && ! FilePathUtil::endsWith($path, '/')) {
             $path .= '/';
         }
 
@@ -138,7 +140,9 @@ final class Storage
         return sprintf('%s/%s', $this->storageZoneName, $path);
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function buildRequestData(RequestMethod $method, mixed $content = null): array
     {
         $data = [

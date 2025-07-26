@@ -16,7 +16,7 @@ final class BedSizeType extends JsonType
             return null;
         }
 
-        if (!$value instanceof BedSize) {
+        if (! $value instanceof BedSize) {
             throw new NotSupported('Value has to be of type BedSize to use this doctrine type');
         }
 

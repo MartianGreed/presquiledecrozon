@@ -22,10 +22,10 @@ final class BookingRequest
         $startAt = \DateTime::createFromFormat('Y-m-d', $data['start_at']);
         $endAt = \DateTime::createFromFormat('Y-m-d', $data['end_at']);
 
-        if (!$startAt) {
+        if (! $startAt) {
             throw new \RuntimeException('Invalid start date provided');
         }
-        if (!$endAt) {
+        if (! $endAt) {
             throw new \RuntimeException('Invalid end date provided');
         }
 

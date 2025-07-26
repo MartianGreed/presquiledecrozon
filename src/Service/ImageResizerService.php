@@ -15,20 +15,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ImageResizerService implements ImageResizerServiceInterface
 {
     private readonly ImageManager $imageManager;
+
     private readonly OptionsResolver $resolver;
 
-    public function __construct(private readonly BunnyCDNAdapter $storage)
+    public function __construct(
+        private readonly BunnyCDNAdapter $storage
+    )
     {
         $this->imageManager = new ImageManager(new Driver());
         $this->resolver = new OptionsResolver();
     }
 
-    /** @param ResizeOption $options */
+    /**
+     * @param ResizeOption $options
+     */
     public function resize(string $img, string $cachePath, array $options): void
     {
         $options = $this->resolveOptions($options);
 
-        $fileExists = $this->storage->fileExists($img);
+        $this->storage->fileExists($img);
 
         $stream = $this->storage->readStream($img);
 

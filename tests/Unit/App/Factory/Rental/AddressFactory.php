@@ -18,7 +18,7 @@ final class AddressFactory
             ->setAddress2($address2)
         ;
 
-        if (null !== $rental) {
+        if ($rental instanceof \App\Entity\Rental\Rental) {
             $address->setRental($rental);
         }
 

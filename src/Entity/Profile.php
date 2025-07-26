@@ -129,12 +129,12 @@ class Profile
     public function setAccount(?User $account): self
     {
         // unset the owning side of the relation if necessary
-        if (null === $account && null !== $this->account) {
+        if (! $account instanceof \App\Entity\User && $this->account instanceof \App\Entity\User) {
             $this->account->setProfile(null);
         }
 
         // set the owning side of the relation if necessary
-        if (null !== $account && $account->getProfile() !== $this) {
+        if ($account instanceof \App\Entity\User && $account->getProfile() !== $this) {
             $account->setProfile($this);
         }
 
@@ -157,6 +157,6 @@ class Profile
 
     final public function getFullName(): string
     {
-        return $this->firstname.' '.$this->lastname;
+        return $this->firstname . ' ' . $this->lastname;
     }
 }

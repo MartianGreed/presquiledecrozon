@@ -31,14 +31,20 @@ final class AddRentalToFavoriteListController extends AbstractController
 
         try {
             if ($this->favoriteRepository->addNewFavoriteToList($id, (string) $this->getUser()->getId())) {
-                return new JsonResponse(['favorite' => $id], Response::HTTP_CREATED);
+                return new JsonResponse([
+                    'favorite' => $id,
+                ], Response::HTTP_CREATED);
             }
 
             $this->favoriteRepository->removeFromFavoriteList($id, (string) $this->getUser()->getId());
 
-            return new JsonResponse(['removed' => true], Response::HTTP_OK);
+            return new JsonResponse([
+                'removed' => true,
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_NOT_ACCEPTABLE);
+            return new JsonResponse([
+                'message' => $e->getMessage(),
+            ], Response::HTTP_NOT_ACCEPTABLE);
         }
     }
 }

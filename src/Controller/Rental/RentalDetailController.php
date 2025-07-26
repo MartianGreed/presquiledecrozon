@@ -44,20 +44,18 @@ final class RentalDetailController extends AbstractController
             $rental = $this->rentalRepository->fetchRentalDetails($slug);
 
             $token = $request->query->get('token');
-            if (null !== $token) {
-                if ($token !== $rental->tokenize()) {
-                    throw new RentalNotFoundException((string) $rental->getSlug());
-                }
+            if (null !== $token && $token !== $rental->tokenize()) {
+                throw new RentalNotFoundException((string) $rental->getSlug());
             }
         } catch (RentalNotFoundException $e) {
             throw $this->createNotFoundException();
         }
 
         $data = null;
-        if (null !== $sessionData = $request->getSession()->get('booking-'.$rental->getId())) {
-            if (is_string($sessionData)) {
-                $data = unserialize($sessionData, ['allowed_classes' => [\DateTime::class]]);
-            }
+        if (null !== ($sessionData = $request->getSession()->get('booking-' . $rental->getId())) && is_string($sessionData)) {
+            $data = unserialize($sessionData, [
+                'allowed_classes' => [\DateTime::class],
+            ]);
         }
 
         $form = $this->createForm(BookRentalType::class, $data, [
@@ -72,7 +70,7 @@ final class RentalDetailController extends AbstractController
                 'peopleCount' => $form->get('peopleCount')->getData(),
             ];
 
-            $request->getSession()->set('booking-'.$rental->getId(), serialize($formData));
+            $request->getSession()->set('booking-' . $rental->getId(), serialize($formData));
 
             /** @var ?User $booker */
             $booker = $this->getUser();
@@ -109,9 +107,11 @@ final class RentalDetailController extends AbstractController
             $this->manager->flush();
 
             $this->bus->dispatch(new RentalHasBeenBooked((string) $rental->getId(), (string) $booking->getId(), (string) $booking->getCreatedAt()?->format('Y-m-d H:i:s')));
-            $request->getSession()->remove('booking-'.$rental->getId());
+            $request->getSession()->remove('booking-' . $rental->getId());
 
-            return $this->redirectToRoute('app_confirm_booking', ['id' => $booking->getId()]);
+            return $this->redirectToRoute('app_confirm_booking', [
+                'id' => $booking->getId(),
+            ]);
         }
 
         return $this->render('page/rental-detail.html.twig', [
@@ -127,7 +127,7 @@ final class RentalDetailController extends AbstractController
         ?FormError $error = null,
         ?string $field = null,
     ): Response {
-        if (null !== $error && null !== $field) {
+        if ($error instanceof \Symfony\Component\Form\FormError && null !== $field) {
             $form->get($field)->addError($error);
         }
 

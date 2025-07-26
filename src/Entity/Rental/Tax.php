@@ -19,13 +19,17 @@ class Tax implements Identity
     #[ORM\Column(type: 'string', length: 20)]
     private string $localTax;
 
-    #[ORM\Column(type: 'price', options: ['default' => 0])]
+    #[ORM\Column(type: 'price', options: [
+        'default' => 0,
+    ])]
     private ?Price $cleaningTax = null;
 
     #[ORM\Column(type: 'price', nullable: true)]
     private ?Price $linensTax = null;
 
-    /** @var ArrayCollection<int, Linens> */
+    /**
+     * @var ArrayCollection<int, Linens>
+     */
     #[ORM\ManyToMany(targetEntity: Linens::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'tax_id')]
     private Collection $linens;
@@ -76,7 +80,7 @@ class Tax implements Identity
 
     public function addLinen(Linens $linen): self
     {
-        if (!$this->linens->contains($linen)) {
+        if (! $this->linens->contains($linen)) {
             $this->linens[] = $linen;
         }
 
@@ -92,7 +96,9 @@ class Tax implements Identity
         return $this;
     }
 
-    /** @return ArrayCollection<int, Linens> */
+    /**
+     * @return ArrayCollection<int, Linens>
+     */
     public function getLinens(): Collection
     {
         return $this->linens;

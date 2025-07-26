@@ -22,7 +22,9 @@ final class DiscountApplierTest extends TestCase
         self::assertSame($expected->getValue(), $this->applier->apply($discount, new Price($amount))->getValue());
     }
 
-    /** @return array<array{Discount, int, Price}> */
+    /**
+     * @return array<array{Discount, int, Price}>
+     */
     public static function provideDiscount(): array
     {
         return [

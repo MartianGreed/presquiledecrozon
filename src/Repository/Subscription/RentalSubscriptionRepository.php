@@ -34,7 +34,9 @@ class RentalSubscriptionRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    /** @throws RentalSubscriptionNotFound */
+    /**
+     * @throws RentalSubscriptionNotFound
+     */
     final public function findSubscriptionForRental(string $rentalId): RentalSubscription
     {
         $qb = $this->createQueryBuilder('rs');
@@ -44,7 +46,7 @@ class RentalSubscriptionRepository extends ServiceEntityRepository
             ->join('rs.subscription', 's')
             ->leftJoin('rs.discount', 'd')
             ->where($qb->expr()->eq('rs.rental', "'$rentalId'"))
-            ->andWhere($qb->expr()->eq('rs.status', "'".SubscriptionStatus::DRAFT->value."'"))
+            ->andWhere($qb->expr()->eq('rs.status', "'" . SubscriptionStatus::DRAFT->value . "'"))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

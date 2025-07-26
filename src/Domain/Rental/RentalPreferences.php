@@ -4,7 +4,9 @@ namespace App\Domain\Rental;
 
 final class RentalPreferences
 {
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public static function acceptedLastBookingChoices(): array
     {
         return [
@@ -15,7 +17,9 @@ final class RentalPreferences
         ];
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public static function maxTimeBeforeBookingChoices(): array
     {
         return [
@@ -29,7 +33,9 @@ final class RentalPreferences
         ];
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public static function beginBookingAt(): array
     {
         return [
@@ -47,7 +53,9 @@ final class RentalPreferences
         ];
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public static function endBookingAt(): array
     {
         return [

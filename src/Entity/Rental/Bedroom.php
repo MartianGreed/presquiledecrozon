@@ -19,7 +19,9 @@ class Bedroom implements \Stringable, Identity
     #[ORM\JoinColumn(nullable: false)]
     private Configuration $configuration;
 
-    /** @var ArrayCollection<int, BedroomBed> */
+    /**
+     * @var ArrayCollection<int, BedroomBed>
+     */
     #[ORM\OneToMany(targetEntity: BedroomBed::class, mappedBy: 'bedroom', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Collection $beds;

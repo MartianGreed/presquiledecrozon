@@ -35,19 +35,35 @@ use Vich\UploaderBundle\Handler\UploadHandler;
 
 class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, DependentFixtureInterface
 {
-    /** @var array<RentalType> */
+    /**
+     * @var array<RentalType>
+     */
     private array $rentalTypes;
-    /** @var array<Bed> */
+
+    /**
+     * @var array<Bed>
+     */
     private array $beds;
-    /** @var array<Furniture> */
+
+    /**
+     * @var array<Furniture>
+     */
     private array $furnitures;
-    /** @var array<Town> */
+
+    /**
+     * @var array<Town>
+     */
     private array $towns;
-    /** @var array<Linens> */
+
+    /**
+     * @var array<Linens>
+     */
     private array $linens;
 
     private SluggerInterface $slugger;
+
     private UploadHandler $uploadHandler;
+
     private LoggerInterface $logger;
 
     #[Required]
@@ -74,7 +90,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
         for ($i = 0; $i < 10; ++$i) {
             /** @var User $user */
-            $user = $this->getReference(UserFixtures::USER_REFERENCE.$i, User::class);
+            $user = $this->getReference(UserFixtures::USER_REFERENCE . $i, User::class);
 
             for ($j = 0; $j < 2; ++$j) {
                 $rental = Rental::new($user);
@@ -83,12 +99,12 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
                 $rental = $this->createFurnitures($rental);
                 $rental = $this->createDescription($rental, $manager);
                 $rental = $this->createAddress($rental, $manager);
-                $rental = $this->createGeolocation($rental, $manager);
+                $rental = $this->createGeolocation($rental);
                 $rental = $this->createPictures($rental, $manager);
                 $rental = $this->createPreferences($rental, $manager);
                 $rental = $this->createUnavailabilities($rental, $manager);
                 $rental = $this->createTaxes($rental, $manager);
-                $rental = $this->createPrices($rental, $manager);
+                $rental = $this->createPrices($rental);
                 $rental = $this->createConditions($rental, $manager);
 
                 $rental->setSlug($this->slugger->slug((string) $rental->getDescription()?->getTitle()));
@@ -183,7 +199,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         return $rental;
     }
 
-    private function createGeolocation(Rental $rental, ObjectManager $manager): Rental
+    private function createGeolocation(Rental $rental): Rental
     {
         return $rental->improveGeolocation(
             GeolocationDTO::new(
@@ -191,8 +207,14 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
                 $this->faker->longitude(-4.18, -4.61),
                 [
                     'viewport' => [
-                        'northeast' => ['lat' => 48.333778, 'lng' => -4.563765],
-                        'southwest' => ['lat' => 48.098610, 'lng' => -4.238295],
+                        'northeast' => [
+                            'lat' => 48.333778,
+                            'lng' => -4.563765,
+                        ],
+                        'southwest' => [
+                            'lat' => 48.098610,
+                            'lng' => -4.238295,
+                        ],
                     ],
                     'formatted_address' => 'Not used with fixtures data',
                     'place_id' => 'this_id_a_fake_place_id',
@@ -240,7 +262,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         $range = $this->faker->randomDigit();
         for ($i = 0; $i < $range; ++$i) {
             $startDate = $this->faker->dateTimeBetween('now', '+1 years');
-            $endDate = $startDate->add(new \DateInterval('P'.$this->faker->randomDigit().'D'));
+            $endDate = $startDate->add(new \DateInterval('P' . $this->faker->randomDigit() . 'D'));
 
             $unavailability = (new Unavailability())->setStartAt($startDate)->setEndAt($endDate)->setRental($rental);
 
@@ -270,7 +292,7 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
         return $rental;
     }
 
-    private function createPrices(Rental $rental, ObjectManager $manager): Rental
+    private function createPrices(Rental $rental): Rental
     {
         $rental->savePrices(new ArrayCollection([
             (new \App\Entity\Rental\Price())
@@ -314,10 +336,12 @@ class RentalFixtures extends AbstractFixtures implements FixtureGroupInterface, 
 
     private function createMedia(string $name): Media
     {
-        $filePath = __DIR__.'/fixtures/rental/'.$name;
+        $filePath = __DIR__ . '/fixtures/rental/' . $name;
 
-        if (!file_exists($filePath)) {
-            $this->logger->error('Fixture image not found', ['path' => $filePath]);
+        if (! file_exists($filePath)) {
+            $this->logger->error('Fixture image not found', [
+                'path' => $filePath,
+            ]);
             throw new \RuntimeException(sprintf('Fixture image not found: %s', $filePath));
         }
 

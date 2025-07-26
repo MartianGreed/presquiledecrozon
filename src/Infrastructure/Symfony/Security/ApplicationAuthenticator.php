@@ -57,7 +57,7 @@ class ApplicationAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // @phpstan-ignore-next-line
-        $this->requestStack->getSession()->getFlashBag()->add('success', 'Bonjour '.$user->getProfile()->getFirstname());
+        $this->requestStack->getSession()->getFlashBag()->add('success', 'Bonjour ' . $user->getProfile()->getFirstname());
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);

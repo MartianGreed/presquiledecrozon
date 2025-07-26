@@ -36,11 +36,15 @@ class Rental implements Identity
     #[ORM\OneToOne(mappedBy: 'rental', targetEntity: Configuration::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?Configuration $configuration = null;
 
-    /** @var ArrayCollection<int, Furniture> */
+    /**
+     * @var ArrayCollection<int, Furniture>
+     */
     #[ORM\ManyToMany(targetEntity: Furniture::class)]
     private Collection $furnitures;
 
-    /** @var array<int, string> */
+    /**
+     * @var array<int, string>
+     */
     #[ORM\Column(type: 'array')]
     private array $customFurnitures = [];
 
@@ -62,7 +66,9 @@ class Rental implements Identity
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Preferences::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?Preferences $preferences = null;
 
-    /** @var ArrayCollection<int, Unavailability> */
+    /**
+     * @var ArrayCollection<int, Unavailability>
+     */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Unavailability::class, orphanRemoval: true, cascade: [
         'persist',
         'remove',
@@ -75,7 +81,9 @@ class Rental implements Identity
     #[ORM\OneToOne(inversedBy: 'rental', targetEntity: Condition::class, cascade: ['persist', 'remove'])]
     private ?Condition $condition = null;
 
-    /** @var ArrayCollection<int, Price> */
+    /**
+     * @var ArrayCollection<int, Price>
+     */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Price::class, orphanRemoval: true, cascade: [
         'persist',
         'remove',
@@ -92,7 +100,9 @@ class Rental implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    /** @var ArrayCollection<int, RentalSubscription> */
+    /**
+     * @var ArrayCollection<int, RentalSubscription>
+     */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: RentalSubscription::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $subscriptions;
@@ -100,7 +110,9 @@ class Rental implements Identity
     #[ORM\OneToOne(mappedBy: 'activeRental', targetEntity: RentalSubscription::class)]
     private ?RentalSubscription $activeSubscription = null;
 
-    /** @var ArrayCollection<int, Booking> */
+    /**
+     * @var ArrayCollection<int, Booking>
+     */
     #[ORM\OneToMany(mappedBy: 'rental', targetEntity: Booking::class)]
     private Collection $bookings;
 
@@ -125,7 +137,7 @@ class Rental implements Identity
 
     final public function saveDescription(Description $description): self
     {
-        if (null === $this->description) {
+        if (! $this->description instanceof \App\Entity\Rental\Description) {
             $this->setDescription($description);
 
             return $this;
@@ -141,7 +153,7 @@ class Rental implements Identity
 
     final public function saveAddress(Address $address): self
     {
-        if (null === $this->address) {
+        if (! $this->address instanceof \App\Entity\Rental\Address) {
             $this->setAddress($address);
 
             return $this;
@@ -172,7 +184,9 @@ class Rental implements Identity
         return $this;
     }
 
-    /** @param array<Unavailability> $unavailabilities */
+    /**
+     * @param array<Unavailability> $unavailabilities
+     */
     final public function saveUnavailabilities(array $unavailabilities): self
     {
         foreach ($unavailabilities as $unavailability) {
@@ -189,7 +203,9 @@ class Rental implements Identity
         return $this;
     }
 
-    /** @param ArrayCollection<int, Price> $prices */
+    /**
+     * @param ArrayCollection<int, Price> $prices
+     */
     final public function savePrices(Collection $prices): self
     {
         /** @var Price $price */
@@ -209,19 +225,19 @@ class Rental implements Identity
     {
         $paidSubscriptions = $this->getPaidSubscriptions();
 
-        return (!$this->isPublished() && 0 < count($paidSubscriptions)) || (!$this->isPublished() && null !== $this->activeSubscription);
+        return (! $this->isPublished() && 0 < count($paidSubscriptions)) || (! $this->isPublished() && $this->activeSubscription instanceof \App\Entity\Subscription\RentalSubscription);
     }
 
     final public function hasActiveSubscription(): bool
     {
-        return null !== $this->activeSubscription && $this->activeSubscription->isStillRunning();
+        return $this->activeSubscription instanceof \App\Entity\Subscription\RentalSubscription && $this->activeSubscription->isStillRunning();
     }
 
     final public function publish(): self
     {
         $publishedAt = new \DateTime('now');
 
-        if (null === $this->activeSubscription) {
+        if (! $this->activeSubscription instanceof \App\Entity\Subscription\RentalSubscription) {
             $paidSubscriptions = $this->getPaidSubscriptions();
             if (0 === count($paidSubscriptions)) {
                 throw new NoSubscriptionsFoundForRentalException((string) $this->id);
@@ -253,13 +269,17 @@ class Rental implements Identity
         return $this;
     }
 
-    /** @return ArrayCollection<int, RentalSubscription> */
+    /**
+     * @return ArrayCollection<int, RentalSubscription>
+     */
     private function getPaidSubscriptions(): Collection
     {
-        return $this->subscriptions->filter(fn (RentalSubscription $rs) => null !== $rs->getProviderChargeId() && null === $rs->getExpiresAt() && !$rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus());
+        return $this->subscriptions->filter(fn (RentalSubscription $rs) => null !== $rs->getProviderChargeId() && ! $rs->getExpiresAt() instanceof \DateTimeInterface && ! $rs->isConsumed() && SubscriptionStatus::ACTIVE === $rs->getStatus());
     }
 
-    /** @return array{0: PriceVO, 1: PriceVO} */
+    /**
+     * @return array{0: PriceVO, 1: PriceVO}
+     */
     private function getDayPrice(\DateTimeInterface $date): array
     {
         foreach ($this->prices as $priceRange) {

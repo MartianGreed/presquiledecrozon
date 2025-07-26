@@ -19,7 +19,9 @@ use PHPUnit\Framework\TestCase;
 class RentalImproveLocalisationServiceTest extends TestCase
 {
     private RentalImproveLocalisationService $service;
+
     private MockObject $townRepository;
+
     private MockObject $postalCodeRepository;
 
     public function setUp(): void
@@ -32,9 +34,9 @@ class RentalImproveLocalisationServiceTest extends TestCase
 
     public function testItProperlyThrowsWhenNoSuggestionsHaveBeenSet(): void
     {
-        $rental = self::createRental();
-        $geolocationDTO = self::createGeolocationDTO();
-        $suggestedLocalisation = self::createSuggestedLocalisation(true);
+        $rental = $this->createRental();
+        $geolocationDTO = $this->createGeolocationDTO();
+        $suggestedLocalisation = $this->createSuggestedLocalisation(true);
 
         $this->expectExceptionMessage('No need to improve localisation if no suggestion has been chosen');
         $this->expectException(\DomainException::class);
@@ -44,12 +46,16 @@ class RentalImproveLocalisationServiceTest extends TestCase
 
     public function testItThrowsExceptionIfLocationIsNotSupported(): void
     {
-        $rental = self::createRental();
-        $geolocationDTO = self::createGeolocationDTO();
-        $suggestedLocalisation = self::createSuggestedLocalisation();
+        $rental = $this->createRental();
+        $geolocationDTO = $this->createGeolocationDTO();
+        $suggestedLocalisation = $this->createSuggestedLocalisation();
 
-        $this->townRepository->expects($this->once())->method('findOneBy')->with(['name' => 'Argol'])->willReturn(null);
-        $this->postalCodeRepository->expects($this->once())->method('findOneBy')->with(['code' => '29560'])->willReturn(null);
+        $this->townRepository->expects($this->once())->method('findOneBy')->with([
+            'name' => 'Argol',
+        ])->willReturn(null);
+        $this->postalCodeRepository->expects($this->once())->method('findOneBy')->with([
+            'code' => '29560',
+        ])->willReturn(null);
 
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('Town or PostalCode is not supported');
@@ -59,9 +65,9 @@ class RentalImproveLocalisationServiceTest extends TestCase
 
     public function testItUpdateTheGeolocationWithImprovedLocalisation(): void
     {
-        $rental = self::createRental();
-        $geolocationDTO = self::createGeolocationDTO();
-        $suggestedLocalisation = self::createSuggestedLocalisation();
+        $rental = $this->createRental();
+        $geolocationDTO = $this->createGeolocationDTO();
+        $suggestedLocalisation = $this->createSuggestedLocalisation();
 
         /** @var Address $address */
         $address = $rental->getAddress();
@@ -71,8 +77,12 @@ class RentalImproveLocalisationServiceTest extends TestCase
         self::assertSame(48.4444, $geolocation->getCoordinates()['lat']);
         self::assertSame(4.444, $geolocation->getCoordinates()['lng']);
 
-        $this->townRepository->expects($this->once())->method('findOneBy')->with(['name' => 'Argol'])->willReturn(TownFactory::argol());
-        $this->postalCodeRepository->expects($this->once())->method('findOneBy')->with(['code' => '29560'])->willReturn(PostalCodeFactory::create29560());
+        $this->townRepository->expects($this->once())->method('findOneBy')->with([
+            'name' => 'Argol',
+        ])->willReturn(TownFactory::argol());
+        $this->postalCodeRepository->expects($this->once())->method('findOneBy')->with([
+            'code' => '29560',
+        ])->willReturn(PostalCodeFactory::create29560());
 
         $this->service->improveLocalisation($rental, $geolocationDTO, $suggestedLocalisation);
 
@@ -85,7 +95,7 @@ class RentalImproveLocalisationServiceTest extends TestCase
         self::assertSame(4.888, $geolocation->getCoordinates()['lng']);
     }
 
-    private static function createRental(): Rental
+    private function createRental(): Rental
     {
         $rental = new Rental();
 
@@ -117,7 +127,7 @@ class RentalImproveLocalisationServiceTest extends TestCase
         return $rental;
     }
 
-    private static function createGeolocationDTO(): GeolocationDTO
+    private function createGeolocationDTO(): GeolocationDTO
     {
         return GeolocationDTO::new(48.888, 4.888, [
             'viewport' => [
@@ -135,7 +145,7 @@ class RentalImproveLocalisationServiceTest extends TestCase
         ]);
     }
 
-    private static function createSuggestedLocalisation(bool $isNull = false): LocationSuggestion
+    private function createSuggestedLocalisation(bool $isNull = false): LocationSuggestion
     {
         if ($isNull) {
             return new LocationSuggestion(null, null);

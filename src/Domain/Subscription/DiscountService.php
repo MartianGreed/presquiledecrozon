@@ -16,7 +16,9 @@ final class DiscountService
 
     public function applyDiscountCode(RentalSubscription $rentalSubscription, string $discountCode): RentalSubscription
     {
-        $discount = $this->discountRepository->findOneBy(['code' => $discountCode]);
+        $discount = $this->discountRepository->findOneBy([
+            'code' => $discountCode,
+        ]);
         if (null === $discount) {
             throw new \DomainException('Discount code cannot be null.');
         }

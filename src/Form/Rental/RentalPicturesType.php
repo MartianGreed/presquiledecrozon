@@ -13,20 +13,28 @@ final class RentalPicturesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $isRequired = !$options['is_update'];
+        $isRequired = ! $options['is_update'];
 
         $builder
             ->add('cover', MediaType::class, [
-                'row_attr' => ['class' => 'dropzone-item last'],
-                'attr' => ['placeholder' => '+'],
+                'row_attr' => [
+                    'class' => 'dropzone-item last',
+                ],
+                'attr' => [
+                    'placeholder' => '+',
+                ],
                 'required' => $isRequired,
             ])
             ->add('pictures', CollectionType::class, [
                 'entry_type' => MediaType::class,
                 'entry_options' => [
-                    'row_attr' => ['class' => 'dropzone-item'],
+                    'row_attr' => [
+                        'class' => 'dropzone-item',
+                    ],
                     'label' => false,
-                    'attr' => ['placeholder' => '+'],
+                    'attr' => [
+                        'placeholder' => '+',
+                    ],
                     'required' => $isRequired,
                 ],
                 'by_reference' => false,

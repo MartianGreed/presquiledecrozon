@@ -16,6 +16,7 @@ use Symfony\Component\Mime\Address;
 final class SendTestEmailCommand extends Command
 {
     private SymfonyStyle $io;
+
     private string $emailTarget;
 
     public function __construct(
@@ -35,7 +36,7 @@ final class SendTestEmailCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         $emailArg = $input->getArgument('email');
-        if (!is_string($emailArg)) {
+        if (! is_string($emailArg)) {
             throw new \RuntimeException('Email argument must be a string');
         }
         $this->emailTarget = $emailArg;

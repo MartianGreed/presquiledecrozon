@@ -12,7 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class FetchRentalGeolocationController extends AbstractController
 {
-    public function __construct(private readonly RentalService $rentalService)
+    public function __construct(
+        private readonly RentalService $rentalService
+    )
     {
     }
 
@@ -23,7 +25,7 @@ final class FetchRentalGeolocationController extends AbstractController
             $rental = $this->rentalService->findRental($id);
 
             // Workaround to render an empty response as geolocation has not been fetched yet
-            if (null === $rental->getGeolocation()) {
+            if (! $rental->getGeolocation() instanceof \App\Entity\Rental\Geolocation) {
                 throw new RentalNotFoundException($id);
             }
         } catch (RentalNotFoundException) {

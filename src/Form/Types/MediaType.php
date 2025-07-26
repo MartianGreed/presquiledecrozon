@@ -12,13 +12,18 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 final class MediaType extends AbstractType
 {
-    public function __construct(private readonly MediaService $mediaService)
+    public function __construct(
+        private readonly MediaService $mediaService
+    )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $imageUri = fn (Media $media) => $this->mediaService->assetHelper($media, 'file', null, ['h' => $options['h'], 'w' => $options['w']]);
+        $imageUri = fn (Media $media) => $this->mediaService->assetHelper($media, 'file', null, [
+            'h' => $options['h'],
+            'w' => $options['w'],
+        ]);
 
         $builder->add('file', VichImageType::class, [
             'allow_delete' => true,

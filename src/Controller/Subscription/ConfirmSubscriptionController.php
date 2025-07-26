@@ -23,7 +23,9 @@ final class ConfirmSubscriptionController extends AbstractController
     }
 
     #[Route('/abonnement/confirm/{rentalId}', name: 'app_confirm_subscription')]
-    public function __invoke(Request $request, #[MapEntity(mapping: ['rentalId' => 'id'])] Rental $rental): Response
+    public function __invoke(Request $request, #[MapEntity(mapping: [
+        'rentalId' => 'id',
+    ])] Rental $rental): Response
     {
         try {
             $paymentIntent = $this->stripeService->retrievePaymentIntent((string) $request->query->get('payment_intent'));
@@ -57,6 +59,8 @@ final class ConfirmSubscriptionController extends AbstractController
     {
         $this->addFlash('error', 'Nous avons eu un soucis lors de l\'enregistrement de votre commande. Veuillez nous contacter.');
 
-        return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
+        return $this->redirect($this->generateUrl('app_get_subscription', [
+            'rental_id' => $rental->getId(),
+        ]));
     }
 }

@@ -19,7 +19,9 @@ final class PriceType extends MoneyType
 
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
-        $view->vars['row_attr'] = $view->vars['row_attr'] + ['class' => 'money_type'];
+        $view->vars['row_attr'] += [
+            'class' => 'money_type',
+        ];
 
         parent::buildView($view, $form, $options);
     }

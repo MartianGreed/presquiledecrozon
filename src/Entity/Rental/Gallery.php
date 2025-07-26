@@ -19,7 +19,9 @@ class Gallery implements Identity
     #[ORM\JoinColumn(nullable: true)]
     private ?Media $cover = null;
 
-    /** @var ArrayCollection<int, Media> */
+    /**
+     * @var ArrayCollection<int, Media>
+     */
     #[ORM\ManyToMany(targetEntity: Media::class, cascade: ['persist', 'remove'])]
     private Collection $pictures;
 
@@ -53,7 +55,7 @@ class Gallery implements Identity
 
     public function addPicture(Media $picture): self
     {
-        if (!$this->pictures->contains($picture)) {
+        if (! $this->pictures->contains($picture)) {
             $this->pictures[] = $picture;
         }
 

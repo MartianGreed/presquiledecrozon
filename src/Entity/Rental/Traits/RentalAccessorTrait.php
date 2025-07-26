@@ -53,7 +53,9 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @psalm-return ArrayCollection<int, Furniture>  */
+    /**
+     * @psalm-return ArrayCollection<int, Furniture>
+     */
     final public function getFurnitures(): Collection
     {
         return $this->furnitures;
@@ -61,7 +63,7 @@ trait RentalAccessorTrait
 
     final public function addFurniture(Furniture $furniture): self
     {
-        if (!$this->furnitures->contains($furniture)) {
+        if (! $this->furnitures->contains($furniture)) {
             $this->furnitures[] = $furniture;
         }
 
@@ -75,13 +77,17 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @psalm-return array<int, string>  */
+    /**
+     * @psalm-return array<int, string>
+     */
     final public function getCustomFurnitures(): ?array
     {
         return $this->customFurnitures;
     }
 
-    /** @psalm-param array<int, string> $customFurnitures  */
+    /**
+     * @psalm-param array<int, string> $customFurnitures
+     */
     final public function setCustomFurnitures(array $customFurnitures): self
     {
         $this->customFurnitures = $customFurnitures;
@@ -149,7 +155,9 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @return ArrayCollection<int, Unavailability>  */
+    /**
+     * @return ArrayCollection<int, Unavailability>
+     */
     final public function getUnavailabilities(): Collection
     {
         return $this->unavailabilities;
@@ -157,7 +165,7 @@ trait RentalAccessorTrait
 
     final public function addUnavailability(Unavailability $unavailability): self
     {
-        if (!$this->unavailabilities->contains($unavailability)) {
+        if (! $this->unavailabilities->contains($unavailability)) {
             $this->unavailabilities[] = $unavailability;
             $unavailability->setRental($this);
         }
@@ -196,7 +204,9 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @psalm-return ArrayCollection<int, Price>  */
+    /**
+     * @psalm-return ArrayCollection<int, Price>
+     */
     final public function getPrices(): Collection
     {
         return $this->prices;
@@ -204,7 +214,7 @@ trait RentalAccessorTrait
 
     final public function addPrice(Price $price): self
     {
-        if (!$this->prices->contains($price)) {
+        if (! $this->prices->contains($price)) {
             $this->prices[] = $price;
             $price->setRental($this);
         }
@@ -263,7 +273,7 @@ trait RentalAccessorTrait
     final public function setGallery(?Gallery $gallery): Rental
     {
         $this->gallery = $gallery;
-        if (null === $gallery?->getRental()) {
+        if (! $gallery?->getRental() instanceof \App\Entity\Rental\Rental) {
             $gallery?->setRental($this);
         }
 
@@ -272,7 +282,7 @@ trait RentalAccessorTrait
 
     final public function addSubscription(RentalSubscription $subscription): self
     {
-        if (!$this->subscriptions->contains($subscription)) {
+        if (! $this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
         }
 
@@ -288,7 +298,9 @@ trait RentalAccessorTrait
         return $this;
     }
 
-    /** @return ArrayCollection<int, RentalSubscription> */
+    /**
+     * @return ArrayCollection<int, RentalSubscription>
+     */
     final public function getSubscriptions(): Collection
     {
         return $this->subscriptions;
@@ -299,14 +311,18 @@ trait RentalAccessorTrait
         return $this->activeSubscription;
     }
 
-    /** @return array<array{start: string, end: string}> */
+    /**
+     * @return array<array{start: string, end: string}>
+     */
     final public function displayUnavailabilities(): array
     {
         // @phpstan-ignore-next-line
         return $this->unavailabilities->map(fn (?Unavailability $u = null) => $u?->toArray())->toArray();
     }
 
-    /** @return ArrayCollection<int, Booking> */
+    /**
+     * @return ArrayCollection<int, Booking>
+     */
     public function getBookings(): Collection
     {
         return $this->bookings;
@@ -314,7 +330,7 @@ trait RentalAccessorTrait
 
     public function addBooking(Booking $booking): self
     {
-        if (!$this->bookings->contains($booking)) {
+        if (! $this->bookings->contains($booking)) {
             $this->bookings[] = $booking;
             $booking->setRental($this);
         }

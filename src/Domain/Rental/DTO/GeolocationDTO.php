@@ -15,7 +15,11 @@ final class GeolocationDTO
     /**
      * @param Meta $meta
      */
-    private function __construct(public float $lat, public float $lng, public readonly array $meta = [])
+    private function __construct(
+        public float $lat,
+        public float $lng,
+        public readonly array $meta = []
+    )
     {
     }
 
@@ -49,7 +53,9 @@ final class GeolocationDTO
         return self::new((float) $coordinates['lat'], (float) $coordinates['lng'], $meta);
     }
 
-    /** @return Meta */
+    /**
+     * @return Meta
+     */
     private function filterMeta(): array
     {
         if (0 >= count($this->meta)) {

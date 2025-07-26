@@ -22,7 +22,9 @@ class ConversationRepository extends ServiceEntityRepository
         parent::__construct($registry, Conversation::class);
     }
 
-    /** @return array<Conversation> */
+    /**
+     * @return array<Conversation>
+     */
     public function getUserConversations(?string $userId): array
     {
         $qb = $this->createQueryBuilder('c');

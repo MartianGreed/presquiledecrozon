@@ -39,7 +39,9 @@ final class UploadRentalPictureController extends AbstractController
             throw $this->createNotFoundException($e->getMessage());
         }
 
-        $form = $this->createForm(UploadRentalPictureType::class, new UploadedPicture(), ['csrf_protection' => false]);
+        $form = $this->createForm(UploadRentalPictureType::class, new UploadedPicture(), [
+            'csrf_protection' => false,
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedPicture $picture */
@@ -50,11 +52,11 @@ final class UploadRentalPictureController extends AbstractController
                 'message' => 'Picture has properly been upload',
                 'rental_id' => $rental->getId(),
                 'picture_id' => $picture->media->getId(),
-                'is_valid' => null !== $rental->getGallery()?->getCover() && 5 === $rental->getGallery()->getPictures()->count(),
+                'is_valid' => $rental->getGallery()?->getCover() instanceof \App\Entity\Media && 5 === $rental->getGallery()->getPictures()->count(),
             ]);
         }
 
-        if (!$form->isValid()) {
+        if (! $form->isValid()) {
             return new JsonResponse([
                 'type' => 'validation_errors',
                 'title' => 'There was an error validating form',
@@ -63,6 +65,8 @@ final class UploadRentalPictureController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        return new JsonResponse(['message' => 'Route is working']);
+        return new JsonResponse([
+            'message' => 'Route is working',
+        ]);
     }
 }

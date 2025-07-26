@@ -61,7 +61,7 @@ class Media
     {
         $this->file = $file;
 
-        if (null === $this->createdAt) {
+        if (! $this->createdAt instanceof \DateTimeInterface) {
             $this->createdAt = new \DateTime();
         }
         $this->updatedAt = new \DateTime();

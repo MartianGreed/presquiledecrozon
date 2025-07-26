@@ -41,18 +41,20 @@ final class CreateAdminUserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
-        if (!is_string($email)) {
+        if (! is_string($email)) {
             throw new \RuntimeException('Email argument must be a string');
         }
 
-        $user = $this->userRepository->findOneBy(['email' => $email]);
+        $user = $this->userRepository->findOneBy([
+            'email' => $email,
+        ]);
         if (null !== $user) {
             $this->io->error('Impossible de recréer un compte pour cet utilisateur.');
 
             return self::FAILURE;
         }
         $password = $this->io->askHidden('Tapez votre mot de passe');
-        if (!is_string($password)) {
+        if (! is_string($password)) {
             throw new \RuntimeException('Password must be a string');
         }
 

@@ -15,7 +15,9 @@ final class UpdateProfileInformationsController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly EntityManagerInterface $manager)
+    public function __construct(
+        private readonly EntityManagerInterface $manager
+    )
     {
     }
 
@@ -29,7 +31,7 @@ final class UpdateProfileInformationsController extends AbstractController
             /** @var Profile $profile */
             $profile = $form->getData();
 
-            if (null === $user->getProfile()) {
+            if (! $user->getProfile() instanceof \App\Entity\Profile) {
                 $user->setProfile($profile);
                 $this->manager->persist($profile);
             }

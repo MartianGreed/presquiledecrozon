@@ -9,9 +9,13 @@ use App\Entity\Rental\Rental;
 final class Confirmation
 {
     private readonly Rental $rental;
+
     private readonly \DateTimeInterface $startAt;
+
     private readonly \DateTimeInterface $endAt;
+
     private readonly int $peopleCount;
+
     private readonly BookingPrices $prices;
 
     public function __construct(Booking $booking)
@@ -19,11 +23,11 @@ final class Confirmation
         $startAt = $booking->getStartAt();
         $endAt = $booking->getEndAt();
 
-        if (null === $startAt) {
+        if (! $startAt instanceof \DateTimeInterface) {
             throw new \RuntimeException('Start date cannot be null');
         }
 
-        if (null === $endAt) {
+        if (! $endAt instanceof \DateTimeInterface) {
             throw new \RuntimeException('End date cannot be null');
         }
 
@@ -46,10 +50,10 @@ final class Confirmation
         }
 
         if (0 < $weekCount) {
-            $str .= $weekCount.' semaine'.($weekCount > 1 ? 's' : '');
+            $str .= $weekCount . ' semaine' . ($weekCount > 1 ? 's' : '');
         }
         if (0 < $leftDays) {
-            $str .= ' et '.$leftDays.' jour'.($leftDays > 1 ? 's' : '');
+            $str .= ' et ' . $leftDays . ' jour' . ($leftDays > 1 ? 's' : '');
         }
 
         return $str;
@@ -72,7 +76,7 @@ final class Confirmation
 
     private function getFormattedDate(\DateTimeInterface $dateTime): string
     {
-        return '<span class="days">'.$dateTime->format('d').'</span>'.$dateTime->format('M');
+        return '<span class="days">' . $dateTime->format('d') . '</span>' . $dateTime->format('M');
     }
 
     public function getRentalTitle(): string

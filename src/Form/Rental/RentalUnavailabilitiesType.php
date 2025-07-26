@@ -15,7 +15,9 @@ final class RentalUnavailabilitiesType extends AbstractType
     {
         $builder->add('unavailabilities', CollectionType::class, [
             'entry_type' => UnavailabilityType::class,
-            'entry_options' => ['label' => false],
+            'entry_options' => [
+                'label' => false,
+            ],
             'label' => false,
             'allow_add' => true,
             'allow_delete' => true,

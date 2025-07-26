@@ -13,7 +13,9 @@ final class GetBookerBookingsListController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly BookingRepository $bookingRepository)
+    public function __construct(
+        private readonly BookingRepository $bookingRepository
+    )
     {
     }
 

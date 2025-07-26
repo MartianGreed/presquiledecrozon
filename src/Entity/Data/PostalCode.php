@@ -21,7 +21,9 @@ class PostalCode implements \Stringable, Identity
     #[ORM\JoinColumn(nullable: false)]
     private Department $department;
 
-    /** @var ArrayCollection<int, Town> */
+    /**
+     * @var ArrayCollection<int, Town>
+     */
     #[ORM\OneToMany(mappedBy: 'postalCode', targetEntity: Town::class)]
     private Collection $towns;
 
@@ -69,7 +71,7 @@ class PostalCode implements \Stringable, Identity
 
     public function addTown(Town $town): self
     {
-        if (!$this->towns->contains($town)) {
+        if (! $this->towns->contains($town)) {
             $this->towns[] = $town;
             $town->setPostalCode($this);
         }

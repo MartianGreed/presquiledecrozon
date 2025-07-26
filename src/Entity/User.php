@@ -27,25 +27,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     #[Assert\Email]
     private string $email;
 
-    /** @var array<string> */
+    /**
+     * @var array<string>
+     */
     #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_USER'];
 
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    /** @var ArrayCollection<int, Rental> */
+    /**
+     * @var ArrayCollection<int, Rental>
+     */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Rental::class)]
     private Collection $rentals;
 
     #[ORM\OneToOne(inversedBy: 'account', targetEntity: Profile::class, cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
-    /** @var ArrayCollection<int, Discount> */
+    /**
+     * @var ArrayCollection<int, Discount>
+     */
     #[ORM\OneToMany(mappedBy: 'payee', targetEntity: Discount::class)]
     private Collection $discounts;
 
-    /** @var ArrayCollection<int, Booking> */
+    /**
+     * @var ArrayCollection<int, Booking>
+     */
     #[ORM\OneToMany(mappedBy: 'booker', targetEntity: Booking::class)]
     private Collection $bookings;
 
@@ -146,7 +154,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
     {
     }
 
-    /** @psalm-return ArrayCollection<int, Rental>  */
+    /**
+     * @psalm-return ArrayCollection<int, Rental>
+     */
     public function getRentals(): Collection
     {
         return $this->rentals;
@@ -154,7 +164,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addRental(Rental $rental): self
     {
-        if (!$this->rentals->contains($rental)) {
+        if (! $this->rentals->contains($rental)) {
             $this->rentals[] = $rental;
             $rental->setOwner($this);
         }
@@ -164,11 +174,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function removeRental(Rental $rental): self
     {
-        if ($this->rentals->removeElement($rental)) {
-            // set the owning side to null (unless already changed)
-            if ($rental->getOwner() === $this) {
-                $rental->setOwner(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->rentals->removeElement($rental) && $rental->getOwner() === $this) {
+            $rental->setOwner(null);
         }
 
         return $this;
@@ -187,7 +195,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
 
-    /** @psalm-return ArrayCollection<int, Discount>  */
+    /**
+     * @psalm-return ArrayCollection<int, Discount>
+     */
     public function getDiscounts(): Collection
     {
         return $this->discounts;
@@ -195,7 +205,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addDiscount(Discount $discount): self
     {
-        if (!$this->discounts->contains($discount)) {
+        if (! $this->discounts->contains($discount)) {
             $this->discounts[] = $discount;
             $discount->setPayee($this);
         }
@@ -205,11 +215,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function removeDiscount(Discount $discount): self
     {
-        if ($this->discounts->removeElement($discount)) {
-            // set the owning side to null (unless already changed)
-            if ($discount->getPayee() === $this) {
-                $discount->setPayee(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->discounts->removeElement($discount) && $discount->getPayee() === $this) {
+            $discount->setPayee(null);
         }
 
         return $this;
@@ -238,7 +246,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->roles = $roles;
     }
 
-    /** @return ArrayCollection<int, Booking>  */
+    /**
+     * @return ArrayCollection<int, Booking>
+     */
     public function getBookings(): Collection
     {
         return $this->bookings;
@@ -246,7 +256,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     public function addBooking(Booking $booking): self
     {
-        if (!$this->bookings->contains($booking)) {
+        if (! $this->bookings->contains($booking)) {
             $this->bookings[] = $booking;
             $booking->setBooker($this);
         }

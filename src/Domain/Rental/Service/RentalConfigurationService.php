@@ -11,15 +11,18 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class RentalConfigurationService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly BedRepository $bedRepository)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly BedRepository $bedRepository
+    )
     {
     }
 
     public function createConfiguration(Rental $rental, ConfigurationDTO $configurationDTO): Configuration
     {
-        $configuration = null === $rental->getConfiguration()
-            ? $this->createConfigurationObjectFromDTO($rental, $configurationDTO)
-            : $this->updateConfigurationObjectFromDTO($rental, $configurationDTO)
+        $configuration = $rental->getConfiguration() instanceof \App\Entity\Rental\Configuration
+            ? $this->updateConfigurationObjectFromDTO($rental, $configurationDTO)
+            : $this->createConfigurationObjectFromDTO($rental, $configurationDTO)
         ;
 
         $rental->setConfiguration($configuration);
@@ -41,7 +44,7 @@ final class RentalConfigurationService
     {
         $configuration = $rental->getConfiguration();
 
-        if (null === $configuration) {
+        if (! $configuration instanceof \App\Entity\Rental\Configuration) {
             throw new \LogicException('Configuration cannot be null when updating');
         }
 
@@ -61,7 +64,7 @@ final class RentalConfigurationService
 
                 $bed = $this->bedRepository->find($bedId);
                 if (null === $bed) {
-                    throw new \LogicException('Bed with ID: '.$bedId.' does not exists');
+                    throw new \LogicException('Bed with ID: ' . $bedId . ' does not exists');
                 }
 
                 $bedroom->addBed($bed, $bedCount);

@@ -54,13 +54,15 @@ class RentalRepository extends ServiceEntityRepository
         ;
 
         if (null === $rental) {
-            throw new EntityNotFoundException('No unpublished rental found for user :'.$userId);
+            throw new EntityNotFoundException('No unpublished rental found for user :' . $userId);
         }
 
         return $rental;
     }
 
-    /** @return array<Rental> */
+    /**
+     * @return array<Rental>
+     */
     final public function findUserRentals(string $userId): array
     {
         $qb = $this->getBaseQueryBuilder();
@@ -68,7 +70,7 @@ class RentalRepository extends ServiceEntityRepository
         /** @var array<Rental> $rentals */
         $rentals = $qb
             ->where($qb->expr()->eq('r.owner', "'$userId'"))
-            ->andWhere($qb->expr()->neq('r.status', "'".Status::DRAFT->value."'"))
+            ->andWhere($qb->expr()->neq('r.status', "'" . Status::DRAFT->value . "'"))
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult()
@@ -78,7 +80,9 @@ class RentalRepository extends ServiceEntityRepository
     }
 
     // TODO: Improve logic here to get more pertinent results.
-    /** @return array<Rental> */
+    /**
+     * @return array<Rental>
+     */
     public function findFeatured(int $max = 3): array
     {
         $qb = $this->getBaseQueryBuilder();
@@ -115,7 +119,7 @@ class RentalRepository extends ServiceEntityRepository
 
         /** @var ?Rental $rental */
         $rental = $qb
-            ->where($qb->expr()->eq('r.slug', "'".$slug."'"))
+            ->where($qb->expr()->eq('r.slug', "'" . $slug . "'"))
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()

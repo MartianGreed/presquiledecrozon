@@ -13,8 +13,14 @@ final class RentalMapType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('lat', NumberType::class, ['label' => false, 'scale' => 15])
-            ->add('lng', NumberType::class, ['label' => false, 'scale' => 15])
+            ->add('lat', NumberType::class, [
+                'label' => false,
+                'scale' => 15,
+            ])
+            ->add('lng', NumberType::class, [
+                'label' => false,
+                'scale' => 15,
+            ])
         ;
     }
 

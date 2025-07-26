@@ -10,7 +10,9 @@ use Twig\TwigFunction;
 
 final class HtmlExtension extends AbstractExtension
 {
-    public function __construct(private readonly RequestStack $requestStack)
+    public function __construct(
+        private readonly RequestStack $requestStack
+    )
     {
     }
 

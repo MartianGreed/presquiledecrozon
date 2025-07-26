@@ -9,11 +9,15 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 final class DiscountCodeConstraintValidator extends ConstraintValidator
 {
-    public function __construct(private readonly DiscountRepository $discountRepository)
+    public function __construct(
+        private readonly DiscountRepository $discountRepository
+    )
     {
     }
 
-    /** @param DiscountCodeConstraint $constraint */
+    /**
+     * @param DiscountCodeConstraint $constraint
+     */
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (null === $value || '' === $value) {
@@ -23,7 +27,9 @@ final class DiscountCodeConstraintValidator extends ConstraintValidator
         $codeValue = is_scalar($value) ? (string) $value : '';
 
         /** @var ?Discount $discount */
-        $discount = $this->discountRepository->findOneBy(['code' => $codeValue]);
+        $discount = $this->discountRepository->findOneBy([
+            'code' => $codeValue,
+        ]);
         if (null === $discount) {
             $this->buildViolation($codeValue, $constraint->existsMessage);
 
@@ -45,8 +51,8 @@ final class DiscountCodeConstraintValidator extends ConstraintValidator
     private function buildViolation(string $value, string $message): void
     {
         $this->context->buildViolation($message)
-                      ->setParameter('{{ code }}', $value)
-                      ->addViolation()
+            ->setParameter('{{ code }}', $value)
+            ->addViolation()
         ;
     }
 }

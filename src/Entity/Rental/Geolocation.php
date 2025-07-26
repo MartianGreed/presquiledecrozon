@@ -19,12 +19,19 @@ class Geolocation implements Identity
     #[ORM\OneToOne(mappedBy: 'geolocation', targetEntity: Rental::class, cascade: ['persist', 'remove'])]
     private Rental $rental;
 
-    /** @param GeolocationDTOArray $coordinates  */
-    private function __construct(#[ORM\Column(type: 'json')] private array $coordinates)
+    /**
+     * @param GeolocationDTOArray $coordinates
+     */
+    private function __construct(
+        #[ORM\Column(type: 'json')]
+        private array $coordinates
+    )
     {
     }
 
-    /** @param GeolocationDTOArray $location  */
+    /**
+     * @param GeolocationDTOArray $location
+     */
     final public static function new(array $location): self
     {
         return new self($location);
@@ -35,13 +42,17 @@ class Geolocation implements Identity
         return $this->setRental($rental);
     }
 
-    /** @psalm-return GeolocationDTOArray */
+    /**
+     * @psalm-return GeolocationDTOArray
+     */
     public function getCoordinates(): array
     {
         return $this->coordinates;
     }
 
-    /** @param GeolocationDTOArray $coordinates */
+    /**
+     * @param GeolocationDTOArray $coordinates
+     */
     public function setCoordinates(array $coordinates): self
     {
         $this->coordinates = $coordinates;

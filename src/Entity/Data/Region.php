@@ -33,7 +33,9 @@ class Region implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private Country $country;
 
-    /** @var ArrayCollection<int, Department> */
+    /**
+     * @var ArrayCollection<int, Department>
+     */
     #[ORM\OneToMany(mappedBy: 'region', targetEntity: Department::class)]
     private Collection $departments;
 
@@ -124,7 +126,7 @@ class Region implements Identity
 
     public function addDepartment(Department $department): self
     {
-        if (!$this->departments->contains($department)) {
+        if (! $this->departments->contains($department)) {
             $this->departments[] = $department;
             $department->setRegion($this);
         }

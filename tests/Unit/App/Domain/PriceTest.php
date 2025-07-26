@@ -32,7 +32,9 @@ final class PriceTest extends TestCase
         self::assertSame($expected, $price->minus($minus)->getValue());
     }
 
-    /** @return array<array{float, int, float, string}> */
+    /**
+     * @return array<array{float, int, float, string}>
+     */
     public static function providePrices(): array
     {
         return [
@@ -43,7 +45,9 @@ final class PriceTest extends TestCase
         ];
     }
 
-    /** @return array<array{float, float, int}> */
+    /**
+     * @return array<array{float, float, int}>
+     */
     public static function provideAdd(): array
     {
         return [
@@ -54,7 +58,9 @@ final class PriceTest extends TestCase
         ];
     }
 
-    /** @return array<array{float, float, int}> */
+    /**
+     * @return array<array{float, float, int}>
+     */
     public static function provideMinus(): array
     {
         return [

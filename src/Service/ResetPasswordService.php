@@ -19,7 +19,9 @@ final class ResetPasswordService
 
     public function resetPassword(string $token, string $plainPassword): void
     {
-        $user = $this->userRepository->findOneBy(['resetToken' => $token]);
+        $user = $this->userRepository->findOneBy([
+            'resetToken' => $token,
+        ]);
         if (null === $user) {
             return;
         }

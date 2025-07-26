@@ -48,12 +48,12 @@ class RentalCrudController extends AbstractCrudController
         yield FormField::addTab('Configuration');
         yield FormField::addPanel('Configuration');
         yield AssociationField::new('configuration.type')
-                    ->setCrudController(RentalTypeCrudController::class)
+            ->setCrudController(RentalTypeCrudController::class)
         ;
         yield NumberField::new('configuration.peopleCount');
         yield CollectionField::new('configuration.bedrooms')
-                    ->setEntryType(AdminBedroomType::class)
-                    ->setEntryIsComplex(true)
+            ->setEntryType(AdminBedroomType::class)
+            ->setEntryIsComplex(true)
         ;
 
         yield FormField::addPanel('Equipements');
@@ -69,44 +69,44 @@ class RentalCrudController extends AbstractCrudController
         yield TextField::new('address.address')->setColumns(6);
         yield TextField::new('address.address2')->setColumns(6);
         yield AssociationField::new('address.town')
-                    ->setCrudController(TownCrudController::class)
-                    ->setRequired(true)
+            ->setCrudController(TownCrudController::class)
+            ->setRequired(true)
         ;
 
         yield FormField::addTab('Photos');
         yield MediaField::new('gallery.cover');
         yield CollectionField::new('gallery.pictures')
-                ->setEntryType(MediaType::class)
-                ->setEntryIsComplex(true)
+            ->setEntryType(MediaType::class)
+            ->setEntryIsComplex(true)
         ;
 
         yield FormField::addTab('Disponibilités');
         yield FormField::addPanel('Préférences');
         yield ChoiceField::new('preferences.acceptedLastBooking')
-                    ->setColumns(6)
-                    ->setChoices(RentalPreferences::acceptedLastBookingChoices())
-                    ->setRequired(true)
+            ->setColumns(6)
+            ->setChoices(RentalPreferences::acceptedLastBookingChoices())
+            ->setRequired(true)
         ;
         yield ChoiceField::new('preferences.maxTimeBeforeBooking')
-                    ->setColumns(6)
-                    ->setChoices(RentalPreferences::maxTimeBeforeBookingChoices())
-                    ->setRequired(true)
+            ->setColumns(6)
+            ->setChoices(RentalPreferences::maxTimeBeforeBookingChoices())
+            ->setRequired(true)
         ;
         yield ChoiceField::new('preferences.beginBookingAt')
-                    ->setColumns(6)
-                    ->setChoices(RentalPreferences::beginBookingAt())
-                    ->setRequired(true)
+            ->setColumns(6)
+            ->setChoices(RentalPreferences::beginBookingAt())
+            ->setRequired(true)
         ;
         yield ChoiceField::new('preferences.endBookingAt')
-                    ->setColumns(6)
-                    ->setChoices(RentalPreferences::endBookingAt())
-                    ->setRequired(true)
+            ->setColumns(6)
+            ->setChoices(RentalPreferences::endBookingAt())
+            ->setRequired(true)
         ;
 
         yield FormField::addPanel('Périodes d\'indisponibilité');
         yield CollectionField::new('unavailabilities')
-                    ->setEntryType(UnavailabilityType::class)
-                    ->setEntryIsComplex(true)
+            ->setEntryType(UnavailabilityType::class)
+            ->setEntryIsComplex(true)
         ;
 
         yield FormField::addTab('Tarifs');
@@ -122,8 +122,8 @@ class RentalCrudController extends AbstractCrudController
         //                ;
         yield FormField::addPanel('Tranches tarifaires');
         yield CollectionField::new('prices')
-                    ->setEntryIsComplex(true)
-                    ->setEntryType(PricesType::class)
+            ->setEntryIsComplex(true)
+            ->setEntryType(PricesType::class)
         ;
     }
 }

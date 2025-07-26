@@ -8,9 +8,14 @@ use App\Entity\Rental\Configuration;
 final class ConfigurationDTO
 {
     public RentalType $rentalType;
+
     public int $peopleCount = 0;
+
     public int $bedroomCount = 0;
-    /** @var array<int, array<string, int>> */
+
+    /**
+     * @var array<int, array<string, int>>
+     */
     public array $bedrooms = [];
 
     public static function fromEntity(Configuration $configuration): self

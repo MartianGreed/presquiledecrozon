@@ -12,18 +12,24 @@ final class ResizedImagePathBuilder
 {
     private readonly OptionsResolver $resolver;
 
-    public function __construct(private readonly string $cachePrefix = '.cache')
+    public function __construct(
+        private readonly string $cachePrefix = '.cache'
+    )
     {
         $this->resolver = new OptionsResolver();
     }
 
-    /** @param ResizeOption $options */
+    /**
+     * @param ResizeOption $options
+     */
     public function buildPath(string $uri, array $options): string
     {
         return sprintf('/%s%s/%s', $this->cachePrefix, $uri, $this->buildFileName($options));
     }
 
-    /** @param ResizeOption $options */
+    /**
+     * @param ResizeOption $options
+     */
     private function buildFileName(array $options): string
     {
         /** @var ResizeOption $options */

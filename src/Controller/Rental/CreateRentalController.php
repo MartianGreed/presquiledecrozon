@@ -36,7 +36,9 @@ final class CreateRentalController extends AbstractController
     use WithUserTrait;
     use WithQueryParamsRedirectTrait;
 
-    public function __construct(private readonly RentalService $rentalService)
+    public function __construct(
+        private readonly RentalService $rentalService
+    )
     {
     }
 
@@ -46,13 +48,13 @@ final class CreateRentalController extends AbstractController
         RentalConfigurationService $configurationService,
         ?Rental $rental,
     ): Response {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
         $form = $this->createForm(
             RentalInformationsType::class,
-            null !== $rental->getConfiguration() ? ConfigurationDTO::fromEntity($rental->getConfiguration()) : new ConfigurationDTO()
+            $rental->getConfiguration() instanceof \App\Entity\Rental\Configuration ? ConfigurationDTO::fromEntity($rental->getConfiguration()) : new ConfigurationDTO()
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,7 +83,7 @@ final class CreateRentalController extends AbstractController
         Request $request,
         ?Rental $rental,
     ): Response {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -90,7 +92,7 @@ final class CreateRentalController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Rental $data */
             $data = $form->getData();
-            $this->rentalService->saveEntity($data);
+            $this->rentalService->saveEntity();
 
             return $this->redirectToRouteWithQueryParams('app_create_rental_description', $request->query->all());
         }
@@ -103,7 +105,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/description', name: 'app_create_rental_description')]
     public function description(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -125,7 +127,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/adresse', name: 'app_create_rental_address')]
     public function address(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -147,16 +149,18 @@ final class CreateRentalController extends AbstractController
     #[Route('/carte', name: 'app_create_rental_map')]
     public function map(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
         $geolocation = $rental->getGeolocation();
-        $geolocationFetched = null !== $geolocation;
+        $geolocationFetched = $geolocation instanceof \App\Entity\Rental\Geolocation;
 
         $form = null;
         if ($geolocationFetched) {
-            $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), ['allow_extra_fields' => true]);
+            $form = $this->createForm(RentalMapType::class, GeolocationDTO::fromEntity($geolocation), [
+                'allow_extra_fields' => true,
+            ]);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
@@ -180,15 +184,17 @@ final class CreateRentalController extends AbstractController
 
         return $this->render('create_rental/map.html.twig', [
             'geolocation_fetched' => $geolocationFetched,
-            'fetch_geolocation_url' => $this->generateUrl('app_rental_geolocation', ['id' => $rental->getId()]),
-            'form' => !$geolocationFetched ? null : $form,
+            'fetch_geolocation_url' => $this->generateUrl('app_rental_geolocation', [
+                'id' => $rental->getId(),
+            ]),
+            'form' => $geolocationFetched ? $form : null,
         ]);
     }
 
     #[Route('/photos', name: 'app_create_rental_pictures')]
     public function pictures(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -219,7 +225,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/disponibilites', name: 'app_create_rental_availabilities')]
     public function availabilities(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -242,7 +248,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/calendrier', name: 'app_create_rental_calendar')]
     public function calendar(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -262,7 +268,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/taxes', name: 'app_create_rental_taxes')]
     public function taxes(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -284,7 +290,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/tarifs', name: 'app_create_rental_prices')]
     public function prices(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -294,7 +300,7 @@ final class CreateRentalController extends AbstractController
             /** @var Rental $rental */
             $rental = $form->getData();
             $rental->savePrices($rental->getPrices());
-            $this->rentalService->saveEntity($rental);
+            $this->rentalService->saveEntity();
 
             return $this->redirectToRouteWithQueryParams('app_create_rental_conditions', $request->query->all());
         }
@@ -307,7 +313,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/conditions', name: 'app_create_rental_conditions')]
     public function conditions(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 

@@ -14,7 +14,7 @@ final class RentalTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('rangesProvider')]
     public function testGetPricesForRangeReturnsCorrectPrices(string $startAt, string $endAt, int $peopleCount, BookingPrices $expected): void
     {
-        $rental = static::createRental();
+        $rental = $this->createRental();
 
         $bookingRequest = BookingRequest::fromArray([
             'start_at' => $startAt,
@@ -37,7 +37,9 @@ final class RentalTest extends TestCase
         }
     }
 
-    /** @return array<array{0: string, 1: string, 2: int, 3: BookingPrices}> */
+    /**
+     * @return array<array{0: string, 1: string, 2: int, 3: BookingPrices}>
+     */
     public static function rangesProvider(): array
     {
         return [
@@ -60,7 +62,7 @@ final class RentalTest extends TestCase
         ];
     }
 
-    private static function createRental(): Rental
+    private function createRental(): Rental
     {
         $rental = new Rental();
         $rental

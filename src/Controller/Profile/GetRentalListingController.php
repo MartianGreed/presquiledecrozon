@@ -13,7 +13,9 @@ final class GetRentalListingController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly RentalRepository $rentalRepository)
+    public function __construct(
+        private readonly RentalRepository $rentalRepository
+    )
     {
     }
 

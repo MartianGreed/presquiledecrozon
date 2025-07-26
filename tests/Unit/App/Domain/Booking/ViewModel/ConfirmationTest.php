@@ -20,8 +20,11 @@ final class ConfirmationTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var ObjectProphecy<BookingValidator> */
+    /**
+     * @var ObjectProphecy<BookingValidator>
+     */
     private ObjectProphecy $validator;
+
     private BookingPriceSimulatorService $simulatorService;
 
     public function setUp(): void
@@ -55,7 +58,9 @@ final class ConfirmationTest extends TestCase
         yield ['3 semaines et 6 jours', '2022-11-10', '2022-12-07'];
     }
 
-    /** @return ObjectProphecy<BookingValidator> */
+    /**
+     * @return ObjectProphecy<BookingValidator>
+     */
     private function configureValidator(): ObjectProphecy
     {
         $prophecy = $this->prophesize(BookingValidator::class);

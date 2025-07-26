@@ -24,7 +24,9 @@ class Department implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private Region $region;
 
-    /** @var ArrayCollection<int, PostalCode> */
+    /**
+     * @var ArrayCollection<int, PostalCode>
+     */
     #[ORM\OneToMany(mappedBy: 'department', targetEntity: PostalCode::class)]
     private Collection $postalCodes;
 
@@ -84,7 +86,7 @@ class Department implements Identity
 
     public function addPostalCode(PostalCode $postalCode): self
     {
-        if (!$this->postalCodes->contains($postalCode)) {
+        if (! $this->postalCodes->contains($postalCode)) {
             $this->postalCodes[] = $postalCode;
             $postalCode->setDepartment($this);
         }

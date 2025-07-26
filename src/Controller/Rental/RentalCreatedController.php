@@ -14,14 +14,16 @@ final class RentalCreatedController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly RentalService $rentalService)
+    public function __construct(
+        private readonly RentalService $rentalService
+    )
     {
     }
 
     #[Route('/deposez-votre-annonce/termine', name: 'app_rental_created')]
     public function __invoke(Request $request, ?Rental $rental): Response
     {
-        if (null === $rental) {
+        if (! $rental instanceof \App\Entity\Rental\Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 

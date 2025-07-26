@@ -51,7 +51,9 @@ class Bed implements \Stringable, Identity
         return $this;
     }
 
-    /** @psalm-return array<string, int>|null */
+    /**
+     * @psalm-return array<string, int>|null
+     */
     public function getSize(): ?array
     {
         return $this->size?->toArray();
@@ -66,7 +68,7 @@ class Bed implements \Stringable, Identity
 
     public function getDimensions(): ?string
     {
-        if (null === $this->size) {
+        if (! $this->size instanceof \App\Domain\Rental\BedSize) {
             return null;
         }
 

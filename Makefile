@@ -19,6 +19,18 @@ fixtures:
 test:
 	vendor/bin/phpunit
 
+test_e2e:
+	APP_ENV=test symfony server:start --no-tls -d
+	vendor/bin/phpunit --group=e2e
+	symfony server:stop
+
+test_e2e_setup:
+	symfony console doctrine:database:drop --if-exists --force --env=test
+	symfony console doctrine:database:create --env=test
+	symfony console doctrine:migrations:migrate --env=test
+
+test_e2e_full: test_e2e_setup test_e2e
+
 format:
 	vendor/bin/php-cs-fixer fix
 

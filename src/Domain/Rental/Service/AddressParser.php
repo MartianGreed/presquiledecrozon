@@ -7,7 +7,9 @@ namespace App\Domain\Rental\Service;
  */
 final class AddressParser
 {
-    /** @return AddressArray */
+    /**
+     * @return AddressArray
+     */
     public static function getParts(string $strAddress): array
     {
         $parts = explode(', ', $strAddress);

@@ -20,7 +20,9 @@ class BedroomBed implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private Bed $bed;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 1])]
+    #[ORM\Column(type: 'integer', options: [
+        'default' => 1,
+    ])]
     private int $count = 0;
 
     public static function new(Bedroom $bedroom, Bed $bed, int $count): self

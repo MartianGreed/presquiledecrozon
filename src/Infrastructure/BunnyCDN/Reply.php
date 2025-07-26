@@ -8,7 +8,9 @@ namespace App\Infrastructure\BunnyCDN;
  */
 final class Reply
 {
-    /** @param Error|Content $content */
+    /**
+     * @param Error|Content $content
+     */
     public function __construct(
         private readonly int $statusCode,
         private readonly array $content,
@@ -20,7 +22,9 @@ final class Reply
         return $this->statusCode;
     }
 
-    /** @return Error|Content */
+    /**
+     * @return Error|Content
+     */
     public function getContent(): array
     {
         return $this->content;

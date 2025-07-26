@@ -8,7 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 final class BedroomType extends AbstractType
 {
-    public function __construct(private readonly BedRepository $bedRepository)
+    public function __construct(
+        private readonly BedRepository $bedRepository
+    )
     {
     }
 

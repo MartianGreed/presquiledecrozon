@@ -18,7 +18,10 @@ final class CreateSubscriptionType extends AbstractType
             ->add('firstname', TextType::class)
             ->add('lastname', TextType::class)
             ->add('civility', ChoiceType::class, [
-                'choices' => ['M' => 'M', 'Mme' => 'F'],
+                'choices' => [
+                    'M' => 'M',
+                    'Mme' => 'F',
+                ],
                 'expanded' => true,
                 'multiple' => false,
             ])

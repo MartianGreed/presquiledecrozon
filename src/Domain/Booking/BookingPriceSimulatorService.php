@@ -8,10 +8,6 @@ use App\Entity\Booking\Booking;
 
 final class BookingPriceSimulatorService
 {
-    public function __construct()
-    {
-    }
-
     public function simulate(BookingRequest $request): Price
     {
         if ($request->startAt > $request->endAt) {
@@ -28,10 +24,10 @@ final class BookingPriceSimulatorService
         $startAt = $booking->getStartAt();
         $endAt = $booking->getEndAt();
 
-        if (null === $startAt) {
+        if (! $startAt instanceof \DateTimeInterface) {
             throw new \DomainException('Start date cannot be null');
         }
-        if (null === $endAt) {
+        if (! $endAt instanceof \DateTimeInterface) {
             throw new \DomainException('End date cannot be null');
         }
 

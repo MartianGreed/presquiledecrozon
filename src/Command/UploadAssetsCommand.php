@@ -54,14 +54,14 @@ final class UploadAssetsCommand extends Command
     private function handleAssetDirectory(Finder $finder, string $directory): void
     {
         $files = $finder->in([
-            $this->rootDirectory.'/public/'.$directory,
+            $this->rootDirectory . '/public/' . $directory,
         ])->files();
 
         foreach ($files->getIterator() as $staticAsset) {
             /** @var SplFileInfo $staticAsset */
             $path = $staticAsset->getRealPath();
             $handler = fopen(strval($path), 'rb');
-            $this->storage->uploadFile('static/'.$directory.'/'.$staticAsset->getRelativePathname(), $handler);
+            $this->storage->uploadFile('static/' . $directory . '/' . $staticAsset->getRelativePathname(), $handler);
             /* @phpstan-ignore-next-line */
             fclose($handler);
         }

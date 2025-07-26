@@ -9,7 +9,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class FurnitureFixtures extends Fixture implements FixtureGroupInterface
 {
-    /** @var non-empty-array<string> */
+    /**
+     * @var non-empty-array<string>
+     */
     private array $furnitures = [
         'Piscine',
         'TV',

@@ -9,7 +9,9 @@ class UploadPictureConstraint extends Constraint
 {
     public string $message = 'Vous devez renseigner l\'index auquel la photo sera ajoutée';
 
-    /** @return array<string> */
+    /**
+     * @return array<string>
+     */
     public function getTargets(): array
     {
         return [Constraint::CLASS_CONSTRAINT];

@@ -19,7 +19,9 @@ use PHPUnit\Framework\TestCase;
 class FetchRentalGeolocationHandlerTest extends TestCase
 {
     private MockObject $repository;
+
     private MockObject $geocodingService;
+
     private MockObject $manager;
 
     private FetchRentalGeolocationHandler $handler;
@@ -48,7 +50,7 @@ class FetchRentalGeolocationHandlerTest extends TestCase
 
     public function testItThrowsAnExceptionIfAddressIsNull(): void
     {
-        $this->repository->expects($this->once())->method('find')->willReturn(self::getRental())->with('AValidId');
+        $this->repository->expects($this->once())->method('find')->willReturn($this->getRental())->with('AValidId');
 
         $this->expectException(\LogicException::class);
 
@@ -57,18 +59,22 @@ class FetchRentalGeolocationHandlerTest extends TestCase
 
     public function testItFetchGeolocationForAddress(): void
     {
-        $rental = self::getRental(true);
+        $rental = $this->getRental(true);
         $this->repository->expects($this->once())->method('find')->willReturn($rental)->with('AValidId');
 
         $this->geocodingService->expects($this->once())->method('geocode')->with($rental->getAddress())->willReturn(GeolocationDTO::new(15, 15));
 
-        $this->manager->expects($this->once())->method('persist')->with(Geolocation::new(['lat' => 15, 'lng' => 15, 'meta' => []]));
+        $this->manager->expects($this->once())->method('persist')->with(Geolocation::new([
+            'lat' => 15,
+            'lng' => 15,
+            'meta' => [],
+        ]));
         $this->manager->expects($this->once())->method('flush');
 
         call_user_func($this->handler, new FetchRentalGeolocation('AValidId'));
     }
 
-    private static function getRental(bool $withAddress = false): Rental
+    private function getRental(bool $withAddress = false): Rental
     {
         $rental = Rental::new(UserFactory::createUser());
 

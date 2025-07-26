@@ -34,10 +34,10 @@ final class PostMessageController extends AbstractController
                 $conversationId = $form->get('conversation_id')->getData();
                 $messageContent = $form->get('message')->getData();
 
-                if (!is_string($conversationId)) {
+                if (! is_string($conversationId)) {
                     throw new \RuntimeException('Conversation ID must be a string');
                 }
-                if (!is_string($messageContent)) {
+                if (! is_string($messageContent)) {
                     throw new \RuntimeException('Message content must be a string');
                 }
 
@@ -56,7 +56,9 @@ final class PostMessageController extends AbstractController
                     'sender_id' => $message->getSender()?->getId(),
                 ], Response::HTTP_CREATED);
             } catch (ConversationNotFoundException) {
-                return new JsonResponse(['message' => 'invalid conversation'], Response::HTTP_NOT_FOUND);
+                return new JsonResponse([
+                    'message' => 'invalid conversation',
+                ], Response::HTTP_NOT_FOUND);
             }
         }
 

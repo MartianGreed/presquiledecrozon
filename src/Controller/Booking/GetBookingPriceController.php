@@ -14,7 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class GetBookingPriceController extends AbstractController
 {
-    public function __construct(private readonly BookingPriceSimulatorService $simulatorService)
+    public function __construct(
+        private readonly BookingPriceSimulatorService $simulatorService
+    )
     {
     }
 
@@ -25,7 +27,9 @@ final class GetBookingPriceController extends AbstractController
             /** @var array{startAt: string, endAt: string, peopleCount: string} $content */
             $content = json_decode((string) $request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         } catch (\Exception) {
-            return new JsonResponse(['message' => 'JSON incorrectly formatted'], Response::HTTP_NOT_ACCEPTABLE);
+            return new JsonResponse([
+                'message' => 'JSON incorrectly formatted',
+            ], Response::HTTP_NOT_ACCEPTABLE);
         }
 
         $data = BookingRequest::fromArray([
@@ -37,6 +41,8 @@ final class GetBookingPriceController extends AbstractController
 
         $bookingPrice = $this->simulatorService->simulate($data);
 
-        return new JsonResponse(['booking_price' => (string) $bookingPrice]);
+        return new JsonResponse([
+            'booking_price' => (string) $bookingPrice,
+        ]);
     }
 }

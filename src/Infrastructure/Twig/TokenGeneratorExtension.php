@@ -8,7 +8,9 @@ use Twig\TwigFunction;
 
 final class TokenGeneratorExtension extends AbstractExtension
 {
-    public function __construct(private readonly ApplicationTokenGenerator $applicationTokenGenerator)
+    public function __construct(
+        private readonly ApplicationTokenGenerator $applicationTokenGenerator
+    )
     {
     }
 

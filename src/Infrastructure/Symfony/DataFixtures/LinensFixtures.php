@@ -11,20 +11,26 @@ use Doctrine\Persistence\ObjectManager;
 
 class LinensFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    /** @var non-empty-array<string> */
+    /**
+     * @var non-empty-array<string>
+     */
     public static array $bathLinens = [
         'Serviette de toilette',
         'Drap de plage',
         'Drap de bain',
     ];
 
-    /** @var non-empty-array<string> */
+    /**
+     * @var non-empty-array<string>
+     */
     public static array $houseLinens = [
         'Serviette de table',
         'Torchons',
     ];
 
-    /** @var non-empty-array<string> */
+    /**
+     * @var non-empty-array<string>
+     */
     public static array $nightLinens = [
         'Drap housse',
         'Housse de couette',
@@ -32,7 +38,9 @@ class LinensFixtures extends Fixture implements DependentFixtureInterface, Fixtu
         'Traversin',
     ];
 
-    /** @var non-empty-array<string> */
+    /**
+     * @var non-empty-array<string>
+     */
     public static array $literyLinens = [
         'Oreiller/traversin',
         'Couette',

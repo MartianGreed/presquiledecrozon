@@ -8,18 +8,24 @@ use Twig\TwigFunction;
 
 final class IconExtension extends AbstractExtension
 {
-    public function __construct(private readonly Package $package)
+    public function __construct(
+        private readonly Package $package
+    )
     {
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('svg_icon', [$this, 'generateHtmlSvgForIcon'], ['is_safe' => ['html']]),
+            new TwigFunction('svg_icon', [$this, 'generateHtmlSvgForIcon'], [
+                'is_safe' => ['html'],
+            ]),
         ];
     }
 
-    /** @param array{w: int, h: int}|array{} $options */
+    /**
+     * @param array{w: int, h: int}|array{} $options
+     */
     public function generateHtmlSvgForIcon(string $iconName, array $options = []): string
     {
         $attrs = '';
@@ -31,7 +37,7 @@ final class IconExtension extends AbstractExtension
         }
 
         return <<<HTML
-            <object type="image/svg+xml" class="icon icon-{$iconName}"{$attrs} data="{$this->package->getUrl('build/images/icons/'.$iconName.'.svg')}"></object>
+            <object type="image/svg+xml" class="icon icon-{$iconName}"{$attrs} data="{$this->package->getUrl('build/images/icons/' . $iconName . '.svg')}"></object>
         HTML;
     }
 }

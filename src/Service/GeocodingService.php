@@ -11,7 +11,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class GeocodingService implements GeocodingServiceInterface
 {
-    public function __construct(private readonly HttpClientInterface $client, private readonly string $apiUrl, private readonly string $apiKey)
+    public function __construct(
+        private readonly HttpClientInterface $client,
+        private readonly string $apiUrl,
+        private readonly string $apiKey
+    )
     {
     }
 
@@ -51,22 +55,21 @@ final class GeocodingService implements GeocodingServiceInterface
     {
         $formatted = $address->getAddress();
         if (null !== $address->getAddress2()) {
-            $formatted .= ',+'.$address->getAddress2();
+            $formatted .= ',+' . $address->getAddress2();
         }
 
         $town = $this->getTownObjectFromAddress($address);
 
-        $formatted .= ',+'.$town->getName();
-        $formatted .= ',+'.$town->getPostalCode()->getCode();
-        $formatted .= ',+'.$town->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName();
+        $formatted .= ',+' . $town->getName();
+        $formatted .= ',+' . $town->getPostalCode()->getCode();
 
-        return $formatted;
+        return $formatted . (',+' . $town->getPostalCode()->getDepartment()->getRegion()->getCountry()->getName());
     }
 
     private function getTownObjectFromAddress(Address $address): Town
     {
         $town = $address->getTown();
-        if (null === $town) {
+        if (! $town instanceof \App\Entity\Data\Town) {
             throw new \LogicException('Town cannot be null to geocode an Address');
         }
 

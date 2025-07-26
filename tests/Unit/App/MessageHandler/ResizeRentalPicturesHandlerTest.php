@@ -18,7 +18,9 @@ use PHPUnit\Framework\TestCase;
 final class ResizeRentalPicturesHandlerTest extends TestCase
 {
     private MockObject $galleryRepository;
+
     private MockObject $imageResizerService;
+
     private MockObject $imageCacheManager;
 
     private ResizeRentalPicturesHandler $handler;
@@ -42,7 +44,7 @@ final class ResizeRentalPicturesHandlerTest extends TestCase
 
     public function testItResizeAllImages(): void
     {
-        $gallery = self::createGallery();
+        $gallery = $this->createGallery();
         $this->galleryRepository->expects($this->once())->method('find')->with('aValidId')->willReturn($gallery);
 
         $this->imageResizerService->expects($this->exactly($gallery->getPicturesCount() * count(PictureResizerOptions::getOptions())))->method('resize');
@@ -50,7 +52,7 @@ final class ResizeRentalPicturesHandlerTest extends TestCase
         call_user_func($this->handler, new ResizeRentalPictures('aFakeRentalId', 'aValidId'));
     }
 
-    private static function createGallery(): Gallery
+    private function createGallery(): Gallery
     {
         $gallery = GalleryFactory::new();
 

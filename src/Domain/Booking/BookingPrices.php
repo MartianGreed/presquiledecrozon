@@ -9,7 +9,9 @@ use App\Domain\Price;
  */
 final class BookingPrices implements \Stringable
 {
-    /** @var array<PriceItem> */
+    /**
+     * @var array<PriceItem>
+     */
     private array $prices = [];
 
     public function addPrice(Price $weekly, Price $daily, int $daysCount): self
@@ -35,7 +37,9 @@ final class BookingPrices implements \Stringable
         return $this;
     }
 
-    /** @return array<PriceItem> */
+    /**
+     * @return array<PriceItem>
+     */
     public function getPrices(): array
     {
         return $this->prices;
@@ -54,10 +58,15 @@ final class BookingPrices implements \Stringable
 
     public function __toString(): string
     {
-        return json_encode(array_map(static fn (array $data) => ['count' => $data['count'], 'price' => $data['price']->getAmount()], $this->prices), JSON_THROW_ON_ERROR);
+        return json_encode(array_map(static fn (array $data) => [
+            'count' => $data['count'],
+            'price' => $data['price']->getAmount(),
+        ], $this->prices), JSON_THROW_ON_ERROR);
     }
 
-    /** @param array<PriceItem> $prices */
+    /**
+     * @param array<PriceItem> $prices
+     */
     private function setPrices(array $prices): self
     {
         $this->prices = $prices;
@@ -65,9 +74,14 @@ final class BookingPrices implements \Stringable
         return $this;
     }
 
-    /** @param array<array{count: int, price: float}> $data */
+    /**
+     * @param array<array{count: int, price: float}> $data
+     */
     public static function fromArray(array $data): self
     {
-        return (new self())->setPrices(array_map(static fn ($i) => ['count' => $i['count'], 'price' => new Price($i['price'])], $data));
+        return (new self())->setPrices(array_map(static fn ($i) => [
+            'count' => $i['count'],
+            'price' => new Price($i['price']),
+        ], $data));
     }
 }

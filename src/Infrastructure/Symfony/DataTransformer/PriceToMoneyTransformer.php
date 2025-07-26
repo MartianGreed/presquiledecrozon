@@ -10,7 +10,9 @@ use Symfony\Component\Form\DataTransformerInterface;
  */
 final class PriceToMoneyTransformer implements DataTransformerInterface
 {
-    /** @param ?Price $value */
+    /**
+     * @param ?Price $value
+     */
     public function transform(mixed $value): ?float
     {
         if (null === $value) {
@@ -20,7 +22,9 @@ final class PriceToMoneyTransformer implements DataTransformerInterface
         return $value->getAmount();
     }
 
-    /** @param float $value */
+    /**
+     * @param float $value
+     */
     public function reverseTransform(mixed $value): Price
     {
         return new Price($value);

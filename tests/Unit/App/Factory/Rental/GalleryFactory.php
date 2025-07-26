@@ -12,7 +12,9 @@ final class GalleryFactory
         return new Gallery();
     }
 
-    /** @param array<Media> $pictures */
+    /**
+     * @param array<Media> $pictures
+     */
     public static function withMedia(Gallery $gallery, Media $coverPicture, array $pictures): Gallery
     {
         $gallery->setCover($coverPicture);

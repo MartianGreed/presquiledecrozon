@@ -17,7 +17,9 @@ class LinensCategory implements Identity
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $name = null;
 
-    /** @var ArrayCollection<int, Linens> */
+    /**
+     * @var ArrayCollection<int, Linens>
+     */
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Linens::class)]
     private Collection $linens;
 
@@ -48,7 +50,7 @@ class LinensCategory implements Identity
 
     public function addLinen(Linens $linen): self
     {
-        if (!$this->linens->contains($linen)) {
+        if (! $this->linens->contains($linen)) {
             $this->linens[] = $linen;
             $linen->setCategory($this);
         }

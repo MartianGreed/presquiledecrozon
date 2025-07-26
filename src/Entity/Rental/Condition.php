@@ -18,7 +18,9 @@ class Condition implements Identity
     #[ORM\Column(type: 'boolean')]
     private bool $smokingAllowed = false;
 
-    /** @var array<int, string> */
+    /**
+     * @var array<int, string>
+     */
     #[ORM\Column(type: 'array')]
     private array $additionnalRules = [];
 
@@ -49,13 +51,17 @@ class Condition implements Identity
         return $this;
     }
 
-    /** @psalm-return array<int, string>  */
+    /**
+     * @psalm-return array<int, string>
+     */
     public function getAdditionnalRules(): ?array
     {
         return $this->additionnalRules;
     }
 
-    /** @param array<int, string> $additionnalRules */
+    /**
+     * @param array<int, string> $additionnalRules
+     */
     public function setAdditionnalRules(array $additionnalRules): self
     {
         $this->additionnalRules = $additionnalRules;

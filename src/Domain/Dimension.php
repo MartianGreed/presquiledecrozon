@@ -4,7 +4,10 @@ namespace App\Domain;
 
 class Dimension
 {
-    public function __construct(protected int $height, protected int $width)
+    public function __construct(
+        protected int $height,
+        protected int $width
+    )
     {
     }
 

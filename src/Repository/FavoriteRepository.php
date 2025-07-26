@@ -23,7 +23,9 @@ class FavoriteRepository extends ServiceEntityRepository
         parent::__construct($registry, Favorite::class);
     }
 
-    /** @return array<Favorite> */
+    /**
+     * @return array<Favorite>
+     */
     public function getUserFavoritesList(string $personaId): array
     {
         $qb = $this->createQueryBuilder('f');
@@ -99,12 +101,12 @@ class FavoriteRepository extends ServiceEntityRepository
         $qb = $connection->createQueryBuilder();
 
         $qb->delete($this->getClassMetadata()->getTableName())
-           ->where($qb->expr()->eq('rental_id', ':rentalId'))
+            ->where($qb->expr()->eq('rental_id', ':rentalId'))
             ->andWhere($qb->expr()->eq('persona_id', ':personaId'))
-           ->setParameters([
-               'rentalId' => $rentalId,
-               'personaId' => $personaId,
-           ])
+            ->setParameters([
+                'rentalId' => $rentalId,
+                'personaId' => $personaId,
+            ])
         ;
 
         try {

@@ -22,14 +22,17 @@ final class UpdateProfileInformationsType extends AbstractType
             ->add('firstname', TextType::class)
             ->add('lastname', TextType::class)
             ->add('gender', ChoiceType::class, [
-                'choices' => ['M' => 'M', 'Mme' => 'F'],
+                'choices' => [
+                    'M' => 'M',
+                    'Mme' => 'F',
+                ],
                 'expanded' => true,
                 'multiple' => false,
             ])
             ->add('cellphone', TextType::class, [
                 'constraints' => [
                     new Regex(
-                        pattern: '/^(\+33[0-9]{1}|(0[0-9]{1}))[0-9]{8}$/',
+                        pattern: '/^(\+33\d{1}|(0\d{1}))\d{8}$/',
                         message: 'Ce numéro de téléphone n\'est pas valide.'
                     ),
                     new Length(min: 10, max: 13),

@@ -28,7 +28,9 @@ class Conversation implements Identity
     #[ORM\JoinColumn(nullable: false)]
     private User $receiver;
 
-    /** @var ArrayCollection<int, Message> */
+    /**
+     * @var ArrayCollection<int, Message>
+     */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'conversation', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private Collection $messages;
@@ -78,7 +80,9 @@ class Conversation implements Identity
         return $this;
     }
 
-    /** @return ArrayCollection<int, Message> */
+    /**
+     * @return ArrayCollection<int, Message>
+     */
     public function getMessages(): Collection
     {
         return $this->messages;
@@ -86,7 +90,7 @@ class Conversation implements Identity
 
     public function addMessage(Message $message): self
     {
-        if (!$this->messages->contains($message)) {
+        if (! $this->messages->contains($message)) {
             $this->messages[] = $message;
             $message->setConversation($this);
         }
@@ -98,7 +102,7 @@ class Conversation implements Identity
     {
         $message = $this->messages->last();
         // case should never happen
-        if (!$message) {
+        if (! $message) {
             throw new \RuntimeException('No last message');
         }
 

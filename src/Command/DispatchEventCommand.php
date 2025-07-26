@@ -18,8 +18,12 @@ final class DispatchEventCommand extends Command
     private const MESSAGE_FQN_PREFIX = 'App\\Message\\';
 
     private SymfonyStyle $io;
-    /** @var class-string */
+
+    /**
+     * @var class-string
+     */
     private string $messageClass;
+
     private QuestionHelper $helper;
 
     public function __construct(
@@ -37,7 +41,7 @@ final class DispatchEventCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $classArg = $input->getArgument('class');
-        if (!is_string($classArg)) {
+        if (! is_string($classArg)) {
             throw new \RuntimeException('Class argument must be a string');
         }
         /** @var class-string $message */
@@ -55,7 +59,7 @@ final class DispatchEventCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!$this->messageExists($this->messageClass)) {
+        if (! $this->messageExists($this->messageClass)) {
             $this->io->error(sprintf('Message named %s does not exists', $this->messageClass));
 
             return Command::FAILURE;
@@ -63,7 +67,7 @@ final class DispatchEventCommand extends Command
 
         $constructorArgsName = $this->getMessageConstructorArgNames($this->messageClass);
         $constructorValues = [];
-        foreach ($constructorArgsName as $key => $arg) {
+        foreach ($constructorArgsName as $arg) {
             $constructorValues[$arg] = $this->askArgumentValue($input, $output, $arg);
         }
 
@@ -85,14 +89,16 @@ final class DispatchEventCommand extends Command
         $question = new Question(sprintf('Please set the value for : $%s  ->  ', $arg));
 
         $answer = $this->helper->ask($input, $output, $question);
-        if (!is_string($answer) && !is_numeric($answer)) {
+        if (! is_string($answer) && ! is_numeric($answer)) {
             throw new \RuntimeException(sprintf('Answer for %s must be a string or numeric value', $arg));
         }
 
         return (string) $answer;
     }
 
-    /** @return array<int, string> */
+    /**
+     * @return array<int, string>
+     */
     private function getMessageConstructorArgNames(string $messageClass): array
     {
         // @phpstan-ignore-next-line
@@ -109,6 +115,6 @@ final class DispatchEventCommand extends Command
 
     private function getClassFQN(string $messageClass): string
     {
-        return self::MESSAGE_FQN_PREFIX.$messageClass;
+        return self::MESSAGE_FQN_PREFIX . $messageClass;
     }
 }

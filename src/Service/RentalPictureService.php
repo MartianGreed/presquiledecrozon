@@ -37,7 +37,7 @@ final class RentalPictureService
             $this->manager->persist($gallery);
         }
         $this->manager->persist($picture->media);
-        $this->rentalService->saveEntity($rental);
+        $this->rentalService->saveEntity();
 
         return $rental;
     }
@@ -55,7 +55,7 @@ final class RentalPictureService
         }
         $this->manager->persist($picture->media);
 
-        $this->rentalService->saveEntity($rental);
+        $this->rentalService->saveEntity();
 
         return $rental;
     }
@@ -67,6 +67,6 @@ final class RentalPictureService
 
     private function mustPersist(Rental $rental): bool
     {
-        return null === $rental->getGallery();
+        return ! $rental->getGallery() instanceof \App\Entity\Rental\Gallery;
     }
 }

@@ -7,31 +7,57 @@ namespace App\Domain\Rental;
  */
 final class PictureResizerOptions
 {
-    /** @return ResizeOption */
+    /**
+     * @return ResizeOption
+     */
     public static function thumbnail(): array
     {
-        return ['h' => 150, 'w' => 150, 'crop' => true];
+        return [
+            'h' => 150,
+            'w' => 150,
+            'crop' => true,
+        ];
     }
 
-    /** @return ResizeOption */
+    /**
+     * @return ResizeOption
+     */
     public static function listing(): array
     {
-        return ['h' => 290, 'w' => 270, 'crop' => true];
+        return [
+            'h' => 290,
+            'w' => 270,
+            'crop' => true,
+        ];
     }
 
-    /** @return ResizeOption */
+    /**
+     * @return ResizeOption
+     */
     public static function lightbox(): array
     {
-        return ['h' => 250, 'w' => 350, 'crop' => true];
+        return [
+            'h' => 250,
+            'w' => 350,
+            'crop' => true,
+        ];
     }
 
-    /** @return ResizeOption */
+    /**
+     * @return ResizeOption
+     */
     public static function cover(): array
     {
-        return ['h' => 600, 'w' => 600, 'crop' => true];
+        return [
+            'h' => 600,
+            'w' => 600,
+            'crop' => true,
+        ];
     }
 
-    /** @return array<ResizeOption> */
+    /**
+     * @return array<ResizeOption>
+     */
     public static function getOptions(): array
     {
         return [

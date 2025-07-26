@@ -14,6 +14,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 final class GeocodingServiceTest extends TestCase
 {
     private MockObject $clientMock;
+
     private GeocodingService $service;
 
     public function setUp(): void
@@ -29,7 +30,7 @@ final class GeocodingServiceTest extends TestCase
 
         $this->clientMock
             ->expects($this->once())->method('request')
-                                    ->with(Request::METHOD_GET, 'https://geocodingapi.com?address=Lezargol,+Argol,+29560,+France&key=anApiKey')
+            ->with(Request::METHOD_GET, 'https://geocodingapi.com?address=Lezargol,+Argol,+29560,+France&key=anApiKey')
             ->willReturn($this->createResponseInterfaceMock())
         ;
 
@@ -56,7 +57,7 @@ final class GeocodingServiceTest extends TestCase
     private function createResponseInterfaceMock(): ResponseInterface
     {
         /** @var string $responseContent */
-        $responseContent = file_get_contents(dirname(__DIR__, 3).'/samples/google/lezargol.json');
+        $responseContent = file_get_contents(dirname(__DIR__, 3) . '/samples/google/lezargol.json');
 
         $responseMock = $this->createMock(ResponseInterface::class);
 

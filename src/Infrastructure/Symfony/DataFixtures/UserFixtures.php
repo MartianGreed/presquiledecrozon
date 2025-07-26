@@ -15,6 +15,7 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
         'M',
         'F',
     ];
+
     private const TITLE = [
         'M' => 'male',
         'F' => 'female',
@@ -55,7 +56,7 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
 
             $user->setPassword($this->passwordHasher->hashPassword($user, '123S3curedP4ssw0rd'));
 
-            $this->addReference(self::USER_REFERENCE.$i, $user);
+            $this->addReference(self::USER_REFERENCE . $i, $user);
 
             $manager->persist($profile);
             $manager->persist($user);

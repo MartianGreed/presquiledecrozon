@@ -37,7 +37,7 @@ final class MediaService
             $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
 
             // If VichUploader returns null or empty string, return empty
-            if (empty($assetUrl)) {
+            if ($assetUrl === '' || $assetUrl === '0') {
                 return '';
             }
 
@@ -45,7 +45,7 @@ final class MediaService
             if ('dev' === $this->environment) {
                 $mappedAsset = $this->assetMapper->getAsset($assetUrl);
 
-                return null === $mappedAsset ? '' : $mappedAsset->publicPath;
+                return $mappedAsset instanceof \Symfony\Component\AssetMapper\MappedAsset ? $mappedAsset->publicPath : '';
             }
 
             // In production, prepend CDN host
@@ -56,22 +56,22 @@ final class MediaService
 
                 // If we have a valid path, prepend the CDN host
                 if ('' !== $path) {
-                    return rtrim($this->cdnHost, '/').$path;
+                    return rtrim($this->cdnHost, '/') . $path;
                 }
             }
 
             // If it's already a relative path starting with /, prepend CDN host
             if (str_starts_with($assetUrl, '/')) {
-                return rtrim($this->cdnHost, '/').$assetUrl;
+                return rtrim($this->cdnHost, '/') . $assetUrl;
             }
 
             // For any other format, prepend CDN host with a slash
-            return rtrim($this->cdnHost, '/').'/'.ltrim($assetUrl, '/');
+            return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
         }
 
         $options = $this->resolveOptions($options);
 
-        if (!$this->cacheManager->has($obj, $fieldName, $className, $options)) {
+        if (! $this->cacheManager->has($obj, $fieldName, $className, $options)) {
             try {
                 $this->resizer->resize(
                     $this->cacheManager->getSourceFilePath($obj, $fieldName, $className, $options),
@@ -82,7 +82,7 @@ final class MediaService
                 // If resizing fails, return the original asset URL
                 $assetUrl = (string) $this->helper->asset($obj, $fieldName, $className);
 
-                if (empty($assetUrl)) {
+                if ($assetUrl === '' || $assetUrl === '0') {
                     return '';
                 }
 
@@ -90,7 +90,7 @@ final class MediaService
                 if ('dev' === $this->environment) {
                     $mappedAsset = $this->assetMapper->getAsset($assetUrl);
 
-                    return null === $mappedAsset ? '' : $mappedAsset->publicPath;
+                    return $mappedAsset instanceof \Symfony\Component\AssetMapper\MappedAsset ? $mappedAsset->publicPath : '';
                 }
 
                 // In production, handle the URL the same way as non-resized images
@@ -98,15 +98,15 @@ final class MediaService
                     $parsedUrl = parse_url($assetUrl);
                     $path = $parsedUrl['path'] ?? '';
                     if ('' !== $path) {
-                        return rtrim($this->cdnHost, '/').$path;
+                        return rtrim($this->cdnHost, '/') . $path;
                     }
                 }
 
                 if (str_starts_with($assetUrl, '/')) {
-                    return rtrim($this->cdnHost, '/').$assetUrl;
+                    return rtrim($this->cdnHost, '/') . $assetUrl;
                 }
 
-                return rtrim($this->cdnHost, '/').'/'.ltrim($assetUrl, '/');
+                return rtrim($this->cdnHost, '/') . '/' . ltrim($assetUrl, '/');
             }
         }
 
@@ -118,7 +118,7 @@ final class MediaService
         }
 
         // In production, prepend CDN host
-        return rtrim($this->cdnHost, '/').'/'.ltrim($cachePath, '/');
+        return rtrim($this->cdnHost, '/') . '/' . ltrim($cachePath, '/');
     }
 
     /**
@@ -128,7 +128,9 @@ final class MediaService
      */
     private function resolveOptions(array $options): array
     {
-        $this->resolver->setDefaults(['crop' => true]);
+        $this->resolver->setDefaults([
+            'crop' => true,
+        ]);
         $this->resolver->setRequired(['w', 'h']);
         $this->resolver->setAllowedTypes('h', 'int');
         $this->resolver->setAllowedTypes('w', 'int');

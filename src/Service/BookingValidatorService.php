@@ -20,7 +20,7 @@ final class BookingValidatorService implements BookingValidator
 
     public function validateBooking(Rental $rental, \DateTimeInterface $startAt, \DateTimeInterface $endAt, int $peopleCount): bool
     {
-        if (!$this->bookingRepository->isBookingAvailableForPeriod((string) $rental->getId(), $startAt, $endAt)) {
+        if (! $this->bookingRepository->isBookingAvailableForPeriod((string) $rental->getId(), $startAt, $endAt)) {
             throw new RentalNotAvailableForPeriodException($startAt, $endAt);
         }
 

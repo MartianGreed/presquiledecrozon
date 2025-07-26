@@ -59,18 +59,24 @@ final class GetSubscriptionForRentalController extends AbstractController
             // Handle discount form
             $discountForm = $this->createForm(
                 ApplyDiscountType::class,
-                ['discount' => $rentalSubscription->getDiscount()],
-                ['payee_id' => $this->getUser()->getId()]
+                [
+                    'discount' => $rentalSubscription->getDiscount(),
+                ],
+                [
+                    'payee_id' => $this->getUser()->getId(),
+                ]
             );
             $discountForm->handleRequest($request);
             if ($discountForm->isSubmitted() && $discountForm->isValid()) {
                 $discountCode = $discountForm->get('discount')->getData();
-                if (!is_string($discountCode)) {
+                if (! is_string($discountCode)) {
                     throw new \RuntimeException('Discount code must be a string');
                 }
                 $this->discountService->applyDiscountCode($rentalSubscription, $discountCode);
 
-                return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
+                return $this->redirect($this->generateUrl('app_get_subscription', [
+                    'rental_id' => $rental->getId(),
+                ]));
             }
 
             // Only create form, payment is handled by stripe

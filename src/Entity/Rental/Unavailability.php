@@ -63,7 +63,9 @@ class Unavailability implements \Stringable, Identity
         return $this;
     }
 
-    /** @return array{start: string, end: string} */
+    /**
+     * @return array{start: string, end: string}
+     */
     final public function toArray(): array
     {
         return [

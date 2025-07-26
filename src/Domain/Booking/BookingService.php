@@ -8,7 +8,9 @@ use App\Repository\Booking\BookingRepository;
 
 final class BookingService
 {
-    public function __construct(private readonly BookingRepository $bookingRepository)
+    public function __construct(
+        private readonly BookingRepository $bookingRepository
+    )
     {
     }
 

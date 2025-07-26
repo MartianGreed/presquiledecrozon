@@ -22,7 +22,9 @@ class Configuration implements Identity
     #[ORM\Column(type: 'integer')]
     private int $peopleCount;
 
-    /** @var ArrayCollection<int, Bedroom> */
+    /**
+     * @var ArrayCollection<int, Bedroom>
+     */
     #[ORM\OneToMany(mappedBy: 'configuration', targetEntity: Bedroom::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $bedrooms;
 
@@ -69,7 +71,7 @@ class Configuration implements Identity
 
     public function addBedroom(Bedroom $bedroom): self
     {
-        if (!$this->bedrooms->contains($bedroom)) {
+        if (! $this->bedrooms->contains($bedroom)) {
             $this->bedrooms[] = $bedroom;
             $bedroom->setConfiguration($this);
         }

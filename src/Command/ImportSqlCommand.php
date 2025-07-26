@@ -40,25 +40,25 @@ final class ImportSqlCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $file = $input->getOption('file')) {
-            if (!is_string($file)) {
+            if (! is_string($file)) {
                 throw new \RuntimeException('File option must be a string');
             }
 
-            return $this->handleImportSingleFile($file);
+            return $this->handleImportSingleFile();
         }
 
         if (null !== $raw = $input->getOption('raw')) {
-            if (!is_string($raw)) {
+            if (! is_string($raw)) {
                 throw new \RuntimeException('Raw option must be a string');
             }
 
-            return $this->handleRawSqlImport($raw);
+            return $this->handleRawSqlImport();
         }
 
         $this->io->info('Importing base data.');
 
         $finder = Finder::create();
-        $files = $finder->in($this->rootDir.'/data/sql');
+        $files = $finder->in($this->rootDir . '/data/sql');
         foreach ($files as $file) {
             try {
                 $this->handleSingleFile($file);
@@ -75,21 +75,19 @@ final class ImportSqlCommand extends Command
         try {
             $this->connection->executeStatement(str_replace(PHP_EOL, '', $file->getContents()));
         } catch (\Exception $e) {
-            $this->io->error('Failed to import : '.$file->getFilename().PHP_EOL.$e->getMessage());
+            $this->io->error('Failed to import : ' . $file->getFilename() . PHP_EOL . $e->getMessage());
         }
     }
 
-    private function handleRawSqlImport(string $raw): int
+    private function handleRawSqlImport(): int
     {
         $this->io->error('Not implemented yet !');
-
         return Command::FAILURE;
     }
 
-    private function handleImportSingleFile(string $file): int
+    private function handleImportSingleFile(): int
     {
         $this->io->error('Not implemented yet !');
-
         return Command::FAILURE;
     }
 }

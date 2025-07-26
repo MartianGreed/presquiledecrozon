@@ -49,7 +49,9 @@ class RentalSubscription implements Identity
     #[ORM\OneToOne(inversedBy: 'activeSubscription', targetEntity: Rental::class)]
     private ?Rental $activeRental = null;
 
-    #[ORM\Column(type: 'boolean', nullable: false, options: ['default' => false])]
+    #[ORM\Column(type: 'boolean', nullable: false, options: [
+        'default' => false,
+    ])]
     private bool $isConsumed = false;
 
     final public static function new(Subscription $subscription, Rental $rental): self
@@ -67,7 +69,7 @@ class RentalSubscription implements Identity
 
     final public function applyDiscount(DiscountApplier $applier, Discount $discount): self
     {
-        if (null !== $this->discount && $discount === $this->discount) {
+        if ($this->discount instanceof \App\Entity\Subscription\Discount && $discount === $this->discount) {
             return $this;
         }
 
@@ -88,6 +90,6 @@ class RentalSubscription implements Identity
 
     final public function isStillRunning(): bool
     {
-        return null !== $this->expiresAt && $this->expiresAt > new \DateTime('now');
+        return $this->expiresAt instanceof \DateTimeInterface && $this->expiresAt > new \DateTime('now');
     }
 }

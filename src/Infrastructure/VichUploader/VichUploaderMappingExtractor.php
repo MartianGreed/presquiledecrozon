@@ -49,12 +49,12 @@ final class VichUploaderMappingExtractor
      */
     public function getMapping($obj, ?string $fieldName, ?string $className): array
     {
-        if (!is_object($obj)) {
+        if (! is_object($obj)) {
             throw new \RuntimeException('Cannot get mapping from array');
         }
 
         $reflection = $this->getReflectionClass($obj);
-        if (!$this->isUploadable($reflection)) {
+        if (! $this->isUploadable($reflection)) {
             throw new \RuntimeException('Entity is not uploadable');
         }
 
@@ -63,8 +63,8 @@ final class VichUploaderMappingExtractor
         /** @var array<string, array<string>> $mappings */
         $mappings = $this->parameterBag->get('vich_uploader.mappings');
 
-        if (!\array_key_exists($mappingName, $mappings)) {
-            throw new \RuntimeException('VichUploader mapping not found : '.$mappingName.'. Check your configuration at path: vich_uploader.mappings');
+        if (! \array_key_exists($mappingName, $mappings)) {
+            throw new \RuntimeException('VichUploader mapping not found : ' . $mappingName . '. Check your configuration at path: vich_uploader.mappings');
         }
 
         return $mappings[$mappingName];
@@ -88,19 +88,25 @@ final class VichUploaderMappingExtractor
         return $reflection;
     }
 
-    /** @param array<string> $implementedInterfaces */
+    /**
+     * @param array<string> $implementedInterfaces
+     */
     private function isDoctrineProxy(array $implementedInterfaces): bool
     {
         return \in_array(Proxy::class, $implementedInterfaces);
     }
 
-    /** @phpstan-ignore-next-line */
+    /**
+     * @phpstan-ignore-next-line
+     */
     private function isUploadable(\ReflectionClass $reflection): bool
     {
         return 1 >= count($reflection->getAttributes(Uploadable::class));
     }
 
-    /** @phpstan-ignore-next-line */
+    /**
+     * @phpstan-ignore-next-line
+     */
     private function getUploadableField(\ReflectionClass $reflection, ?string $fieldName, ?string $className): \ReflectionAttribute
     {
         if (null !== $fieldName) {
@@ -109,9 +115,8 @@ final class VichUploaderMappingExtractor
             if (0 === count($attribute)) {
                 throw new \RuntimeException('Entity is not uploadable.');
             }
-            $attr = array_shift($attribute);
 
-            return $attr;
+            return array_shift($attribute);
         }
 
         $properties = $reflection->getProperties();
@@ -140,7 +145,9 @@ final class VichUploaderMappingExtractor
         return null;
     }
 
-    /** @param VichConfigService $directoryNamer */
+    /**
+     * @param VichConfigService $directoryNamer
+     */
     private function getDirectoryNamer(array $directoryNamer): ?DirectoryNamerInterface
     {
         /** @var ?DirectoryNamerInterface $service */

@@ -12,10 +12,15 @@ namespace App\Domain\Rental\DTO;
  */
 final class LocationSuggestion
 {
-    /** @var Meta|null */
+    /**
+     * @var Meta|null
+     */
     private ?array $meta;
 
-    public function __construct(public ?string $suggestions, ?string $meta)
+    public function __construct(
+        public ?string $suggestions,
+        ?string $meta
+    )
     {
         if ('' !== $meta && null !== $meta) {
             /** @var Meta $metaArray */
@@ -31,7 +36,9 @@ final class LocationSuggestion
         return null !== $this->meta;
     }
 
-    /** @return ?Meta */
+    /**
+     * @return ?Meta
+     */
     public function getMeta(): ?array
     {
         return $this->meta;

@@ -21,15 +21,17 @@ final class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    /** @return array<Notification> */
+    /**
+     * @return array<Notification>
+     */
     public function getUnreadNotifications(): array
     {
         $qb = $this->createQueryBuilder('n');
 
         /** @var array<Notification> */
         $notifications = $qb->where($qb->expr()->isNull('n.readAt'))
-                            ->getQuery()
-                            ->getResult()
+            ->getQuery()
+            ->getResult()
         ;
 
         return $notifications;

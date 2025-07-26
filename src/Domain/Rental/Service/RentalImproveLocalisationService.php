@@ -14,7 +14,10 @@ use App\Repository\Data\TownRepository;
  */
 final class RentalImproveLocalisationService
 {
-    public function __construct(private readonly TownRepository $townRepository, private readonly PostalCodeRepository $postalCodeRepository)
+    public function __construct(
+        private readonly TownRepository $townRepository,
+        private readonly PostalCodeRepository $postalCodeRepository
+    )
     {
     }
 
@@ -36,11 +39,17 @@ final class RentalImproveLocalisationService
         return $rental;
     }
 
-    /** @param AddressArray $suggestions */
+    /**
+     * @param AddressArray $suggestions
+     */
     private function createAddressFromParts(array $suggestions): Address
     {
-        $town = $this->townRepository->findOneBy(['name' => $suggestions['town']]);
-        $postalCode = $this->postalCodeRepository->findOneBy(['code' => $suggestions['postal_code']]);
+        $town = $this->townRepository->findOneBy([
+            'name' => $suggestions['town'],
+        ]);
+        $postalCode = $this->postalCodeRepository->findOneBy([
+            'code' => $suggestions['postal_code'],
+        ]);
         if (null === $town || null === $postalCode) {
             throw new \DomainException('Town or PostalCode is not supported');
         }

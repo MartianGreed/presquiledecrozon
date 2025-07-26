@@ -13,7 +13,9 @@ final class GetFavoriteRentalListController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly FavoriteRepository $favoriteRepository)
+    public function __construct(
+        private readonly FavoriteRepository $favoriteRepository
+    )
     {
     }
 

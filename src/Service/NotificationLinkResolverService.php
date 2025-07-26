@@ -9,7 +9,9 @@ use App\Service\Notification\ResolvedNotificationLink;
 
 final class NotificationLinkResolverService
 {
-    /** @var array<NotificationLinkResolverInterface> */
+    /**
+     * @var array<NotificationLinkResolverInterface>
+     */
     private array $resolvers;
 
     /**

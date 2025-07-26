@@ -73,7 +73,7 @@ final class NotificationController extends AbstractCrudController
     public function markAsRead(AdminContext $context): RedirectResponse
     {
         $notification = $context->getEntity()->getInstance();
-        if (!$notification instanceof Notification) {
+        if (! $notification instanceof Notification) {
             throw new \RuntimeException('Expected Notification entity');
         }
 

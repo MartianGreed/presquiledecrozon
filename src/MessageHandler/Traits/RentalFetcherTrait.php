@@ -16,7 +16,7 @@ trait RentalFetcherTrait
     ): Rental {
         $rental = $repository->find($rentalId);
         if (null === $rental) {
-            $logger->error('Published rental with id : '.$rentalId.' not found.');
+            $logger->error('Published rental with id : ' . $rentalId . ' not found.');
             throw new RentalNotFoundException($rentalId);
         }
 

@@ -8,7 +8,9 @@ use Twig\TwigFunction;
 
 final class AssetHelperExtension extends AbstractExtension
 {
-    public function __construct(private readonly MediaService $mediaService)
+    public function __construct(
+        private readonly MediaService $mediaService
+    )
     {
     }
 

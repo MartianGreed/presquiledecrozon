@@ -20,7 +20,9 @@ final class RentalHasBeenPublishedNotificationLinkResolver implements Notificati
         $rental = $this->rentalRepository->find($entity->getTargetId());
 
         return new ResolvedNotificationLink(
-            $this->router->generate('app_rental_details', ['slug' => $rental?->getSlug()]),
+            $this->router->generate('app_rental_details', [
+                'slug' => $rental?->getSlug(),
+            ]),
             'Voir l\'annonce'
         );
     }

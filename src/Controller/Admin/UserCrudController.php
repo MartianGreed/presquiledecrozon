@@ -27,7 +27,10 @@ class UserCrudController extends AbstractCrudController
         yield EmailField::new('email');
 
         yield ChoiceField::new('profile.gender')
-            ->setChoices(['M' => 'M', 'Mme' => 'F'])
+            ->setChoices([
+                'M' => 'M',
+                'Mme' => 'F',
+            ])
             ->renderExpanded()
             ->allowMultipleChoices(false)
             ->setRequired(true)

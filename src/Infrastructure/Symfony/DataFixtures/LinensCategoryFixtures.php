@@ -10,8 +10,11 @@ use Doctrine\Persistence\ObjectManager;
 class LinensCategoryFixtures extends Fixture implements FixtureGroupInterface
 {
     final public const LINENS_BAIN = 'linens-bain';
+
     final public const LINENS_HOUSE = 'linens-house';
+
     final public const LINENS_NIGHT = 'linens-night';
+
     final public const LINENS_LITTERY = 'linens-littery';
 
     public function load(ObjectManager $manager): void

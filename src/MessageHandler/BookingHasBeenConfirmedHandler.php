@@ -30,7 +30,7 @@ final class BookingHasBeenConfirmedHandler
     {
         $booking = $this->bookingRepository->find($message->bookingId);
         if (null === $booking) {
-            $this->logger->error('Booking not found with id : '.$message->bookingId);
+            $this->logger->error('Booking not found with id : ' . $message->bookingId);
 
             return;
         }

@@ -12,7 +12,9 @@ use Doctrine\Persistence\ObjectManager;
 class PostalCodeFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     final public const POSTAL_29160 = 'postal-29160';
+
     final public const POSTAL_29560 = 'postal-29560';
+
     final public const POSTAL_29570 = 'postal-29570';
 
     public function load(ObjectManager $manager): void

@@ -25,7 +25,9 @@ final class FileObject
     ) {
     }
 
-    /** @param BunnyCDNResponseItem $object */
+    /**
+     * @param BunnyCDNResponseItem $object
+     */
     public static function fromArray(array $object): self
     {
         return new self(
@@ -48,7 +50,7 @@ final class FileObject
 
     public function getFilePath(): string
     {
-        return $this->path.$this->objectName;
+        return $this->path . $this->objectName;
     }
 
     public function getPath(): string

@@ -9,6 +9,8 @@ use App\Domain\Rental\PictureResizerOptions;
  */
 interface ImageResizerServiceInterface
 {
-    /** @param ResizeOption $options */
+    /**
+     * @param ResizeOption $options
+     */
     public function resize(string $img, string $cachePath, array $options): void;
 }

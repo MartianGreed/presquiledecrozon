@@ -14,17 +14,23 @@ final class IsRentalInFavoriteListController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly FavoriteRepository $favoriteRepository)
+    public function __construct(
+        private readonly FavoriteRepository $favoriteRepository
+    )
     {
     }
 
     #[Route('/mon-compte/is-favorite/{id}', name: 'app_profile_is_rental_favorite', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request, string $id): Response
     {
-        if (!$this->favoriteRepository->isRentalInUserFavoriteList($id, (string) $this->getUser()->getId())) {
-            return new JsonResponse(['favorite' => false], Response::HTTP_NO_CONTENT);
+        if (! $this->favoriteRepository->isRentalInUserFavoriteList($id, (string) $this->getUser()->getId())) {
+            return new JsonResponse([
+                'favorite' => false,
+            ], Response::HTTP_NO_CONTENT);
         }
 
-        return new JsonResponse(['favorite' => $id]);
+        return new JsonResponse([
+            'favorite' => $id,
+        ]);
     }
 }

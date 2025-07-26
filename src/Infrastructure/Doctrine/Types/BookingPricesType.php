@@ -16,7 +16,7 @@ final class BookingPricesType extends JsonType
             return null;
         }
 
-        if (!$value instanceof BookingPrices) {
+        if (! $value instanceof BookingPrices) {
             throw new NotSupported('Value has to be of type BedSize to use this doctrine type');
         }
 

@@ -16,7 +16,9 @@ final class GetConversationDetailsController extends AbstractController
 {
     use WithUserTrait;
 
-    public function __construct(private readonly ConversationRepository $conversationRepository)
+    public function __construct(
+        private readonly ConversationRepository $conversationRepository
+    )
     {
     }
 

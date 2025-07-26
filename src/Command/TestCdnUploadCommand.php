@@ -36,7 +36,8 @@ class TestCdnUploadCommand extends Command
     {
         $this
             ->addOption('upload', null, InputOption::VALUE_NONE, 'Actually upload a test file')
-            ->setHelp(<<<'EOF'
+            ->setHelp(
+                <<<'EOF'
 The <info>%command.name%</info> command tests CDN upload functionality:
 
   <info>php %command.full_name%</info>
@@ -70,35 +71,35 @@ EOF
 
         $configOk = true;
 
-        if (!$cdnHost) {
+        if (! $cdnHost) {
             $io->error('BUNNYCDN_HOSTNAME is not set');
             $configOk = false;
         } else {
             $io->success("BUNNYCDN_HOSTNAME: {$cdnHost}");
         }
 
-        if (!$cdnKey) {
+        if (! $cdnKey) {
             $io->error('BUNNYCDN_API_KEY is not set');
             $configOk = false;
         } else {
             $io->success('BUNNYCDN_API_KEY: [REDACTED]');
         }
 
-        if (!$cdnStorage) {
+        if (! $cdnStorage) {
             $io->error('BUNNYCDN_STORAGE_ZONE is not set');
             $configOk = false;
         } else {
             $io->success("BUNNYCDN_STORAGE_ZONE: {$cdnStorage}");
         }
 
-        if (!$cdnPullZone) {
+        if (! $cdnPullZone) {
             $io->error('BUNNYCDN_PULL_ZONE is not set');
             $configOk = false;
         } else {
             $io->success("BUNNYCDN_PULL_ZONE: {$cdnPullZone}");
         }
 
-        if (!$configOk) {
+        if (! $configOk) {
             $io->error('CDN configuration is incomplete. Please check your .env.local file.');
             $io->note('Example configuration:');
             $io->listing([
@@ -123,7 +124,7 @@ EOF
             }
             $io->success("Successfully connected to CDN. Found {$fileCount} files/directories.");
         } catch (\Exception $e) {
-            $io->error('Failed to connect to CDN: '.$e->getMessage());
+            $io->error('Failed to connect to CDN: ' . $e->getMessage());
             $this->logger->error('CDN connection test failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -138,7 +139,7 @@ EOF
 
             try {
                 // Create a test image file
-                $testImagePath = $this->projectDir.'/var/test-cdn-upload.jpg';
+                $testImagePath = $this->projectDir . '/var/test-cdn-upload.jpg';
                 $testImage = imagecreatetruecolor(100, 100);
                 if (false === $testImage) {
                     throw new \RuntimeException('Failed to create test image');
@@ -153,7 +154,7 @@ EOF
                 imagejpeg($testImage, $testImagePath, 90);
                 imagedestroy($testImage);
 
-                $io->info('Created test image: '.$testImagePath);
+                $io->info('Created test image: ' . $testImagePath);
 
                 // Create Media entity and upload
                 $file = new UploadedFile($testImagePath, 'test-cdn-upload.jpg', 'image/jpeg', null, true);
@@ -169,7 +170,7 @@ EOF
                     ['Property', 'Value'],
                     [
                         ['Filename', $media->getName()],
-                        ['Size', $media->getSize().' bytes'],
+                        ['Size', $media->getSize() . ' bytes'],
                         ['CDN Path', $media->getName()],
                     ]
                 );
@@ -179,7 +180,7 @@ EOF
 
                 $io->success('Test completed successfully! CDN upload is working properly.');
             } catch (\Exception $e) {
-                $io->error('Failed to upload test file: '.$e->getMessage());
+                $io->error('Failed to upload test file: ' . $e->getMessage());
                 $this->logger->error('CDN upload test failed', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),

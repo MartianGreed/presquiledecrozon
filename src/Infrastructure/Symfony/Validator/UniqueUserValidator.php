@@ -8,7 +8,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 final class UniqueUserValidator extends ConstraintValidator
 {
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(
+        private readonly UserRepository $userRepository
+    )
     {
     }
 
@@ -17,7 +19,9 @@ final class UniqueUserValidator extends ConstraintValidator
      */
     public function validate(mixed $value, Constraint $constraint): void
     {
-        $foundUser = $this->userRepository->findOneBy(['email' => $value]);
+        $foundUser = $this->userRepository->findOneBy([
+            'email' => $value,
+        ]);
 
         if (null === $foundUser) {
             return;

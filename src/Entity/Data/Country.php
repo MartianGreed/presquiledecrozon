@@ -20,7 +20,9 @@ class Country implements Identity
     #[ORM\Column(type: 'string', length: 10)]
     private ?string $code = null;
 
-    /** @var ArrayCollection<int, Region> */
+    /**
+     * @var ArrayCollection<int, Region>
+     */
     #[ORM\OneToMany(mappedBy: 'country', targetEntity: Region::class)]
     private Collection $regions;
 
@@ -68,7 +70,7 @@ class Country implements Identity
 
     public function addRegion(Region $region): self
     {
-        if (!$this->regions->contains($region)) {
+        if (! $this->regions->contains($region)) {
             $this->regions[] = $region;
             $region->setCountry($this);
         }

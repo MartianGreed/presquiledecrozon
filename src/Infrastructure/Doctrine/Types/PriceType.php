@@ -24,7 +24,9 @@ final class PriceType extends IntegerType
         return new Price($intValue / 100);
     }
 
-    /** @param ?Price $value */
+    /**
+     * @param ?Price $value
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         return parent::convertToDatabaseValue($value?->getValue(), $platform);

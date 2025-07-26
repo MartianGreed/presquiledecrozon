@@ -20,7 +20,10 @@ final class RequestResetPasswordService
 
     public function resetPassword(string $email): void
     {
-        $user = $this->userRepository->findOneBy(['email' => $email, 'resetToken' => null]);
+        $user = $this->userRepository->findOneBy([
+            'email' => $email,
+            'resetToken' => null,
+        ]);
         if (null === $user) {
             // User does not exists or has already requested a new password.
             return;

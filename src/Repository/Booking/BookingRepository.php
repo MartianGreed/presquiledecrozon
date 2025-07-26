@@ -23,7 +23,9 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
-    /** @return Booking[] */
+    /**
+     * @return Booking[]
+     */
     public function findBookingsForPeriod(string $rentalId, string $bookingId, string $startAt, string $endAt): array
     {
         $qb = $this->createQueryBuilder('b');
@@ -51,7 +53,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<array{start: string, end: string}> */
+    /**
+     * @return array<array{start: string, end: string}>
+     */
     public function getBookingRanges(string $rentalId): array
     {
         $qb = $this->createQueryBuilder('b');
@@ -66,10 +70,15 @@ class BookingRepository extends ServiceEntityRepository
             ->getArrayResult()
         ;
 
-        return array_map(static fn ($range) => ['start' => $range['start_at']->format('d/m/Y'), 'end' => $range['end_at']->format('d/m/Y')], $ranges);
+        return array_map(static fn ($range) => [
+            'start' => $range['start_at']->format('d/m/Y'),
+            'end' => $range['end_at']->format('d/m/Y'),
+        ], $ranges);
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getUserBookings(string $userId): array
     {
         $qb = $this->getUserBookingsQueryBuilder($userId);
@@ -80,7 +89,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getUserPastBookings(string $userId): array
     {
         $qb = $this->getUserBookingsQueryBuilder($userId);
@@ -97,7 +108,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getUserForthcomingBookings(string $userId): array
     {
         $now = (new \DateTime())->format('Y-m-d');
@@ -121,7 +134,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getOwnerForthcomingBookings(string $ownerId): array
     {
         $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
@@ -137,7 +152,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getOwnerBookingsToValidate(string $ownerId): array
     {
         $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
@@ -153,7 +170,9 @@ class BookingRepository extends ServiceEntityRepository
         return $bookings;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getOwnerBookingsHistory(string $ownerId): array
     {
         $qb = $this->getOwnerBookingsQueryBuilder($ownerId);
@@ -226,7 +245,9 @@ class BookingRepository extends ServiceEntityRepository
         return 0 === $available;
     }
 
-    /** @return array<Booking> */
+    /**
+     * @return array<Booking>
+     */
     public function getExpiringConfirmedBookings(): array
     {
         $dt = (new \DateTime())->sub(Booking::expiringInterval());

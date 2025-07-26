@@ -9,12 +9,18 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 
 final class MappingComponent
 {
-    /** @var array<string, string> */
+    /**
+     * @var array<string, string>
+     */
     private array $mapping;
+
     private string $prefix;
+
     private readonly OptionsResolver $resolver;
 
-    /** @param array<string, string> $options */
+    /**
+     * @param array<string, string> $options
+     */
     public function __construct(
         array $options,
         private readonly StorageInterface $storage,
@@ -30,7 +36,9 @@ final class MappingComponent
         return $this->prefix;
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     public function getMapping(): array
     {
         return $this->mapping;
@@ -51,7 +59,9 @@ final class MappingComponent
         return $this->directoryNamer;
     }
 
-    /** @param array<string, string> $options */
+    /**
+     * @param array<string, string> $options
+     */
     private function computeOptions(array $options): void
     {
         $resolvedOptions = $this->resolveOptions($options);

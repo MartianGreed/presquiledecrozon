@@ -24,9 +24,9 @@ final class TownFactory
         $town = new Town();
 
         $town->setName('Argol')
-             ->setInseeCode('29001')
-             ->setSlug('argol')
-             ->setPostalCode(PostalCodeFactory::create29560())
+            ->setInseeCode('29001')
+            ->setSlug('argol')
+            ->setPostalCode(PostalCodeFactory::create29560())
         ;
 
         return $town;

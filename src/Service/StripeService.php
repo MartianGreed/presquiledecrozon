@@ -8,7 +8,9 @@ use Stripe\StripeClient;
 
 final class StripeService
 {
-    public function __construct(private readonly StripeClient $stripeClient)
+    public function __construct(
+        private readonly StripeClient $stripeClient
+    )
     {
     }
 

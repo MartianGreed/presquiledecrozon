@@ -11,8 +11,12 @@ final class StringExtension extends AbstractExtension
     {
         return [
             new TwigFilter('excerpt', [$this, 'excerpt']),
-            new TwigFilter('human_filesize', [$this, 'humanFilesize'], ['is_safe' => ['html']]),
-            new TwigFilter('str_replace', [$this, 'replace'], ['is_sage' => ['html']]),
+            new TwigFilter('human_filesize', [$this, 'humanFilesize'], [
+                'is_safe' => ['html'],
+            ]),
+            new TwigFilter('str_replace', [$this, 'replace'], [
+                'is_sage' => ['html'],
+            ]),
         ];
     }
 
@@ -21,7 +25,7 @@ final class StringExtension extends AbstractExtension
         $parts = explode(' ', $toExcerpt);
         $tmp = array_slice($parts, 0, $wordsCount);
 
-        return implode(' ', $tmp).'...';
+        return implode(' ', $tmp) . '...';
     }
 
     public function humanFilesize(int $size): string
@@ -34,11 +38,11 @@ final class StringExtension extends AbstractExtension
             ++$i;
         }
 
-        return '<strong>'.round($size, 2).'</strong> '.$units[$i];
+        return '<strong>' . round($size, 2) . '</strong> ' . $units[$i];
     }
 
     public function replace(string $subject, string $search, string $replacement): string
     {
-        return (string) str_replace($search, $replacement, $subject);
+        return str_replace($search, $replacement, $subject);
     }
 }

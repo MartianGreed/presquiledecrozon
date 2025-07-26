@@ -63,7 +63,7 @@ final class RentalService
         $rentalDescription = $rental->getDescription();
 
         $this->manager->persist($rentalDescription);
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         return $rental;
     }
@@ -76,7 +76,7 @@ final class RentalService
         $rentalAddress = $rental->getAddress();
 
         $this->manager->persist($rentalAddress);
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         $this->bus->dispatch(
             new FetchRentalGeolocation((string) $rental->getId())
@@ -85,16 +85,18 @@ final class RentalService
         return $rental;
     }
 
-    /** @param array<Unavailability> $unavailabilities */
+    /**
+     * @param array<Unavailability> $unavailabilities
+     */
     public function saveUnavailabilities(Rental $rental, array $unavailabilities): Rental
     {
         $rental->saveUnavailabilities($unavailabilities);
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         return $rental;
     }
 
-    public function saveEntity(Rental $rental): void
+    public function saveEntity(): void
     {
         $this->manager->flush();
     }
@@ -115,7 +117,7 @@ final class RentalService
             $this->manager->persist($geolocation);
         }
 
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         return $rental;
     }
@@ -148,7 +150,7 @@ final class RentalService
         $rental = $rental->saveTax($tax);
 
         $this->manager->persist($tax);
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         return $rental;
     }
@@ -160,7 +162,7 @@ final class RentalService
         $rental->setStatus(Status::VALID);
 
         $this->manager->persist($condition);
-        $this->saveEntity($rental);
+        $this->saveEntity();
 
         return $rental;
     }
