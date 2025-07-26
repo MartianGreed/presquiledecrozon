@@ -20,7 +20,7 @@ test:
 	vendor/bin/phpunit
 
 test_e2e:
-	APP_ENV=test symfony server:start --no-tls -d
+	APP_ENV=test symfony server:start -d
 	vendor/bin/phpunit --group=e2e
 	symfony server:stop
 

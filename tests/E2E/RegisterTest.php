@@ -17,7 +17,7 @@ final class RegisterTest extends PantherTestCase
         $this->client->request('GET', '/creer-mon-compte');
 
         // Wait for the page to load
-        $this->waitForElement('form');
+        $this->waitForElement('body');
 
         $this->assertSelectorIsVisible('form[name="register_user"]');
         $this->assertSelectorIsVisible('input[id="register_user_email"]');
@@ -30,7 +30,7 @@ final class RegisterTest extends PantherTestCase
     {
         $this->client->request('GET', '/creer-mon-compte');
 
-        $uniqueEmail = 'test_' . uniqid() . '@example.com';
+        $uniqueEmail = 'test_'.uniqid().'@example.com';
 
         $this->client->submitForm('Je crée mon compte', [
             'register_user[email]' => $uniqueEmail,
@@ -40,13 +40,13 @@ final class RegisterTest extends PantherTestCase
 
         // After successful registration, should redirect to login page
         $this->waitForElement('h1');
-        $currentUrl = $this->client->getCurrentURL();
-        $this->assertStringEndsWith('/login', $currentUrl, 'Should redirect to login after registration');
+        $this->client->waitForElementToContain('h1', 'Connexion');
+        $this->assertStringEndsWith('/login', $this->client->getCurrentURL());
     }
 
     public function testRegistrationWithExistingEmail(): void
     {
-        $existingEmail = 'existing_' . uniqid() . '@example.com';
+        $existingEmail = 'existing_'.uniqid().'@example.com';
 
         // First create a user
         $this->createTestUser($existingEmail, 'TestPassword123!');
@@ -61,7 +61,8 @@ final class RegisterTest extends PantherTestCase
 
         // Should stay on registration page with error
         $this->assertStringEndsWith('/creer-mon-compte', $this->client->getCurrentURL());
-        $this->assertPageContainsText('Cette valeur est déjà utilisée');
+        $this->assertSelectorWillExist('.text-red-700');
+        $this->assertSelectorWillContain('.text-red-700', 'Impossible d\'utiliser cet email.');
     }
 
     public function testRegistrationWithPasswordMismatch(): void
@@ -69,14 +70,15 @@ final class RegisterTest extends PantherTestCase
         $this->client->request('GET', '/creer-mon-compte');
 
         $this->client->submitForm('Je crée mon compte', [
-            'register_user[email]' => 'test_' . uniqid() . '@example.com',
+            'register_user[email]' => 'test_'.uniqid().'@example.com',
             'register_user[password][first]' => 'TestPassword123!',
             'register_user[password][second]' => 'DifferentPassword123!',
         ]);
 
         // Should stay on registration page with error
         $this->assertStringEndsWith('/creer-mon-compte', $this->client->getCurrentURL());
-        $this->assertPageContainsText('Les deux mots de passe ne correspondent pas');
+        $this->assertSelectorWillExist('.text-red-700');
+        $this->assertSelectorWillContain('.text-red-700', 'Les mots de passe doivent être identiques.');
     }
 
     public function testRegistrationWithEmptyFields(): void

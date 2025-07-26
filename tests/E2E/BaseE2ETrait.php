@@ -23,16 +23,18 @@ trait BaseE2ETrait
     {
         parent::setUpBeforeClass();
 
-        if (! self::$databaseCreated) {
+        if (!self::$databaseCreated) {
             self::createAndSetupDatabase();
             self::$databaseCreated = true;
         }
+
+        self::clearDatabase();
     }
 
     protected function setUp(): void
     {
         // Use the installed chromedriver
-        $_SERVER['PANTHER_CHROME_DRIVER_BINARY'] = dirname(__DIR__, 2) . '/drivers/chromedriver';
+        $_SERVER['PANTHER_CHROME_DRIVER_BINARY'] = dirname(__DIR__, 2).'/drivers/chromedriver';
 
         $chromeOptions = [
             '--headless=new',  // Use new headless mode
@@ -44,11 +46,12 @@ trait BaseE2ETrait
             '--disable-web-security',
             '--allow-insecure-localhost',
             '--remote-debugging-port=9222',
+            '--ignore-certificate-errors',
         ];
 
         $this->client = static::createPantherClient([
             'browser' => static::CHROME,
-            'external_base_uri' => $_SERVER['PANTHER_EXTERNAL_BASE_URI'] ?? 'http://127.0.0.1:9080',
+            'port' => 8000,
             'chromedriver_arguments' => [
                 '--silent',
                 '--log-level=3',
@@ -59,13 +62,74 @@ trait BaseE2ETrait
                 ],
             ],
         ]);
-
-        self::clearDatabase();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
+    }
+
+    /**
+     * Called automatically when a test fails.
+     */
+    protected function onNotSuccessfulTest(\Throwable $t): never
+    {
+        $this->takeFailureScreenshot();
+        parent::onNotSuccessfulTest($t);
+    }
+
+    /**
+     * Take a screenshot when a test fails.
+     */
+    protected function takeFailureScreenshot(): void
+    {
+        if (!isset($this->client)) {
+            echo "\nNo client available for screenshot\n";
+
+            return;
+        }
+
+        try {
+            $screenshotDir = $_ENV['PANTHER_ERROR_SCREENSHOT_DIR'] ?? './var/error-screenshots';
+            if (!is_string($screenshotDir)) {
+                $screenshotDir = './var/error-screenshots';
+            }
+
+            // Create directory if it doesn't exist
+            if (!is_dir($screenshotDir)) {
+                mkdir($screenshotDir, 0777, true);
+            }
+
+            // Generate filename with test class and method name
+            $testClass = (new \ReflectionClass($this))->getShortName();
+            $testMethod = 'unknown';
+
+            // Try to get the test method name from debug backtrace
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+            foreach ($backtrace as $frame) {
+                if (str_starts_with($frame['function'], 'test')) {
+                    $testMethod = $frame['function'];
+                    break;
+                }
+            }
+
+            $timestamp = date('Y-m-d_H-i-s');
+            $filename = sprintf(
+                '%s/%s_%s_%s.png',
+                rtrim($screenshotDir, '/'),
+                $testClass,
+                $testMethod,
+                $timestamp
+            );
+
+            // Take the screenshot
+            $this->client->takeScreenshot($filename);
+
+            // Also save the HTML source for debugging
+            $htmlFilename = str_replace('.png', '.html', $filename);
+            file_put_contents($htmlFilename, $this->client->getPageSource());
+        } catch (\Exception $e) {
+        }
     }
 
     private static function createAndSetupDatabase(): void
@@ -75,18 +139,6 @@ trait BaseE2ETrait
 
         self::$application = new Application($kernel);
         self::$application->setAutoExit(false);
-
-        self::runCommand([
-            'command' => 'doctrine:database:drop',
-            '--if-exists' => true,
-            '--force' => true,
-        ]);
-        self::runCommand([
-            'command' => 'doctrine:database:create',
-        ]);
-        self::runCommand([
-            'command' => 'doctrine:schema:create',
-        ]);
     }
 
     private static function clearDatabase(): void
@@ -104,7 +156,7 @@ trait BaseE2ETrait
         $tables = $connection->createSchemaManager()->listTableNames();
         foreach ($tables as $table) {
             if ('doctrine_migration_versions' !== $table) {
-                $connection->executeStatement('TRUNCATE TABLE ' . $table . ' CASCADE');
+                $connection->executeStatement('TRUNCATE TABLE '.$table.' CASCADE');
             }
         }
     }
@@ -114,7 +166,7 @@ trait BaseE2ETrait
      */
     private static function runCommand(array $input): void
     {
-        if (! self::$application instanceof \Symfony\Bundle\FrameworkBundle\Console\Application) {
+        if (!self::$application instanceof Application) {
             throw new \RuntimeException('Application not initialized');
         }
 
@@ -155,11 +207,48 @@ trait BaseE2ETrait
 
     protected function assertCurrentUrlIs(string $expectedPath): void
     {
-        if ($expectedPath === '') {
+        if ('' === $expectedPath) {
             throw new \InvalidArgumentException('Expected path cannot be empty');
         }
         $currentUrl = $this->client->getCurrentURL();
         $this->assertStringEndsWith($expectedPath, $currentUrl);
     }
-}
 
+    /**
+     * Manually take a screenshot for debugging.
+     */
+    protected function takeDebugScreenshot(string $name = ''): void
+    {
+        if (!isset($this->client)) {
+            return;
+        }
+
+        try {
+            $screenshotDir = $_ENV['PANTHER_ERROR_SCREENSHOT_DIR'] ?? './var/error-screenshots';
+            if (!is_string($screenshotDir)) {
+                $screenshotDir = './var/error-screenshots';
+            }
+
+            // Create directory if it doesn't exist
+            if (!is_dir($screenshotDir)) {
+                mkdir($screenshotDir, 0777, true);
+            }
+
+            // Generate filename
+            $testClass = (new \ReflectionClass($this))->getShortName();
+            $timestamp = date('Y-m-d_H-i-s');
+            $suffix = '' !== $name && '0' !== $name ? "_$name" : '';
+            $filename = sprintf(
+                '%s/%s_debug%s_%s.png',
+                rtrim($screenshotDir, '/'),
+                $testClass,
+                $suffix,
+                $timestamp
+            );
+
+            // Take the screenshot
+            $this->client->takeScreenshot($filename);
+        } catch (\Exception $e) {
+        }
+    }
+}

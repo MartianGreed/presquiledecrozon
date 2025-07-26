@@ -17,10 +17,10 @@ final class RequestResetPasswordTest extends PantherTestCase
         $this->client->request('GET', '/reinitialisation-mot-de-passe');
 
         // Wait for the page to load
-        $this->waitForElement('form');
+        $this->waitForElement('body');
 
         $this->assertSelectorIsVisible('form');
-        $this->assertSelectorTextContains('h1', 'Réinitialiser mon mot de passe');
-        $this->assertSelectorTextContains('button', 'Réinitialiser mon mot de passe');
+        $this->assertSelectorWillContain('h1', 'Réinitialiser mon mot de passe');
+        $this->assertSelectorWillContain('#request_reset_password_submit', 'Réinitialiser mon mot de passe');
     }
 }
