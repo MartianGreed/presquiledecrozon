@@ -45,6 +45,8 @@ jobs:
         with:
           php-version: "8.4"
       - uses: actions/checkout@v4
+      - name: Install symfony cli
+        run: curl -sS https://get.symfony.com/cli/installer | bash
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
       - name: Cache Composer packages
@@ -57,9 +59,23 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Start docker compose
+        run: docker compose up --build -d
+      - name: Start symfony server
+        run: APP_ENV=test /home/runner/.symfony5/bin/symfony server:start -d --no-tls
+      - name: Create database
+        run: |
+          /home/runner/.symfony5/bin/symfony console doctrine:database:drop --if-exists --force --env=test
+          /home/runner/.symfony5/bin/symfony console doctrine:database:create --env=test
+          /home/runner/.symfony5/bin/symfony console doctrine:migrations:migrate --env=test
+
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit --group=e2e
         env:
           PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage"
           PANTHER_CHROME_DRIVER_BINARY: "/usr/bin/chromedriver"
           PANTHER_NO_SANDBOX: "1"
+      - name: Stop symfony server
+        run: /home/runner/.symfony5/bin/symfony server:stop
+      - name: Stop docker compose
+        run: docker compose stop

@@ -23,7 +23,7 @@ trait BaseE2ETrait
     {
         parent::setUpBeforeClass();
 
-        if (!self::$databaseCreated) {
+        if (! self::$databaseCreated) {
             self::createAndSetupDatabase();
             self::$databaseCreated = true;
         }
@@ -34,7 +34,7 @@ trait BaseE2ETrait
     protected function setUp(): void
     {
         // Use the installed chromedriver
-        $_SERVER['PANTHER_CHROME_DRIVER_BINARY'] = dirname(__DIR__, 2).'/drivers/chromedriver';
+        $_SERVER['PANTHER_CHROME_DRIVER_BINARY'] = dirname(__DIR__, 2) . '/drivers/chromedriver';
 
         $chromeOptions = [
             '--headless=new',  // Use new headless mode
@@ -83,7 +83,7 @@ trait BaseE2ETrait
      */
     protected function takeFailureScreenshot(): void
     {
-        if (!isset($this->client)) {
+        if (! isset($this->client)) {
             echo "\nNo client available for screenshot\n";
 
             return;
@@ -91,12 +91,12 @@ trait BaseE2ETrait
 
         try {
             $screenshotDir = $_ENV['PANTHER_ERROR_SCREENSHOT_DIR'] ?? './var/error-screenshots';
-            if (!is_string($screenshotDir)) {
+            if (! is_string($screenshotDir)) {
                 $screenshotDir = './var/error-screenshots';
             }
 
             // Create directory if it doesn't exist
-            if (!is_dir($screenshotDir)) {
+            if (! is_dir($screenshotDir)) {
                 mkdir($screenshotDir, 0777, true);
             }
 
@@ -156,7 +156,7 @@ trait BaseE2ETrait
         $tables = $connection->createSchemaManager()->listTableNames();
         foreach ($tables as $table) {
             if ('doctrine_migration_versions' !== $table) {
-                $connection->executeStatement('TRUNCATE TABLE '.$table.' CASCADE');
+                $connection->executeStatement('TRUNCATE TABLE ' . $table . ' CASCADE');
             }
         }
     }
@@ -166,7 +166,7 @@ trait BaseE2ETrait
      */
     private static function runCommand(array $input): void
     {
-        if (!self::$application instanceof Application) {
+        if (! self::$application instanceof Application) {
             throw new \RuntimeException('Application not initialized');
         }
 
@@ -219,18 +219,18 @@ trait BaseE2ETrait
      */
     protected function takeDebugScreenshot(string $name = ''): void
     {
-        if (!isset($this->client)) {
+        if (! isset($this->client)) {
             return;
         }
 
         try {
             $screenshotDir = $_ENV['PANTHER_ERROR_SCREENSHOT_DIR'] ?? './var/error-screenshots';
-            if (!is_string($screenshotDir)) {
+            if (! is_string($screenshotDir)) {
                 $screenshotDir = './var/error-screenshots';
             }
 
             // Create directory if it doesn't exist
-            if (!is_dir($screenshotDir)) {
+            if (! is_dir($screenshotDir)) {
                 mkdir($screenshotDir, 0777, true);
             }
 

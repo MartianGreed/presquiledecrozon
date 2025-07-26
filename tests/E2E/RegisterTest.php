@@ -30,7 +30,7 @@ final class RegisterTest extends PantherTestCase
     {
         $this->client->request('GET', '/creer-mon-compte');
 
-        $uniqueEmail = 'test_'.uniqid().'@example.com';
+        $uniqueEmail = 'test_' . uniqid() . '@example.com';
 
         $this->client->submitForm('Je crée mon compte', [
             'register_user[email]' => $uniqueEmail,
@@ -46,7 +46,7 @@ final class RegisterTest extends PantherTestCase
 
     public function testRegistrationWithExistingEmail(): void
     {
-        $existingEmail = 'existing_'.uniqid().'@example.com';
+        $existingEmail = 'existing_' . uniqid() . '@example.com';
 
         // First create a user
         $this->createTestUser($existingEmail, 'TestPassword123!');
@@ -70,7 +70,7 @@ final class RegisterTest extends PantherTestCase
         $this->client->request('GET', '/creer-mon-compte');
 
         $this->client->submitForm('Je crée mon compte', [
-            'register_user[email]' => 'test_'.uniqid().'@example.com',
+            'register_user[email]' => 'test_' . uniqid() . '@example.com',
             'register_user[password][first]' => 'TestPassword123!',
             'register_user[password][second]' => 'DifferentPassword123!',
         ]);

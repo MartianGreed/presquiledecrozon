@@ -28,7 +28,7 @@ final class LoginTest extends PantherTestCase
 
     public function testSuccessfulLogin(): void
     {
-        $email = 'user_'.uniqid().'@example.com';
+        $email = 'user_' . uniqid() . '@example.com';
         $password = 'TestPassword123!';
 
         $this->createTestUser($email, $password);
@@ -77,7 +77,7 @@ final class LoginTest extends PantherTestCase
 
     public function testLogoutFunctionality(): void
     {
-        $email = 'logout_test_'.uniqid().'@example.com';
+        $email = 'logout_test_' . uniqid() . '@example.com';
         $password = 'TestPassword123!';
 
         $this->createTestUser($email, $password);
