@@ -92,6 +92,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     public function getUserIdentifier(): string
     {
+        if ($this->email === '') {
+            throw new \LogicException('User email cannot be empty');
+        }
         return $this->email;
     }
 
@@ -227,7 +230,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         $this->id = isset($data['id']) && is_string($data['id']) ? $data['id'] : null;
         $this->email = isset($data['email']) && is_string($data['email']) ? $data['email'] : '';
         $this->password = isset($data['password']) && is_string($data['password']) ? $data['password'] : '';
-        $this->roles = isset($data['roles']) && is_array($data['roles']) ? $data['roles'] : ['ROLE_USER'];
+        /** @var array<string> $roles */
+        $roles = isset($data['roles']) && is_array($data['roles']) ? $data['roles'] : ['ROLE_USER'];
+        $this->roles = $roles;
     }
 
     /** @return ArrayCollection<int, Booking>  */

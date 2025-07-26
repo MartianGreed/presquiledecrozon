@@ -6,7 +6,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
 /**
- * @template T
+ * @template T of \BackedEnum
  */
 abstract class AbstractEnumType extends Type
 {
@@ -14,7 +14,9 @@ abstract class AbstractEnumType extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
-        $values = array_map(static fn ($val) => "'" . $val->value . "'", $this->getCases());
+        $values = array_map(static function ($val) {
+            return "'" . $val->value . "'";
+        }, $this->getCases());
 
         return "ENUM(" . implode(", ", $values) . ")";
     }
@@ -28,10 +30,14 @@ abstract class AbstractEnumType extends Type
     }
 
     /**
-     * @param T $value
+     * @param T|null $value
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
+        if ($value === null) {
+            return null;
+        }
+        
         return $value->value;
     }
 
