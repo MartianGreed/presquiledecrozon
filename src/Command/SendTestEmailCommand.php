@@ -38,7 +38,11 @@ final class SendTestEmailCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
 
-        $this->emailTarget = strval($input->getArgument('email'));
+        $emailArg = $input->getArgument('email');
+        if (!is_string($emailArg)) {
+            throw new \RuntimeException('Email argument must be a string');
+        }
+        $this->emailTarget = $emailArg;
 
         $this->io->title(sprintf('Sending test email to : %s', $this->emailTarget));
     }

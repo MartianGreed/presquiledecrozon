@@ -10,6 +10,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<Discount>
+ */
 class DiscountCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

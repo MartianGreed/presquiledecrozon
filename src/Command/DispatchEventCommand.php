@@ -36,8 +36,12 @@ final class DispatchEventCommand extends Command
     public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
+        $classArg = $input->getArgument('class');
+        if (!is_string($classArg)) {
+            throw new \RuntimeException('Class argument must be a string');
+        }
         /** @var class-string $message */
-        $message = strval($input->getArgument('class'));
+        $message = $classArg;
         $this->messageClass = $message;
 
         // PHPStan hack to ensure type
@@ -79,7 +83,12 @@ final class DispatchEventCommand extends Command
     {
         $question = new Question(sprintf('Please set the value for : $%s  ->  ', $arg));
 
-        return strval($this->helper->ask($input, $output, $question));
+        $answer = $this->helper->ask($input, $output, $question);
+        if (!is_string($answer) && !is_numeric($answer)) {
+            throw new \RuntimeException(sprintf('Answer for %s must be a string or numeric value', $arg));
+        }
+        
+        return (string) $answer;
     }
 
     /** @return array<int, string> */

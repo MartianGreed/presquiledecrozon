@@ -36,7 +36,7 @@ final class GetConversationDetailsController extends AbstractController
             'period' => $booking->getPeriod(),
             'people_count' => $booking->getPeopleCount(),
             'total_price' => $booking->getPrices()->getTotalPrice()->__toString(),
-            'messages' => $conversation->getMessages()->map(fn (Message $m = null) => [
+            'messages' => $conversation->getMessages()->map(fn (?Message $m = null) => [
                 'message' => $m?->getMessage(),
                 'read_at' => $m?->getReadAt()?->getTimestamp(),
                 'send_at' => $m?->getSendAt()?->getTimestamp(),

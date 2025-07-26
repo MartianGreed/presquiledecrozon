@@ -63,10 +63,10 @@ EOF
         // Check environment configuration
         $io->section('Environment Configuration');
         
-        $cdnHost = $_ENV['BUNNYCDN_HOSTNAME'] ?? null;
-        $cdnKey = $_ENV['BUNNYCDN_API_KEY'] ?? null;
-        $cdnStorage = $_ENV['BUNNYCDN_STORAGE_ZONE'] ?? null;
-        $cdnPullZone = $_ENV['BUNNYCDN_PULL_ZONE'] ?? null;
+        $cdnHost = isset($_ENV['BUNNYCDN_HOSTNAME']) && is_string($_ENV['BUNNYCDN_HOSTNAME']) ? $_ENV['BUNNYCDN_HOSTNAME'] : null;
+        $cdnKey = isset($_ENV['BUNNYCDN_API_KEY']) && is_string($_ENV['BUNNYCDN_API_KEY']) ? $_ENV['BUNNYCDN_API_KEY'] : null;
+        $cdnStorage = isset($_ENV['BUNNYCDN_STORAGE_ZONE']) && is_string($_ENV['BUNNYCDN_STORAGE_ZONE']) ? $_ENV['BUNNYCDN_STORAGE_ZONE'] : null;
+        $cdnPullZone = isset($_ENV['BUNNYCDN_PULL_ZONE']) && is_string($_ENV['BUNNYCDN_PULL_ZONE']) ? $_ENV['BUNNYCDN_PULL_ZONE'] : null;
 
         $configOk = true;
         
@@ -138,8 +138,14 @@ EOF
                 // Create a test image file
                 $testImagePath = $this->projectDir . '/var/test-cdn-upload.jpg';
                 $testImage = imagecreatetruecolor(100, 100);
+                if ($testImage === false) {
+                    throw new \RuntimeException('Failed to create test image');
+                }
                 $white = imagecolorallocate($testImage, 255, 255, 255);
                 $black = imagecolorallocate($testImage, 0, 0, 0);
+                if ($white === false || $black === false) {
+                    throw new \RuntimeException('Failed to allocate colors');
+                }
                 imagefill($testImage, 0, 0, $white);
                 imagestring($testImage, 5, 10, 40, 'CDN TEST', $black);
                 imagejpeg($testImage, $testImagePath, 90);
@@ -162,7 +168,7 @@ EOF
                     [
                         ['Filename', $media->getName()],
                         ['Size', $media->getSize() . ' bytes'],
-                        ['CDN Path', $media->getPath()],
+                        ['CDN Path', $media->getName()],
                     ]
                 );
 
@@ -179,7 +185,7 @@ EOF
                 ]);
                 
                 // Clean up test file
-                if (isset($testImagePath) && file_exists($testImagePath)) {
+                if (file_exists($testImagePath)) {
                     @unlink($testImagePath);
                 }
                 

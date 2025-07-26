@@ -10,9 +10,9 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @method Favorite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Favorite|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Favorite|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Favorite[]    findAll()
- * @method Favorite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Favorite[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Favorite>
  */
@@ -63,7 +63,7 @@ class FavoriteRepository extends ServiceEntityRepository
 
     public function addNewFavoriteToList(string $rentalId, string $personaId): bool
     {
-        $connection = $this->_em->getConnection();
+        $connection = $this->getEntityManager()->getConnection();
         $qb = $connection->createQueryBuilder();
         $now = (new \DateTime())->format('Y-m-d H:i:s');
 
@@ -95,7 +95,7 @@ class FavoriteRepository extends ServiceEntityRepository
 
     public function removeFromFavoriteList(string $rentalId, string $personaId): bool
     {
-        $connection = $this->_em->getConnection();
+        $connection = $this->getEntityManager()->getConnection();
         $qb = $connection->createQueryBuilder();
 
         $qb->delete($this->getClassMetadata()->getTableName())

@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method LinensCategory|null find($id, $lockMode = null, $lockVersion = null)
- * @method LinensCategory|null findOneBy(array $criteria, array $orderBy = null)
+ * @method LinensCategory|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method LinensCategory[]    findAll()
- * @method LinensCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method LinensCategory[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<LinensCategory>
  */

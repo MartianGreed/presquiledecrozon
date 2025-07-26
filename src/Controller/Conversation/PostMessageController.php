@@ -30,8 +30,15 @@ final class PostMessageController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $conversationId = strval($form->get('conversation_id')->getData());
-                $messageContent = strval($form->get('message')->getData());
+                $conversationId = $form->get('conversation_id')->getData();
+                $messageContent = $form->get('message')->getData();
+                
+                if (!is_string($conversationId)) {
+                    throw new \RuntimeException('Conversation ID must be a string');
+                }
+                if (!is_string($messageContent)) {
+                    throw new \RuntimeException('Message content must be a string');
+                }
 
                 $conversation = $this->conversationRepository->getConversationDetails($conversationId);
 

@@ -23,6 +23,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<Rental>
+ */
 class RentalCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

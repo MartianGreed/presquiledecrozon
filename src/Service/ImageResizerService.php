@@ -33,10 +33,13 @@ final class ImageResizerService implements ImageResizerServiceInterface
         $stream = $this->storage->readStream($img);
 
         $image = $this->imageManager->read($stream);
+        $width = is_numeric($options['w']) ? (int) $options['w'] : 0;
+        $height = is_numeric($options['h']) ? (int) $options['h'] : 0;
+        
         if ($options['crop']) {
-            $image->cover(intval($options['w']), intval($options['h']));
+            $image->cover($width, $height);
         } else {
-            $image->scale(intval($options['w']), intval($options['h']));
+            $image->scale($width, $height);
         }
 
         $this->storage->write($cachePath, $image->toJpeg()->toString(), (new Config())->withDefaults([]));

@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method RentalType|null find($id, $lockMode = null, $lockVersion = null)
- * @method RentalType|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RentalType|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method RentalType[]    findAll()
- * @method RentalType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RentalType[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<RentalType>
  */

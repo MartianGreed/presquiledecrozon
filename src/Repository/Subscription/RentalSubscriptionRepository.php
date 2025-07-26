@@ -10,9 +10,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method RentalSubscription|null find($id, $lockMode = null, $lockVersion = null)
- * @method RentalSubscription|null findOneBy(array $criteria, array $orderBy = null)
+ * @method RentalSubscription|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method RentalSubscription[]    findAll()
- * @method RentalSubscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method RentalSubscription[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<RentalSubscription>
  */
@@ -25,13 +25,13 @@ class RentalSubscriptionRepository extends ServiceEntityRepository
 
     final public function save(RentalSubscription $subscription): void
     {
-        $this->_em->persist($subscription);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($subscription);
+        $this->getEntityManager()->flush();
     }
 
     final public function flush(): void
     {
-        $this->_em->flush();
+        $this->getEntityManager()->flush();
     }
 
     /** @throws RentalSubscriptionNotFound */

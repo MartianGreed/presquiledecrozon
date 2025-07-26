@@ -19,6 +19,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * @extends AbstractCrudController<Notification>
+ */
 final class NotificationController extends AbstractCrudController
 {
     public function __construct(
@@ -71,6 +74,9 @@ final class NotificationController extends AbstractCrudController
     public function markAsRead(AdminContext $context): RedirectResponse
     {
         $notification = $context->getEntity()->getInstance();
+        if (!$notification instanceof \App\Entity\Notification) {
+            throw new \RuntimeException('Expected Notification entity');
+        }
 
         $notification->markAsRead(new \DateTime());
 

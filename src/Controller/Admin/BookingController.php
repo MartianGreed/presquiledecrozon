@@ -11,6 +11,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 
+/**
+ * @extends AbstractCrudController<Booking>
+ */
 final class BookingController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

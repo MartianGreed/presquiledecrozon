@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Bed|null find($id, $lockMode = null, $lockVersion = null)
- * @method Bed|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Bed|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Bed[]    findAll()
- * @method Bed[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Bed[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Bed>
  */

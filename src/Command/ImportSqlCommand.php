@@ -40,11 +40,17 @@ final class ImportSqlCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (null !== $file = $input->getOption('file')) {
-            return $this->handleImportSingleFile(strval($file));
+            if (!is_string($file)) {
+                throw new \RuntimeException('File option must be a string');
+            }
+            return $this->handleImportSingleFile($file);
         }
 
         if (null !== $raw = $input->getOption('raw')) {
-            return $this->handleRawSqlImport(strval($raw));
+            if (!is_string($raw)) {
+                throw new \RuntimeException('Raw option must be a string');
+            }
+            return $this->handleRawSqlImport($raw);
         }
 
         $this->io->info('Importing base data.');

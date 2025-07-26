@@ -9,6 +9,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CodeEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<Bed>
+ */
 class BedCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

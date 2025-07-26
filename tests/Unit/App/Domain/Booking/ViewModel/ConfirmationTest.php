@@ -20,6 +20,7 @@ final class ConfirmationTest extends TestCase
 {
     use ProphecyTrait;
 
+    /** @var ObjectProphecy<BookingValidator> */
     private ObjectProphecy $validator;
     private BookingPriceSimulatorService $simulatorService;
 
@@ -56,6 +57,7 @@ final class ConfirmationTest extends TestCase
 
     }
 
+    /** @return ObjectProphecy<BookingValidator> */
     private function configureValidator(): ObjectProphecy
     {
         $prophecy = $this->prophesize(BookingValidator::class);

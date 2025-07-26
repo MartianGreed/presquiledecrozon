@@ -19,8 +19,7 @@ final class GetBookingPriceController extends AbstractController
     }
 
     #[Route('/booking/price/{id}', name: 'app_booking_price', methods: [Request::METHOD_POST])]
-    #[MapEntity('rental')]
-    public function __invoke(Request $request, Rental $rental): Response
+    public function __invoke(Request $request, #[MapEntity(id: 'id')] Rental $rental): Response
     {
         try {
             /** @var array{startAt: string, endAt: string, peopleCount: string} $content */

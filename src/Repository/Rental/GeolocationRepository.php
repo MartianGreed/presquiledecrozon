@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Geolocation|null find($id, $lockMode = null, $lockVersion = null)
- * @method Geolocation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Geolocation|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Geolocation[]    findAll()
- * @method Geolocation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Geolocation[]    findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Geolocation>
  */

@@ -31,8 +31,7 @@ final class BookingConfirmationController extends AbstractController
     }
 
     #[Route('/reservation/{id}/confirmation', name: 'app_confirm_booking')]
-    #[MapEntity('booking')]
-    public function __invoke(Request $request, Booking $booking): Response
+    public function __invoke(Request $request, #[MapEntity(id: 'id')] Booking $booking): Response
     {
         if ($booking->getBooker()->getId() !== $this->getUser()->getId()) {
             throw $this->createAccessDeniedException('You cannot access this resource');
@@ -54,17 +53,27 @@ final class BookingConfirmationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$this->bookingService->isRentalAvailableForBooking($booking->getRental(), $booking)) {
                 $form->addError(new FormError('Ce logement semble ne pas etre disponible durant cette période.'));
-                return $this->renderForm('booking/confirmation.html.twig', [
+                return $this->render('booking/confirmation.html.twig', [
                     'vm' => $confirmation,
                     'form' => $form,
                 ]);
             }
 
-            $booking->confirm(intval($form->get('peopleCount')->getData()));
+            $peopleCount = $form->get('peopleCount')->getData();
+            $ownerMessage = $form->get('ownerMessage')->getData();
+            
+            if (!is_numeric($peopleCount)) {
+                throw new \RuntimeException('People count must be numeric');
+            }
+            if (!is_string($ownerMessage)) {
+                throw new \RuntimeException('Owner message must be a string');
+            }
+            
+            $booking->confirm((int) $peopleCount);
             // Create conversation between two users.
             $conversation = Conversation::initWithMessage(
                 $booking,
-                Message::create($booking->getBooker(), strval($form->get('ownerMessage')->getData()))
+                Message::create($booking->getBooker(), $ownerMessage)
             );
 
             // Save data and redirect to conversation.
@@ -74,7 +83,7 @@ final class BookingConfirmationController extends AbstractController
             return $this->redirectToRoute('app_profile_conversation');
         }
 
-        return $this->renderForm('booking/confirmation.html.twig', [
+        return $this->render('booking/confirmation.html.twig', [
             'vm' => $confirmation,
             'form' => $form,
         ]);
