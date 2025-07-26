@@ -37,7 +37,6 @@ final class ConfirmationTest extends TestCase
         $booker = UserFactory::createUser(email: 'valentin.dosimont@gmail.com');
 
         $rental = RentalFactory::create($owner);
-        // @phpstan-ignore-next-line
         $booking = BookingFactory::create($this->validator->reveal(), $rental, $booker, new \DateTime($start), new \DateTime($end), 3);
         $this->simulatorService->aggregatePrices($booking);
         $confirmation = new Confirmation($booking);

@@ -22,8 +22,7 @@ final class TogglePublishRentalController extends AbstractController
     }
 
     #[Route('/rental/{id}/toggle-publish', name: 'app_rental_toggle_publish', methods: ['PATCH'])]
-    #[MapEntity('rental')]
-    public function __invoke(Request $request, Rental $rental): Response
+    public function __invoke(Request $request, #[MapEntity(id: 'id')] Rental $rental): Response
     {
         if (!$rental->isPublishable() && !$rental->isPublished()) {
             return new JsonResponse(['message' => 'Vous ne pouvez pas publier la location. Vous devez avoir un abonnement valide pour pouvoir le faire.'], 403);

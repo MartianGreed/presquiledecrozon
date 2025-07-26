@@ -30,7 +30,7 @@ final class GetMessagesListController extends AbstractController
         ]);
 
 
-        return $this->renderForm('profile/get_messages_list.html.twig', [
+        return $this->render('profile/get_messages_list.html.twig', [
             'conversations' => $this->conversationRepository->getUserConversations($this->getUser()->getId()),
             'form' => $form,
         ]);

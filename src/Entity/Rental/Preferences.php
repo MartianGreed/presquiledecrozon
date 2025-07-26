@@ -75,7 +75,7 @@ class Preferences implements Identity
         return $this;
     }
 
-    final public function getRental(): ?Rental
+    final public function getRental(): Rental
     {
         return $this->rental;
     }

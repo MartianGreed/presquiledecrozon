@@ -24,8 +24,7 @@ final class ConfirmSubscriptionController extends AbstractController
     }
 
     #[Route('/abonnement/confirm/{rentalId}', name: 'app_confirm_subscription')]
-    #[MapEntity('rental', mapping: ['rentalId' => 'id'])]
-    public function __invoke(Request $request, Rental $rental): Response
+    public function __invoke(Request $request, #[MapEntity(mapping: ['rentalId' => 'id'])] Rental $rental): Response
     {
         try {
             $paymentIntent = $this->stripeService->retrievePaymentIntent((string) $request->query->get('payment_intent'));

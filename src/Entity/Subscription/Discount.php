@@ -36,7 +36,7 @@ class Discount implements \Stringable, Identity
         return $this->code;
     }
 
-    final public function getType(): ?string
+    final public function getType(): string
     {
         return $this->type;
     }

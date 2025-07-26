@@ -64,7 +64,10 @@ final class GetSubscriptionForRentalController extends AbstractController
             );
             $discountForm->handleRequest($request);
             if ($discountForm->isSubmitted() && $discountForm->isValid()) {
-                $discountCode = strval($discountForm->get('discount')->getData());
+                $discountCode = $discountForm->get('discount')->getData();
+                if (!is_string($discountCode)) {
+                    throw new \RuntimeException('Discount code must be a string');
+                }
                 $this->discountService->applyDiscountCode($rentalSubscription, $discountCode);
                 return $this->redirect($this->generateUrl('app_get_subscription', ['rental_id' => $rental->getId()]));
             }
@@ -72,7 +75,7 @@ final class GetSubscriptionForRentalController extends AbstractController
             // Only create form, payment is handled by stripe
             $form = $this->createForm(CreateSubscriptionType::class);
 
-            return $this->renderForm('subscription/create.html.twig', [
+            return $this->render('subscription/create.html.twig', [
                 'rental' => $rental,
                 'subscription' => $subscription,
                 'rental_subscription' => $rentalSubscription,

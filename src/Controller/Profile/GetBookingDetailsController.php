@@ -22,9 +22,9 @@ final class GetBookingDetailsController extends AbstractController
     }
 
     #[Route('/mon-compte/reservation/{id}', name: 'app_profile_booking_details')]
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, string $id): Response
     {
-        $booking = $this->bookingRepository->find(strval($request->get('id')));
+        $booking = $this->bookingRepository->find($id);
         if (null === $booking) {
             throw $this->createNotFoundException('Booking not found');
         }

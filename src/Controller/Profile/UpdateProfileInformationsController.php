@@ -38,7 +38,7 @@ final class UpdateProfileInformationsController extends AbstractController
             return $this->redirectToRoute('app_profile_informations');
         }
 
-        return $this->renderForm('profile/update_informations.html.twig', [
+        return $this->render('profile/update_informations.html.twig', [
             'form' => $form,
         ]);
     }

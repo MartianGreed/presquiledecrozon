@@ -55,7 +55,9 @@ final class RentalDetailController extends AbstractController
 
         $data = null;
         if (null !== $sessionData = $request->getSession()->get('booking-'.$rental->getId())) {
-            $data = unserialize(strval($sessionData), ['allowed_classes' => [\DateTime::class]]);
+            if (is_string($sessionData)) {
+                $data = unserialize($sessionData, ['allowed_classes' => [\DateTime::class]]);
+            }
         }
 
         $form = $this->createForm(BookRentalType::class, $data, [
@@ -128,7 +130,7 @@ final class RentalDetailController extends AbstractController
         if (null !== $error && null !== $field) {
             $form->get($field)->addError($error);
         }
-        return $this->renderForm('page/rental-detail.html.twig', [
+        return $this->render('page/rental-detail.html.twig', [
             'rental' => $rental,
             'form' => $form,
             'bookings' => $this->bookingRepository->getBookingRanges((string) $rental->getId()),

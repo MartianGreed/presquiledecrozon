@@ -29,7 +29,7 @@ final class PreviewRentalController extends AbstractController
             'action' => $this->generateUrl('app_rental_details', ['slug' => $rental->getSlug()])
         ]);
 
-        return $this->renderForm('page/rental-detail.html.twig', [
+        return $this->render('page/rental-detail.html.twig', [
             'rental' => $rental,
             'form' => $form,
             'bookings' => $this->bookingRepository->getBookingRanges((string) $rental->getId()),

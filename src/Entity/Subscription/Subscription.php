@@ -36,7 +36,7 @@ class Subscription implements Identity
         return $this;
     }
 
-    final public function getValidityDuration(): ?string
+    final public function getValidityDuration(): string
     {
         return $this->validityDuration;
     }

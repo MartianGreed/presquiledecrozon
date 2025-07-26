@@ -62,7 +62,7 @@ final class CreateRentalController extends AbstractController
             } catch (\Exception $e) {
                 $form->addError(new FormError('Nous avons eu un probleme lors de l\'enregistrement de la configuration de votre logement.'));
 
-                return $this->renderForm('create_rental/configuration.html.twig', [
+                return $this->render('create_rental/configuration.html.twig', [
                     'form' => $form,
                 ]);
             }
@@ -70,7 +70,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_furnitures', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/configuration.html.twig', [
+        return $this->render('create_rental/configuration.html.twig', [
             'form' => $form,
         ]);
     }
@@ -94,7 +94,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_description', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/furnitures.html.twig', [
+        return $this->render('create_rental/furnitures.html.twig', [
             'form' => $form,
         ]);
     }
@@ -116,7 +116,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_address', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/description.html.twig', [
+        return $this->render('create_rental/description.html.twig', [
             'form' => $form,
         ]);
     }
@@ -138,7 +138,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_map', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/address.html.twig', [
+        return $this->render('create_rental/address.html.twig', [
             'form' => $form,
         ]);
     }
@@ -170,14 +170,14 @@ final class CreateRentalController extends AbstractController
 
                     return $this->redirectToRouteWithQueryParams('app_create_rental_pictures', $request->query->all());
                 } catch (\Exception) {
-                    return $this->renderForm('create_rental/map.html.twig', [
+                    return $this->render('create_rental/map.html.twig', [
                         'form' => $form,
                     ]);
                 }
             }
         }
 
-        return $this->renderForm('create_rental/map.html.twig', [
+        return $this->render('create_rental/map.html.twig', [
             'geolocation_fetched' => $geolocationFetched,
             'fetch_geolocation_url' => $this->generateUrl('app_rental_geolocation', ['id' => $rental->getId()]),
             'form' => !$geolocationFetched ? null : $form,
@@ -200,7 +200,7 @@ final class CreateRentalController extends AbstractController
 //            try {
 //                $rental = $this->rentalService->savePictures($rental, $gallery);
 //            } catch (\Exception) {
-//                return $this->renderForm('create_rental/pictures.html.twig', [
+//                return $this->render('create_rental/pictures.html.twig', [
 //                    'form' => $form,
 //                ]);
 //            }
@@ -208,7 +208,7 @@ final class CreateRentalController extends AbstractController
 //            return $this->redirectToRouteWithQueryParams('app_create_rental_availabilities', $request->query->all());
 //        }
 
-        return $this->renderForm('create_rental/pictures.html.twig', [
+        return $this->render('create_rental/pictures.html.twig', [
 //            'form' => $form,
             'rental' => $rental,
             'next_step_url' => $this->getUrl('app_create_rental_availabilities', $request->query->all()),
@@ -232,7 +232,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_calendar', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/availabilities.html.twig', [
+        return $this->render('create_rental/availabilities.html.twig', [
             'form' => $form,
         ]);
     }
@@ -252,7 +252,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_taxes', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/calendar.html.twig', [
+        return $this->render('create_rental/calendar.html.twig', [
             'form' => $form,
         ]);
     }
@@ -273,7 +273,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_prices', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/taxes.html.twig', [
+        return $this->render('create_rental/taxes.html.twig', [
             'form' => $form,
         ]);
     }
@@ -295,7 +295,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_create_rental_conditions', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/prices.html.twig', [
+        return $this->render('create_rental/prices.html.twig', [
             'form' => $form,
         ]);
     }
@@ -316,7 +316,7 @@ final class CreateRentalController extends AbstractController
             return $this->redirectToRouteWithQueryParams('app_rental_created', $request->query->all());
         }
 
-        return $this->renderForm('create_rental/conditions.html.twig', [
+        return $this->render('create_rental/conditions.html.twig', [
             'form' => $form,
         ]);
     }

@@ -31,7 +31,7 @@ class Bedroom implements \Stringable, Identity
 
     public function __toString(): string
     {
-        return implode(', ', $this->beds->map(fn (Bed $bed = null) => $bed?->getLabel())->toArray());
+        return implode(', ', $this->beds->map(fn (?Bed $bed = null) => $bed?->getLabel())->toArray());
     }
 
     /**

@@ -28,8 +28,8 @@ final class ConfigurationDTO
             }
 
             $self->bedrooms[] = [];
-            foreach ($bedroom->getBeds() as $bed) {
-                $self->bedrooms[$i][$bed->getBed()->getId()] = $bed->getCount();
+            foreach ($bedroom->getBeds() as $bedroomBed) {
+                $self->bedrooms[$i][$bedroomBed->getBed()->getId()] = $bedroomBed->getCount();
             }
         }
 

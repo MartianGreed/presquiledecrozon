@@ -18,7 +18,7 @@ class Profile
     private ?string $lastname = null;
 
     #[ORM\Column(type: 'string', length: 10)]
-    private ?string $preferredLanguage = 'fr_FR';
+    private string $preferredLanguage = 'fr_FR';
 
     #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $birthdate = null;

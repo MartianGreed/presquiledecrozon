@@ -27,6 +27,7 @@ final class Price implements \Stringable
 
     public function __toString(): string
     {
+        /** @phpstan-ignore-next-line */
         return (\NumberFormatter::create('fr', \NumberFormatter::CURRENCY))
             ->formatCurrency($this->getValue() / 100, $this->currency->getValue())
         ;
