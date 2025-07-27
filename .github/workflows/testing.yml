@@ -19,22 +19,6 @@ env:
 jobs:
   symfony-tests:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: symfony
-          POSTGRES_PASSWORD: symfony
-          POSTGRES_DB: app_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -56,11 +40,6 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Create test database
-        run: |
-          symfony console doctrine:migrations:migrate --env=test --no-interaction
-          symfony console doctrine:fixtures:load --group=data --env=test --no-interaction
-          symfony console doctrine:fixtures:load --group=rental --append --env=test --no-interaction
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
       - name: Run php static analysis
@@ -77,7 +56,6 @@ jobs:
 
   playwright:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:15
@@ -92,7 +70,6 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
     steps:
       - uses: actions/checkout@v4
 
@@ -116,6 +93,9 @@ jobs:
 
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
+      - name: Create upload dir
+        run: mkdir -p public/uploads/rental/2025 && chmod -R 777 public/uploads/rental
 
       - name: Get composer cache directory
         id: composer-cache
