@@ -28,6 +28,18 @@ test_e2e:
 	vendor/bin/phpunit --group=e2e
 	symfony server:stop
 
+test_playwright:
+	pnpm test:e2e
+
+test_playwright_ui:
+	pnpm test:e2e:ui
+
+test_playwright_debug:
+	pnpm test:e2e:debug
+
+test_playwright_report:
+	pnpm test:e2e:report
+
 create_test_db:
 	symfony console doctrine:database:drop --if-exists --force --env=test
 	symfony console doctrine:database:create --env=test
@@ -36,6 +48,10 @@ create_test_db:
 test_e2e_setup: create_test_db fixtures_test
 
 test_e2e_full: test_e2e_setup test_e2e
+
+test_playwright_setup: create_test_db fixtures_test
+
+test_playwright_full: test_playwright_setup test_playwright
 
 format:
 	vendor/bin/php-cs-fixer fix

@@ -4,13 +4,45 @@ on:
   push:
   pull_request:
 
+env:
+  CDN_URL: ${{ secrets.CDN_URL }}
+  BUNNYCDN_API_KEY: ${{ secrets.BUNNYCDN_API_KEY }}
+  BUNNYCDN_BUCKET: ${{ secrets.BUNNYCDN_BUCKET }}
+  BUNNYCDN_REGION: ${{ secrets.BUNNYCDN_REGION }}
+  EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+  GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+  GOOGLE_MAPS_API_URL: ${{ secrets.GOOGLE_MAPS_API_URL }}
+  MAILER_DSN: ${{ secrets.MAILER_DSN }}
+  STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+
 jobs:
   symfony-tests:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: symfony
+          POSTGRES_PASSWORD: symfony
+          POSTGRES_DB: app_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
-      - uses: shivammathur/setup-php@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, mbstring, pdo
+          coverage: none
+          tools: symfony-cli
       - uses: actions/checkout@v4
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
@@ -24,6 +56,11 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Create test database
+        run: |
+          symfony console doctrine:migrations:migrate --env=test --no-interaction
+          symfony console doctrine:fixtures:load --group=data --env=test --no-interaction
+          symfony console doctrine:fixtures:load --group=rental --append --env=test --no-interaction
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: vendor/bin/phpunit
       - name: Run php static analysis
@@ -38,44 +75,110 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  e2e-tests:
+  playwright:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: symfony
+          POSTGRES_PASSWORD: symfony
+          POSTGRES_DB: app_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
-      - uses: actions/checkout@v4
-      - name: Install symfony cli
-        run: curl -sS https://get.symfony.com/cli/installer | bash
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, dom, filter, gd, json, mbstring, pdo
+          coverage: none
+          tools: symfony-cli
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Start docker compose
-        run: docker compose up --build -d
-      - name: Start symfony server
-        run: APP_ENV=test /home/runner/.symfony5/bin/symfony server:start -d --no-tls
-      - name: Create database
-        run: |
-          /home/runner/.symfony5/bin/symfony console doctrine:database:drop --if-exists --force --env=test
-          /home/runner/.symfony5/bin/symfony console doctrine:database:create --env=test
-          /home/runner/.symfony5/bin/symfony console doctrine:migrations:migrate --env=test
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit --group=e2e
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps
+
+      - name: Build assets
+        run: pnpm run build:dev
+
+      - name: Create test database
+        run: |
+          symfony console doctrine:migrations:migrate --env=test --no-interaction
+          symfony console doctrine:fixtures:load --group=data --env=test --no-interaction
+          symfony console doctrine:fixtures:load --group=rental --append --env=test --no-interaction
+
+      - name: Start Symfony server
+        run: |
+          symfony server:start --port=8000 --no-tls --daemon
+          sleep 5
+
+      - name: Run Playwright tests
         env:
-          PANTHER_CHROME_ARGUMENTS: "--disable-dev-shm-usage"
-          PANTHER_CHROME_DRIVER_BINARY: "/usr/bin/chromedriver"
-          PANTHER_NO_SANDBOX: "1"
-      - name: Stop symfony server
-        run: /home/runner/.symfony5/bin/symfony server:stop
-      - name: Stop docker compose
-        run: docker compose stop
+          E2E_BASE_URL: http://localhost:8000
+        run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-screenshots
+          path: test-results/
+          retention-days: 30

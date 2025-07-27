@@ -5,6 +5,7 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-typescript": "^7.27.1",
     "@jest/types": "^29.6.3",
+    "@playwright/test": "^1.54.1",
     "@symfony/ux-dropzone": "file:vendor/symfony/ux-dropzone/assets",
     "@symfony/ux-lazy-image": "file:vendor/symfony/ux-lazy-image/assets",
     "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
@@ -42,7 +43,11 @@
     "build:prod": "NODE_ENV=prod encore production --progress",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",

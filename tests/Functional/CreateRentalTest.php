@@ -10,8 +10,10 @@ use App\Repository\Data\TownRepository;
 use App\Repository\Rental\RentalRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+#[Group('e2e')]
 final class CreateRentalTest extends WebTestCase
 {
     private function clearRentals(): void
@@ -53,7 +55,7 @@ final class CreateRentalTest extends WebTestCase
         /** @var RentalRepository $rentalRepository */
         $rentalRepository = static::getContainer()->get(RentalRepository::class);
 
-        $testTitle = 'Test Rental ' . uniqid();
+        $testTitle = 'Test Rental '.uniqid();
 
         $user = $userRepository->findOneBy([]);
         $this->assertNotNull($user, 'Test user should exist');
