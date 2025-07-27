@@ -50,7 +50,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
 
@@ -69,7 +69,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
         $this->assertArrayHasKey('removed', $response);
@@ -121,7 +121,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
         $this->assertArrayHasKey('favorite', $response);
@@ -156,7 +156,7 @@ final class FavoriteTest extends WebTestCase
                 $this->fail('Response content is false');
             }
             $response = json_decode($content, true);
-            if (!is_array($response)) {
+            if (! is_array($response)) {
                 $this->fail('Response is not a valid JSON array');
             }
             $this->assertArrayHasKey('favorite', $response, 'Should return favorite in response');

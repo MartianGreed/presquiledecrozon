@@ -143,3 +143,20 @@ When working with domain concepts, always use the established terminology:
 - Follow Symfony coding standards (enforced by ECS)
 - All new code must have tests
 - Use strong typing and strict types declaration
+
+### Before Completing Tasks
+
+Always run these checks before considering any task complete:
+
+1. **Run PHPStan** (`make phpstan`) and fix all issues:
+   - Handle nullable types properly (use null checks or type assertions)
+   - Ensure all method parameters and return types are correctly typed
+   - Fix any type mismatches or unsafe operations
+   
+2. **Run code style fixer** (`make lint`) to ensure consistent formatting
+
+3. **Run tests** (`make test`) to verify functionality hasn't been broken
+
+4. **Ensure files end with a newline** (required by coding standards)
+
+This ensures all work is committable and maintains the project's high quality standards.
