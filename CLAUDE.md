@@ -68,10 +68,21 @@ This is a vacation rental platform for the Presqu'île de Crozon region using Do
 
 ### Domain Structure
 
-- **Core Entities**: Booking, Rental, User, Subscription, Conversation
+- **Core Entities**: Booking, Rental, User, Subscription, Conversation, Favorite
 - **Value Objects**: Price, BookingStatus, RentalStatus, etc.
 - **Repositories**: Interface-based data access layer
 - **Message Handlers**: Asynchronous processing via Symfony Messenger
+
+### Ubiquitous Language Usage
+
+When working with domain concepts, always use the established terminology:
+
+- **User** is referred to as `persona` in domain relationships (e.g., in Favorite entity)
+- **Favorite** (singular) represents a saved rental by a persona
+- **FavoriteList** when referring to the collection of favorites
+- **Rental** represents a vacation property
+- Use domain entity names in test methods (e.g., `testPersonaCanAddRentalToFavoriteList` not `testUserCanAddFavorites`)
+- French UI terms: "Coup de coeur" / "Coups de coeur" (favorites in the interface)
 
 ### Key Architectural Patterns
 
@@ -98,6 +109,11 @@ This is a vacation rental platform for the Presqu'île de Crozon region using Do
 
 ### Working with Entities
 
+- Always use **Ubiquitous Language** already defined in `src/Domain`
+- Use exact domain terminology in code, tests, and documentation:
+  - Refer to users as `persona` when in domain context (matching entity relationships)
+  - Use singular form for entities (e.g., `Favorite` not `Favorites`)
+  - Name test methods using domain language (e.g., `testPersonaCanAddRentalToFavoriteList`)
 - Always use constructor property promotion
 - Implement value objects for domain concepts
 - Use Doctrine lifecycle callbacks sparingly
@@ -116,6 +132,10 @@ This is a vacation rental platform for the Presqu'île de Crozon region using Do
 - Integration tests for repositories
 - Functional tests for controllers
 - Use fixtures for test data setup
+- Follow domain naming conventions in tests:
+  - Test class names should match entity names (singular form)
+  - Test methods should describe behavior using domain language
+  - Variable names should match domain terminology (e.g., `$persona` not `$user` when dealing with Favorite entity)
 
 ### Code Quality Standards
 
@@ -123,4 +143,3 @@ This is a vacation rental platform for the Presqu'île de Crozon region using Do
 - Follow Symfony coding standards (enforced by ECS)
 - All new code must have tests
 - Use strong typing and strict types declaration
-

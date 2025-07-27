@@ -16,6 +16,10 @@ fixtures:
 	symfony console doctrine:fixtures:load --group=data
 	symfony console doctrine:fixtures:load --group=rental --append
 
+fixtures_test:
+	symfony console doctrine:fixtures:load --group=data --env=test
+	symfony console doctrine:fixtures:load --group=rental --append --env=test
+
 test:
 	vendor/bin/phpunit
 
@@ -24,10 +28,12 @@ test_e2e:
 	vendor/bin/phpunit --group=e2e
 	symfony server:stop
 
-test_e2e_setup:
+create_test_db:
 	symfony console doctrine:database:drop --if-exists --force --env=test
 	symfony console doctrine:database:create --env=test
 	symfony console doctrine:migrations:migrate --env=test
+
+test_e2e_setup: create_test_db fixtures_test
 
 test_e2e_full: test_e2e_setup test_e2e
 
