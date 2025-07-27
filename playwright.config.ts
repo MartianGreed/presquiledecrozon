@@ -67,10 +67,10 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'APP_ENV=test symfony server:start',
-    url: 'http://localhost:8000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  // webServer: {
+  // command: 'APP_ENV=test symfony server:start -d --no-tls',
+  // url: 'https://localhost:8000',
+  // reuseExistingServer: !process.env.CI,
+  // timeout: 120 * 1000,
+  // },
 });

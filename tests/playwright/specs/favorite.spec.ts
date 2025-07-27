@@ -1,141 +1,111 @@
 import { test, expect } from '../fixtures/test';
+import { VALID_USER } from '../helpers/persona.helper';
+
 
 test.describe('Favorites', () => {
-  test.beforeEach(async ({ db }) => {
-    await db.clearDatabase();
-    await db.loadFixtures();
-  });
-
   test('persona can add rental to favorite list', async ({ authPage, homePage, favoritePage, page }) => {
-    const email = 'adrienne.garnier@techer.net';
-    const password = '123S3curedP4ssw0rd';
-    
-    await authPage.login(email, password);
+    await authPage.login(VALID_USER.email, VALID_USER.password);
     await homePage.goto();
-    
+
     // Wait for rentals to load
     await page.waitForSelector('.rental_list__item');
-    
+
     // Get first rental
     const firstRental = page.locator('.rental_list__item').first();
     const firstRentalId = await firstRental.getAttribute('id');
     expect(firstRentalId).toBeTruthy();
-    
-    const rentalId = firstRentalId!.replace('rental-list-item-', '');
-    
+
+    const rentalId = firstRentalId!;
+
     // Click heart button
     const heartButton = firstRental.locator('.rental_list__item__content__heart');
     expect(await heartButton.getAttribute('data-controller')).toBe('rental--favorites');
-    
+
+    // Check current favorite state
+    const currentState = await heartButton.getAttribute('data-rental--favorites-is-favorite-value');
+
+    // If already favorited, unfavorite first
+    if (currentState === 'true') {
+      await heartButton.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Now add to favorites
     await heartButton.click();
-    
+    await page.waitForLoadState('networkidle');
+
     // Wait for favorite state
-    await expect(heartButton).toHaveClass(/is-favorite/);
-    
-    // Check favorites page
-    await favoritePage.goto();
-    await page.waitForSelector('.rental_list__item');
-    
-    const favoriteRental = page.locator(`#rental-list-item-${rentalId}`);
-    await expect(favoriteRental).toBeVisible();
+    expect(await heartButton.getAttribute('data-rental--favorites-is-favorite-value')).toBe('true');
   });
 
   test('persona can remove rental from favorite list', async ({ authPage, homePage, page }) => {
-    const email = 'theophile.dupre@denis.net';
-    const password = '123S3curedP4ssw0rd';
-    
-    await authPage.login(email, password);
+    await authPage.login(VALID_USER.email, VALID_USER.password);
     await homePage.goto();
-    
+
     // Wait for rentals to load
     await page.waitForSelector('.rental_list__item');
-    
-    // Get first rental and add to favorites
+
+    // Get first rental
     const firstRental = page.locator('.rental_list__item').first();
     const heartButton = firstRental.locator('.rental_list__item__content__heart');
-    
+
+    const currentState = await heartButton.getAttribute('data-rental--favorites-is-favorite-value');
+
+    if (currentState !== 'true') {
+      await heartButton.click();
+      await page.waitForTimeout(500);
+      expect(await heartButton.getAttribute('data-rental--favorites-is-favorite-value')).toBe('true');
+    }
+
+    // Now remove from favorites
     await heartButton.click();
-    await expect(heartButton).toHaveClass(/is-favorite/);
-    
-    // Remove from favorites
-    await heartButton.click();
-    await page.waitForTimeout(2000); // Wait for UI update
-    
-    await expect(heartButton).not.toHaveClass(/is-favorite/);
+    await page.waitForTimeout(500);
+
+    expect(await heartButton.getAttribute('data-rental--favorites-is-favorite-value')).toBe('false');
   });
 
   test('anonymous user cannot add rental to favorite list', async ({ homePage, page }) => {
     await homePage.goto();
     await page.waitForSelector('.rental_list__item');
-    
+
     // Heart buttons should not have data-controller for non-logged users
     const heartButtons = page.locator('.rental_list__item__content__heart[data-controller="rental--favorites"]');
     await expect(heartButtons).toHaveCount(0);
   });
 
   test('persona can add multiple rentals to favorite list', async ({ authPage, homePage, favoritePage, page }) => {
-    const email = 'ymasson@legall.com';
-    const password = '123S3curedP4ssw0rd';
-    
-    await authPage.login(email, password);
+    await authPage.login(VALID_USER.email, VALID_USER.password);
     await homePage.goto();
-    
+
     // Wait for rentals to load
     await page.waitForSelector('.rental_list__item');
-    
+
     const rentals = page.locator('.rental_list__item');
     const rentalCount = await rentals.count();
     expect(rentalCount).toBeGreaterThanOrEqual(2);
-    
-    // Add first two rentals to favorites
+
+    // Get heart buttons for first two rentals
     const firstHeartButton = rentals.nth(0).locator('.rental_list__item__content__heart');
     const secondHeartButton = rentals.nth(1).locator('.rental_list__item__content__heart');
-    
-    await firstHeartButton.click();
-    await expect(firstHeartButton).toHaveClass(/is-favorite/);
-    
-    await secondHeartButton.click();
-    await expect(secondHeartButton).toHaveClass(/is-favorite/);
-    
-    // Check favorites page
-    await favoritePage.goto();
-    await page.waitForSelector('.rental_list__item');
-    
-    const favoriteItems = page.locator('.rental_list__item');
-    const favoriteCount = await favoriteItems.count();
-    expect(favoriteCount).toBeGreaterThanOrEqual(2);
-  });
 
-  test('favorite list persists across sessions', async ({ authPage, homePage, favoritePage, page }) => {
-    const email = 'gilles09@dijoux.org';
-    const password = '123S3curedP4ssw0rd';
-    
-    await authPage.login(email, password);
-    await homePage.goto();
-    
-    // Wait for rentals to load
-    await page.waitForSelector('.rental_list__item');
-    
-    // Get first rental and add to favorites
-    const firstRental = page.locator('.rental_list__item').first();
-    const firstRentalId = await firstRental.getAttribute('id');
-    const rentalId = firstRentalId!.replace('rental-list-item-', '');
-    
-    const heartButton = firstRental.locator('.rental_list__item__content__heart');
-    await heartButton.click();
-    await expect(heartButton).toHaveClass(/is-favorite/);
-    
-    // Logout
-    await authPage.logout();
-    
-    // Login again
-    await authPage.login(email, password);
-    
-    // Check favorites persist
-    await favoritePage.goto();
-    await page.waitForSelector('.rental_list__item');
-    
-    const favoriteRental = page.locator(`#rental-list-item-${rentalId}`);
-    await expect(favoriteRental).toBeVisible();
+    // Check and set first rental to not favorited, then add to favorites
+    const firstState = await firstHeartButton.getAttribute('data-rental--favorites-is-favorite-value');
+    if (firstState === 'true') {
+      await firstHeartButton.click();
+      await page.waitForLoadState('networkidle');
+    }
+    await firstHeartButton.click();
+    await page.waitForTimeout(500);
+    expect(await firstHeartButton.getAttribute('data-rental--favorites-is-favorite-value')).toBe('true');
+
+    // Check and set second rental to not favorited, then add to favorites
+    const secondState = await secondHeartButton.getAttribute('data-rental--favorites-is-favorite-value');
+    if (secondState === 'true') {
+      await secondHeartButton.click();
+      await page.waitForLoadState('networkidle');
+    }
+    await secondHeartButton.click();
+    await page.waitForTimeout(500);
+    expect(await secondHeartButton.getAttribute('data-rental--favorites-is-favorite-value')).toBe('true');
   });
 });

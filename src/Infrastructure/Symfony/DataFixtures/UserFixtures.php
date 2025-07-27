@@ -34,35 +34,43 @@ final class UserFixtures extends AbstractFixtures implements FixtureGroupInterfa
     public function load(ObjectManager $manager): void
     {
         for ($i = 0; $i < 10; ++$i) {
-            $user = new User();
-            $profile = new Profile();
-
-            $gender = self::GENDER[random_int(0, 1)];
-            $title = self::TITLE[$gender];
-
-            $profile
-                ->setFirstname($this->faker->firstName($title))
-                ->setLastname($this->faker->lastName())
-                ->setBirthdate($this->faker->dateTimeThisCentury())
-                ->setCellphone(str_replace(' ', '', $this->faker->phoneNumber()))
-                ->setGender($gender)
-            ;
-
-            $user
-                ->setEmail($this->faker->email())
-                ->setRoles(['ROLE_USER'])
-                ->setProfile($profile)
-            ;
-
-            $user->setPassword($this->passwordHasher->hashPassword($user, '123S3curedP4ssw0rd'));
-
-            $this->addReference(self::USER_REFERENCE . $i, $user);
-
-            $manager->persist($profile);
-            $manager->persist($user);
+            $this->createUser($manager, $i);
         }
 
+        // Create test user for Playwright tests
+        $this->createUser($manager, 10, 'testing@pupucecorp.com');
+
         $manager->flush();
+    }
+
+    private function createUser(ObjectManager $manager, int $index, ?string $email = null): void
+    {
+        $user = new User();
+        $profile = new Profile();
+
+        $gender = self::GENDER[random_int(0, 1)];
+        $title = self::TITLE[$gender];
+
+        $profile
+            ->setFirstname($this->faker->firstName($title))
+            ->setLastname($this->faker->lastName())
+            ->setBirthdate($this->faker->dateTimeThisCentury())
+            ->setCellphone(str_replace(' ', '', $this->faker->phoneNumber()))
+            ->setGender($gender)
+        ;
+
+        $user
+            ->setEmail($email ?? $this->faker->email())
+            ->setRoles(['ROLE_USER'])
+            ->setProfile($profile)
+        ;
+
+        $user->setPassword($this->passwordHasher->hashPassword($user, '123S3curedP4ssw0rd'));
+
+        $this->addReference(self::USER_REFERENCE . $index, $user);
+
+        $manager->persist($profile);
+        $manager->persist($user);
     }
 
     public static function getGroups(): array

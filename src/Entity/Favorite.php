@@ -14,7 +14,7 @@ class Favorite
     use TimestampabbleTrait;
 
     #[ORM\ManyToOne(targetEntity: Rental::class)]
-    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[ORM\JoinColumn(nullable: false)]
     private Rental $rental;
 
     #[ORM\ManyToOne(targetEntity: User::class)]

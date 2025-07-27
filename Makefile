@@ -1,6 +1,9 @@
 start:
 	podman compose -p presquiledecrozon up -d
 	symfony serve -d
+start_test:
+	podman compose -p presquiledecrozon up -d
+	APP_ENV=test symfony serve -d
 
 create_db:
 	symfony console doctrine:database:create

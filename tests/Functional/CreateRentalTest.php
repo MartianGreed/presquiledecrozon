@@ -55,7 +55,7 @@ final class CreateRentalTest extends WebTestCase
         /** @var RentalRepository $rentalRepository */
         $rentalRepository = static::getContainer()->get(RentalRepository::class);
 
-        $testTitle = 'Test Rental '.uniqid();
+        $testTitle = 'Test Rental ' . uniqid();
 
         $user = $userRepository->findOneBy([]);
         $this->assertNotNull($user, 'Test user should exist');

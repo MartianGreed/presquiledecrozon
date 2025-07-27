@@ -43,7 +43,7 @@ final class FavoriteTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/mon-compte/coup-de-coeur/'.$rental->getId()
+            '/mon-compte/coup-de-coeur/' . $rental->getId()
         );
 
         $this->assertResponseIsSuccessful();
@@ -52,7 +52,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
 
@@ -62,7 +62,7 @@ final class FavoriteTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/mon-compte/coup-de-coeur/'.$rental->getId()
+            '/mon-compte/coup-de-coeur/' . $rental->getId()
         );
 
         $this->assertResponseIsSuccessful();
@@ -71,7 +71,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
         $this->assertArrayHasKey('removed', $response);
@@ -99,7 +99,7 @@ final class FavoriteTest extends WebTestCase
 
         $client->request(
             'GET',
-            '/mon-compte/is-favorite/'.$rental->getId()
+            '/mon-compte/is-favorite/' . $rental->getId()
         );
 
         $this->assertResponseIsSuccessful();
@@ -107,14 +107,14 @@ final class FavoriteTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/mon-compte/coup-de-coeur/'.$rental->getId()
+            '/mon-compte/coup-de-coeur/' . $rental->getId()
         );
 
         $this->assertResponseIsSuccessful();
 
         $client->request(
             'GET',
-            '/mon-compte/is-favorite/'.$rental->getId()
+            '/mon-compte/is-favorite/' . $rental->getId()
         );
 
         $this->assertResponseIsSuccessful();
@@ -123,7 +123,7 @@ final class FavoriteTest extends WebTestCase
             $this->fail('Response content is false');
         }
         $response = json_decode($content, true);
-        if (!is_array($response)) {
+        if (! is_array($response)) {
             $this->fail('Response is not a valid JSON array');
         }
         $this->assertArrayHasKey('favorite', $response);
@@ -150,7 +150,7 @@ final class FavoriteTest extends WebTestCase
         foreach ($rentals as $rental) {
             $client->request(
                 'POST',
-                '/mon-compte/coup-de-coeur/'.$rental->getId()
+                '/mon-compte/coup-de-coeur/' . $rental->getId()
             );
             $this->assertResponseIsSuccessful();
             $content = $client->getResponse()->getContent();
@@ -158,7 +158,7 @@ final class FavoriteTest extends WebTestCase
                 $this->fail('Response content is false');
             }
             $response = json_decode($content, true);
-            if (!is_array($response)) {
+            if (! is_array($response)) {
                 $this->fail('Response is not a valid JSON array');
             }
             $this->assertArrayHasKey('favorite', $response, 'Should return favorite in response');
@@ -191,7 +191,7 @@ final class FavoriteTest extends WebTestCase
 
         $client->request(
             'POST',
-            '/mon-compte/coup-de-coeur/'.$rental->getId()
+            '/mon-compte/coup-de-coeur/' . $rental->getId()
         );
 
         $this->assertResponseRedirects('/login');

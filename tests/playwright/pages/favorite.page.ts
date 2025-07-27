@@ -5,21 +5,21 @@ export class FavoritePage extends BasePage {
   constructor(page: Page) {
     super(page);
   }
-  
+
   async goto() {
-    await super.goto('/mes-coups-de-coeur');
+    await super.goto('/mon-compte/coups-de-coeur');
   }
-  
+
   async getFavoriteCount(): Promise<number> {
     const favorites = await this.page.locator('[data-rental-id], .favorite-item, .rental-card').all();
     return favorites.length;
   }
-  
+
   async removeFavorite(rentalId: string) {
     await this.page.click(`[data-rental-id="${rentalId}"] [data-favorite-toggle], [data-rental-id="${rentalId}"] button:has-text("Retirer")`);
     await this.page.waitForLoadState('networkidle');
   }
-  
+
   async getFavoriteIds(): Promise<string[]> {
     const favorites = await this.page.locator('[data-rental-id]').all();
     const ids: string[] = [];
@@ -29,7 +29,7 @@ export class FavoritePage extends BasePage {
     }
     return ids;
   }
-  
+
   async isEmpty(): Promise<boolean> {
     return await this.page.locator('text=/aucun.*coup.*coeur/i, text=/pas.*favori/i').isVisible();
   }
