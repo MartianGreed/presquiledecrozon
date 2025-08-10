@@ -32,16 +32,16 @@ test_e2e:
 	symfony server:stop
 
 test_playwright:
-	pnpm test:e2e
+	bun test:e2e
 
 test_playwright_ui:
-	pnpm test:e2e:ui
+	bun test:e2e:ui
 
 test_playwright_debug:
-	pnpm test:e2e:debug
+	bun test:e2e:debug
 
 test_playwright_report:
-	pnpm test:e2e:report
+	bun test:e2e:report
 
 create_test_db:
 	symfony console doctrine:database:drop --if-exists --force --env=test

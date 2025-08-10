@@ -25,7 +25,7 @@ A vacation rental platform for the Presqu'île de Crozon region, built with Symf
 ## Requirements
 
 - PHP 8.2 or higher
-- Node.js 16+ and npm/pnpm
+- Node.js 16+ and npm/bun
 - Docker and Docker Compose
 - Symfony CLI
 - PostgreSQL 14+
@@ -47,7 +47,7 @@ composer install
 ```bash
 npm install
 # or
-pnpm install
+bun install
 ```
 
 4. Start the local development environment:

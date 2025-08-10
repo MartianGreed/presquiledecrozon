@@ -15,12 +15,12 @@ This directory contains end-to-end tests using [Playwright](https://playwright.d
 
 1. Install dependencies:
    ```bash
-   pnpm install
+   bun install
    ```
 
 2. Install Playwright browsers:
    ```bash
-   pnpm dlx playwright install
+   bun x playwright install
    ```
 
 3. Set up test database:
