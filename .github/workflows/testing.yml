@@ -131,15 +131,11 @@ jobs:
         run: |
           # Create upload directories and ensure PHP can write to them
           mkdir -p public/uploads/rental
-          # Pre-create potential year/month/day directories with full permissions
-          # This ensures Flysystem can write regardless of umask settings
-          for year in 2024 2025 2026; do
-            for month in {01..12}; do
-              for day in {01..31}; do
-                mkdir -p "public/uploads/rental/$year/$day/$month"
-              done
-            done
-          done
+          # Create directory for current date (VichUploader uses Y/d/m format)
+          YEAR=$(date +%Y)
+          DAY=$(date +%d)
+          MONTH=$(date +%m)
+          mkdir -p "public/uploads/rental/$YEAR/$DAY/$MONTH"
           # Set full permissions on all created directories
           chmod -R 777 public/uploads
 

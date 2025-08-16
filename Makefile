@@ -34,6 +34,9 @@ test_e2e:
 test_playwright:
 	bun test:e2e
 
+test_playwright_favorites:
+	bun test:e2e:favorites
+
 test_playwright_ui:
 	bun test:e2e:ui
 
