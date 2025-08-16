@@ -10,6 +10,8 @@ class Profile
 {
     use IdentityTrait;
 
+    public const PROVIDE_PROFILE_INFORMATION = 'Veuillez renseigner vos informations personelles.';
+
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname = null;
 
@@ -129,12 +131,12 @@ class Profile
     public function setAccount(?User $account): self
     {
         // unset the owning side of the relation if necessary
-        if (! $account instanceof \App\Entity\User && $this->account instanceof \App\Entity\User) {
+        if (! $account instanceof User && $this->account instanceof User) {
             $this->account->setProfile(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($account instanceof \App\Entity\User && $account->getProfile() !== $this) {
+        if ($account instanceof User && $account->getProfile() !== $this) {
             $account->setProfile($this);
         }
 

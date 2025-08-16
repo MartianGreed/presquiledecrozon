@@ -8,12 +8,14 @@ use App\Domain\Rental\DTO\ConfigurationDTO;
 use App\Domain\Rental\DTO\GeolocationDTO;
 use App\Domain\Rental\Service\RentalConfigurationService;
 use App\Domain\Rental\Service\RentalService;
+use App\Entity\Profile;
 use App\Entity\Rental\Address;
 use App\Entity\Rental\Condition;
 use App\Entity\Rental\Description;
 use App\Entity\Rental\Preferences;
 use App\Entity\Rental\Rental;
 use App\Entity\Rental\Tax;
+use App\Entity\User;
 use App\Form\Rental\RentalAddressType;
 use App\Form\Rental\RentalConditionsType;
 use App\Form\Rental\RentalDescriptionType;
@@ -37,9 +39,8 @@ final class CreateRentalController extends AbstractController
     use WithQueryParamsRedirectTrait;
 
     public function __construct(
-        private readonly RentalService $rentalService
-    )
-    {
+        private readonly RentalService $rentalService,
+    ) {
     }
 
     #[Route('/configuration', name: 'app_create_rental')]
@@ -48,8 +49,16 @@ final class CreateRentalController extends AbstractController
         RentalConfigurationService $configurationService,
         ?Rental $rental,
     ): Response {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
-            $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        /** @var User */
+        $user = $this->getUser();
+        if (null === $user->getProfile()) {
+            $this->addFlash('error', Profile::PROVIDE_PROFILE_INFORMATION);
+
+            return $this->redirectToRoute('app_profile_informations');
+        }
+
+        if (! $rental instanceof Rental) {
+            $rental = $this->rentalService->findOrCreateRental($user);
         }
 
         $form = $this->createForm(
@@ -83,7 +92,7 @@ final class CreateRentalController extends AbstractController
         Request $request,
         ?Rental $rental,
     ): Response {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -105,7 +114,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/description', name: 'app_create_rental_description')]
     public function description(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -127,7 +136,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/adresse', name: 'app_create_rental_address')]
     public function address(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -149,7 +158,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/carte', name: 'app_create_rental_map')]
     public function map(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -194,7 +203,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/photos', name: 'app_create_rental_pictures')]
     public function pictures(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -225,7 +234,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/disponibilites', name: 'app_create_rental_availabilities')]
     public function availabilities(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -248,7 +257,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/calendrier', name: 'app_create_rental_calendar')]
     public function calendar(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -268,7 +277,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/taxes', name: 'app_create_rental_taxes')]
     public function taxes(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -290,7 +299,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/tarifs', name: 'app_create_rental_prices')]
     public function prices(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
@@ -313,7 +322,7 @@ final class CreateRentalController extends AbstractController
     #[Route('/conditions', name: 'app_create_rental_conditions')]
     public function conditions(Request $request, ?Rental $rental): Response
     {
-        if (! $rental instanceof \App\Entity\Rental\Rental) {
+        if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
