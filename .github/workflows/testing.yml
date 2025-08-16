@@ -5,13 +5,13 @@ on:
   pull_request:
 
 env:
-  CDN_URL: ${{ secrets.CDN_URL }}
+  CDN_URL: ${{ vars.CDN_URL }}
   BUNNYCDN_API_KEY: ${{ secrets.BUNNYCDN_API_KEY }}
-  BUNNYCDN_BUCKET: ${{ secrets.BUNNYCDN_BUCKET }}
-  BUNNYCDN_REGION: ${{ secrets.BUNNYCDN_REGION }}
-  EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+  BUNNYCDN_BUCKET: ${{ vars.BUNNYCDN_BUCKET }}
+  BUNNYCDN_REGION: ${{ vars.BUNNYCDN_REGION }}
+  EMAIL_SENDER: ${{ vars.EMAIL_SENDER }}
   GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-  GOOGLE_MAPS_API_URL: ${{ secrets.GOOGLE_MAPS_API_URL }}
+  GOOGLE_MAPS_API_URL: ${{ vars.GOOGLE_MAPS_API_URL }}
   MAILER_DSN: ${{ secrets.MAILER_DSN }}
   STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
   STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
