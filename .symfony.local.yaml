@@ -1,0 +1,16 @@
+# .symfony.local.yaml
+workers:
+  # Built-in Encore integration
+  npm_encore_watch: ~
+
+  # Messenger consumer with file watching
+  messenger_consume_async:
+    cmd: ["symfony", "console", "messenger:consume", "async, failed"]
+    watch: ["config", "src", "templates", "vendor"]
+
+  # Custom commands
+  build_spa:
+    cmd: ["npm", "run", "watch"]
+
+  # Auto-start Docker Compose
+  docker_compose: ~

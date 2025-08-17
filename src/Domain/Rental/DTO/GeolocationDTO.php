@@ -6,9 +6,9 @@ use App\Entity\Rental\Geolocation;
 
 /**
  * @phpstan-type Coordinates array{lat: float, lng: float}
- * @phpstan-type Viewport array{northeast: Coordinates, southwest: Coordinates}
- * @phpstan-type Meta array{viewport?: Viewport, formatted_address?: string, place_id?: string}
- * @phpstan-type GeolocationDTOArray array{lat: float, lng: float, meta: Meta|array<string>}
+ * @phpstan-type Viewport array{northeast: array{lat: float, lng: float}, southwest: array{lat: float, lng: float}}
+ * @phpstan-type Meta array{viewport?: array{northeast: array{lat: float, lng: float}, southwest: array{lat: float, lng: float}}, formatted_address?: string, place_id?: string}
+ * @phpstan-type GeolocationDTOArray array{lat: float, lng: float, meta: array{viewport?: array{northeast: array{lat: float, lng: float}, southwest: array{lat: float, lng: float}}, formatted_address?: string, place_id?: string}|array<string>}
  */
 final class GeolocationDTO
 {

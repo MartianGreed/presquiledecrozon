@@ -3,6 +3,7 @@ import { AuthPage } from '../pages/auth.page';
 import { HomePage } from '../pages/home.page';
 import { FavoritePage } from '../pages/favorite.page';
 import { RentalPage } from '../pages/rental.page';
+import { CreateRentalPage } from '../pages/create-rental.page';
 import { DatabaseHelper } from '../helpers/database.helper';
 
 type TestFixtures = {
@@ -10,6 +11,7 @@ type TestFixtures = {
   homePage: HomePage;
   favoritePage: FavoritePage;
   rentalPage: RentalPage;
+  createRentalPage: CreateRentalPage;
   db: DatabaseHelper;
   waitForFavoriteState: (page: Page, selector: string, expectedState: string) => Promise<void>;
   waitForFavoriteToggle: (page: Page, rentalId: string) => Promise<void>;
@@ -30,6 +32,10 @@ export const test = base.extend<TestFixtures>({
   
   rentalPage: async ({ page }, use) => {
     await use(new RentalPage(page));
+  },
+  
+  createRentalPage: async ({ page }, use) => {
+    await use(new CreateRentalPage(page));
   },
   
   db: async ({}, use) => {

@@ -31,6 +31,7 @@ final class FetchRentalGeolocationHandler
         }
 
         $address = $rental->getAddress();
+
         if (null === $address) {
             throw new \LogicException('Address is null');
         }

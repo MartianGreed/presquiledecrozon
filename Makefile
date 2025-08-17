@@ -1,7 +1,12 @@
-start:
+set_permissions:
+	chmod -R 775 public/uploads
+	chmod -R g+s public/uploads
+
+start: set_permissions
 	podman compose -p presquiledecrozon up -d
 	symfony serve -d
-start_test:
+
+start_test: set_permissions
 	podman compose -p presquiledecrozon up -d
 	APP_ENV=test symfony serve -d
 

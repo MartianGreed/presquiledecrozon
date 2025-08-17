@@ -37,6 +37,7 @@ final class CreateRentalController extends AbstractController
 {
     use WithUserTrait;
     use WithQueryParamsRedirectTrait;
+    use RentalStepDetectorTrait;
 
     public function __construct(
         private readonly RentalService $rentalService,
@@ -59,6 +60,14 @@ final class CreateRentalController extends AbstractController
 
         if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($user);
+        }
+
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
         }
 
         $form = $this->createForm(
@@ -96,6 +105,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_furnitures') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         $form = $this->createForm(RentalFurnituresType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -116,6 +133,14 @@ final class CreateRentalController extends AbstractController
     {
         if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_description') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
         }
 
         $form = $this->createForm(RentalDescriptionType::class, $rental->getDescription() ?? new Description());
@@ -140,6 +165,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_address') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         $form = $this->createForm(RentalAddressType::class, $rental->getAddress() ?? new Address());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -160,6 +193,14 @@ final class CreateRentalController extends AbstractController
     {
         if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_map') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
         }
 
         $geolocation = $rental->getGeolocation();
@@ -207,6 +248,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_pictures') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         //        $form = $this->createForm(RentalPicturesType::class, $rental->getGallery(), ['is_update' => null !== $rental->getGallery()]);
         //        $form->handleRequest($request);
         //        if ($form->isSubmitted() && $form->isValid()) {
@@ -238,6 +287,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_availabilities') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         $form = $this->createForm(RentalPreferencesType::class, $rental->getPreferences() ?? new Preferences());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -261,6 +318,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_calendar') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         $form = $this->createForm(RentalUnavailabilitiesType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -279,6 +344,14 @@ final class CreateRentalController extends AbstractController
     {
         if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_taxes') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
         }
 
         $form = $this->createForm(RentalTaxType::class, $rental->getTax());
@@ -303,6 +376,14 @@ final class CreateRentalController extends AbstractController
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
         }
 
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_prices') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
+        }
+
         $form = $this->createForm(RentalPricesType::class, $rental);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -324,6 +405,14 @@ final class CreateRentalController extends AbstractController
     {
         if (! $rental instanceof Rental) {
             $rental = $this->rentalService->findOrCreateRental($this->getUser());
+        }
+
+        // Check if coming from outside and redirect to incomplete step
+        if ($this->isComingFromOutsideWorkflow($request)) {
+            $nextStep = $this->getNextIncompleteStep($rental);
+            if ($nextStep && $nextStep !== 'app_create_rental_conditions') {
+                return $this->redirectToRouteWithQueryParams($nextStep, $request->query->all());
+            }
         }
 
         $form = $this->createForm(RentalConditionsType::class, $rental->getCondition());
