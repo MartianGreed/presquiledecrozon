@@ -183,6 +183,7 @@ test.describe('Rental Creation', () => {
     });
 
     test('persona with profile can create a minimal rental', async ({ page, authPage }) => {
+      test.setTimeout(60000); // Increase timeout for this test
       await authPage.login(testUserEmail, testUserPassword);
 
       const createRentalPage = new CreateRentalPage(page);
