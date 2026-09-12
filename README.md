@@ -1,223 +1,69 @@
-# Presqu'île de Crozon - Vacation Rental Platform
+# Presqu’île de Crozon
 
-A vacation rental platform for the Presqu'île de Crozon region, built with Symfony and modern web technologies.
+Vacation rentals on the Crozon peninsula. The application runs on TypeScript, Bun, Structure and PostgreSQL, with an Angular 22 client in French.
 
-## Technology Stack
+## Run locally
 
-### Backend
-- **PHP 8.2+** with **Symfony 7.3**
-- **Doctrine ORM** with PostgreSQL database
-- **AWS Lambda** deployment via Bref (serverless PHP)
-- **Domain-Driven Design (DDD)** architecture
+Use Bun 1.3.14 and Node 24.18.0. Angular's compiler requires Node; the server runs on Bun.
 
-### Frontend
-- **TypeScript** with Webpack Encore
-- **Stimulus/Turbo** (Hotwire) for interactive components
-- **Tailwind CSS** for styling
-- **Google Maps API** integration
-
-### External Services
-- **Stripe** - Payment processing
-- **BunnyCDN** - Content delivery
-- **Mailjet** - Email delivery
-- **Google Maps API** - Geolocation services
-
-## Requirements
-
-- PHP 8.2 or higher
-- Node.js 16+ and npm/bun
-- Docker and Docker Compose
-- Symfony CLI
-- PostgreSQL 14+
-
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd presquiledecrozon
+```sh
+bun install --frozen-lockfile
+cp .env.example .env.local
+# Set DATABASE_URL to your local PostgreSQL 17 database.
+bun run db:migrate
+bun run build
+bun run dev
 ```
 
-2. Install PHP dependencies:
-```bash
-composer install
+Open `http://localhost:3000`. `bun run dev` watches the server. Re-run `bun run build` after changing the client. The same Bun listener serves the API and built Angular files.
+
+`MAIL_MODE=outbox` stores emails in `crozon_outbox` without delivering them. For local verification, inspect that table in your own database and open the verification link. `MAIL_MODE=mailjet` enables delivery and requires both Mailjet credentials. There is no public endpoint that exposes mail or tokens.
+
+After registering, verifying and signing in, grant your first administrator access:
+
+```sh
+bun run admin:promote your-address@example.com
 ```
 
-3. Install JavaScript dependencies:
-```bash
-npm install
-# or
-bun install
+Administrators manage subscription plans, discounts, reference data, rentals, reservations and account access at `/admin`. Create an active subscription plan before accepting listing payments. Configure Stripe and its signed webhook before accepting real payments.
+
+## Checks
+
+The integration and migration suites **truncate their test databases**. Use two dedicated databases with names ending in `_test` and provide their URLs through your shell or a local env file. Do not use a production database or a shared development database.
+
+```sh
+export TEST_DATABASE_URL=postgres://crozon:crozon@localhost:5432/crozon_test
+export MIGRATION_TEST_DATABASE_URL=postgres://crozon:crozon@localhost:5432/crozon_migration_test
+bun run lint
+bun run typecheck
+bun run test
+bun run build
+bun x playwright install chromium
+bun run test:e2e
 ```
 
-4. Start the local development environment:
-```bash
-make start
-```
+The browser suite resets `TEST_DATABASE_URL` and starts the built application when no test server is running. It never contacts Stripe, Google or Mailjet. `bun run test:unit` runs pricing checks without PostgreSQL. The full `test` command fails if either database URL is missing, so CI cannot silently skip persistence verification.
 
-5. Load database fixtures:
-```bash
-make fixtures
-```
+## Repository
 
-6. Build frontend assets:
-```bash
-npm run build:dev
-```
+| Path | Responsibility |
+| --- | --- |
+| `apps/api/src/identity` | Structure authentication and persona profiles |
+| `apps/api/src/rentals` | Catalog, owner editing, availability and publishing |
+| `apps/api/src/bookings` | Quotes, requests and owner decisions |
+| `apps/api/src/correspondence` | Favorites, messages and notifications |
+| `apps/api/src/billing` | Subscription checkout and signed Stripe events |
+| `apps/api/src/migration` | Legacy record conversion and transactional import |
+| `apps/web` | Angular client, styles and browser journeys |
+| `packages/contracts` | Shared TypeScript models |
+| `legacy` | Original Symfony source, excluded from builds and runtime |
 
-The application will be available at `https://127.0.0.1:8000` (Symfony local server).
+The public French page URLs remain available. State-changing requests use the new `/api` endpoints and require an exact same-origin header. Booking requests also require an `Idempotency-Key`.
 
-## Development
+## Migration and deployment
 
-### Essential Commands
+The [migration epic](https://github.com/MartianGreed/presquiledecrozon/issues/2) tracks the delivery. Read [the behavior inventory](docs/migration/parity.md), [data migration](docs/migration/data.md), and [operations](docs/migration/operations.md) before deploying.
 
-```bash
-# Start/stop local environment
-make start
-make stop
+The container uses Bun at runtime and contains no PHP or legacy source. Build with `docker build -t crozon:VERSION .`. `compose.yaml` provides PostgreSQL, a separate schema-migration job and the application. Set `POSTGRES_PASSWORD`, `DATABASE_URL` (host `database`, URL-encoded password), `APP_ORIGIN` and provider credentials through your deployment environment. Terminate HTTPS at your reverse proxy and forward to the loopback-only port 3000.
 
-# Watch frontend changes
-npm run watch
-
-# Load database fixtures
-make fixtures
-
-# Run tests
-make test
-
-# Run static analysis
-make phpstan
-
-# Fix code style
-make lint
-```
-
-### Frontend Development
-
-```bash
-# Development server with hot reload
-npm run dev
-
-# Watch mode
-npm run watch
-
-# Build for different environments
-npm run build:dev
-npm run build:staging
-npm run build:prod
-```
-
-## Testing & Code Quality
-
-### PHP Tests
-```bash
-# Run all tests
-make test
-
-# Generate coverage report
-make coverage
-
-# Run specific test class
-make test_class filter=TestClassName
-```
-
-### JavaScript Tests
-```bash
-# Run tests
-npm run test
-
-# Watch mode
-npm run test:watch
-```
-
-### Code Quality Tools
-```bash
-# PHPStan static analysis (level 8)
-make phpstan
-
-# Code style fixes (Rector + ECS)
-make lint
-```
-
-## Architecture Overview
-
-The application follows **Domain-Driven Design (DDD)** principles:
-
-### Domain Structure
-- **Core Entities**: Booking, Rental, User, Subscription, Conversation
-- **Value Objects**: Price, BookingStatus, RentalStatus
-- **Repositories**: Interface-based data access layer
-- **Message Handlers**: Asynchronous processing via Symfony Messenger
-
-### Key Patterns
-1. **Repository Pattern** - All data access through repository interfaces
-2. **Command/Query Separation** - Distinct read/write operations
-3. **Event-Driven** - Domain events processed by message handlers
-4. **Service Layer** - Business logic encapsulated in services
-
-### Frontend Architecture
-- **Stimulus Controllers** - Located in `assets/controllers/`
-- **Turbo** - SPA-like navigation without JavaScript complexity
-- **Component-based** - Reusable Twig components in `templates/components/`
-
-## Deployment
-
-### Staging Deployment
-```bash
-# Build assets and deploy
-make deploy_staging
-```
-
-### Production Deployment
-```bash
-# Build assets and deploy
-npm run build:prod
-php bin/console app:assets:upload
-make deploy_prod
-```
-
-The application is deployed as a serverless application on AWS Lambda using Bref.
-
-## Directory Structure
-
-```
-├── assets/              # Frontend source files
-│   ├── controllers/     # Stimulus controllers
-│   ├── styles/         # SCSS styles
-│   └── src/            # TypeScript utilities
-├── config/             # Symfony configuration
-├── migrations/         # Database migrations
-├── public/             # Web root
-├── src/
-│   ├── Controller/     # HTTP controllers
-│   ├── Domain/         # Core business logic
-│   ├── Entity/         # Doctrine entities
-│   ├── Form/           # Symfony forms
-│   ├── Infrastructure/ # External integrations
-│   ├── MessageHandler/ # Async event handlers
-│   ├── Repository/     # Data access layer
-│   └── Service/        # Application services
-├── templates/          # Twig templates
-└── tests/              # Test suites
-```
-
-## Domain Models
-
-- **Booking** - Rental reservations and booking management
-- **Rental** - Property listings with configuration and pricing
-- **User** - User accounts and authentication
-- **Subscription** - Owner subscription plans
-- **Conversation** - Messaging between owners and guests
-- **Data** - Reference data (locations, furniture, etc.)
-
-## Contributing
-
-1. Follow Symfony coding standards (enforced by ECS)
-2. Ensure PHPStan level 8 passes
-3. Write tests for new features
-4. Use strong typing and strict types declaration
-5. Follow existing patterns and conventions in the codebase
-
-For more detailed information, see [CLAUDE.md](./CLAUDE.md) for AI-assisted development guidelines.
-
-
+Deployment does not migrate the legacy data automatically. Rehearse export, import, media access and backup restoration against an isolated copy before switching traffic. The new schema uses `crozon_` and `auth_` tables and does not mutate the legacy tables.

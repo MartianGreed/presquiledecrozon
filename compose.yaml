@@ -1,0 +1,54 @@
+services:
+  database:
+    image: postgres:17.10-bookworm
+    environment:
+      POSTGRES_DB: crozon
+      POSTGRES_USER: crozon
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U crozon -d crozon]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  migrate:
+    build: .
+    image: crozon:${RELEASE_TAG:-local}
+    command: [bun, apps/api/src/migrate.ts]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with a URL-encoded password and host database}
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: "no"
+  web:
+    image: crozon:${RELEASE_TAG:-local}
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with a URL-encoded password and host database}
+      APP_ORIGIN: ${APP_ORIGIN:?Set APP_ORIGIN}
+      MAIL_MODE: ${MAIL_MODE:-outbox}
+      EMAIL_SENDER: ${EMAIL_SENDER:-bonjour@presquiledecrozon.fr}
+      MAILJET_API_KEY: ${MAILJET_API_KEY:-}
+      MAILJET_SECRET_KEY: ${MAILJET_SECRET_KEY:-}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - uploads:/app/var/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    stop_grace_period: 40s
+    mem_limit: 1g
+    cpus: 2
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+volumes:
+  database:
+  uploads:

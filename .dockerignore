@@ -1,0 +1,11 @@
+.git
+legacy
+node_modules
+dist
+.angular
+var
+.env*
+!.env.example
+test-results
+playwright-report
+docs

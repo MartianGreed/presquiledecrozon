@@ -1,0 +1,14 @@
+{
+  "epic": "https://github.com/MartianGreed/presquiledecrozon/issues/2",
+  "tickets": {
+    "Establish Structure and Bun runtime, contracts and PostgreSQL storage": "https://github.com/MartianGreed/presquiledecrozon/issues/3",
+    "Migrate persona authentication, profile and password recovery": "https://github.com/MartianGreed/presquiledecrozon/issues/4",
+    "Migrate rental catalog and owner publishing workflow": "https://github.com/MartianGreed/presquiledecrozon/issues/5",
+    "Migrate booking pricing and reservation lifecycle": "https://github.com/MartianGreed/presquiledecrozon/issues/6",
+    "Migrate favorites, conversations and notifications": "https://github.com/MartianGreed/presquiledecrozon/issues/7",
+    "Migrate subscriptions, Stripe payments and administration": "https://github.com/MartianGreed/presquiledecrozon/issues/8",
+    "Replace Twig and Stimulus with Angular 22 client": "https://github.com/MartianGreed/presquiledecrozon/issues/9",
+    "Verify data migration, operational delivery and PHP retirement": "https://github.com/MartianGreed/presquiledecrozon/issues/10"
+  },
+  "rollout": "https://github.com/MartianGreed/presquiledecrozon/issues/11"
+}
