@@ -1,6 +1,6 @@
 # Migration contract
 
-Epic #2 and tickets #3–#10 track this wave. Delivery uses `feat/structure-angular-migration`, based on `main` at `5c62d87`, also the current `origin/develop`. The PR targets `develop`.
+Epic #2 and tickets #3–#10 tracked the migration delivered in PR #12 to `develop`. The implementation started from `5c62d87`, which retains the original Symfony application in Git history.
 
 ## Application boundaries
 
@@ -18,4 +18,4 @@ Keep the existing French page URLs. New client requests use `/api`. The API neve
 - Client: French pages, responsive forms and explicit error/empty/loading feedback.
 - Delivery: frozen dependencies, lint, strict types, domain/API integration tests, browser journeys, Angular build, migration integrity and operational instructions.
 
-Legacy source remains available during verification. Removing the live PHP entry point does not authorize deleting production data or cutting over an existing deployment. Production-data rehearsal and provider sandbox acceptance need their actual environments; report any unavailable evidence as a blocker, not a pass.
+Legacy source remains available in Git at `5c62d87` for verification. Removing the live PHP entry point does not authorize deleting production data or cutting over an existing deployment. Production-data rehearsal and provider sandbox acceptance need their actual environments; report any unavailable evidence as a blocker, not a pass.

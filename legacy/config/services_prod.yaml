@@ -1,5 +1,0 @@
-parameters:
-    ## Force router to generate https routes
-
-    router.request_context.scheme: 'https'
-    asset.request_context.secure: true

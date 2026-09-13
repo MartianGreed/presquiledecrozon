@@ -1,4 +1,0 @@
-services:
-    # Public services for testing
-    App\Service\GeocodingService:
-        public: true

@@ -83,7 +83,8 @@ The browser suite resets `TEST_DATABASE_URL` and starts the built application wh
 | `apps/api/src/migration` | Legacy record conversion and transactional import |
 | `apps/web` | Angular client, styles and browser journeys |
 | `packages/contracts` | Shared TypeScript models |
-| `legacy` | Original Symfony source, excluded from builds and runtime |
+
+The original Symfony application is available in [Git at `5c62d87`](https://github.com/MartianGreed/presquiledecrozon/tree/5c62d87f800b77c3f59699e30ceb5102c7b19691). Inspect an old file with `git show 5c62d87:src/Kernel.php`.
 
 The public French page URLs remain available. State-changing requests use the new `/api` endpoints and require an exact same-origin header. Booking requests also require an `Idempotency-Key`.
 

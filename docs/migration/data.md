@@ -42,6 +42,6 @@ Unsupported data causes the transaction to fail. The importer does not guess how
 
 ## Rollback
 
-Before the new application accepts writes, route traffic back to the unchanged legacy deployment and database. The previous code revision is `5c62d87`; use its existing deployment artifact rather than running the archive directory.
+Before the new application accepts writes, route traffic back to the unchanged legacy deployment and database. The previous code revision is `5c62d87`; use its existing deployment artifact. Retrieve source from that revision through Git history when needed.
 
 After the new application accepts writes, routing back would lose visibility of new bookings, messages, profiles and subscriptions. Freeze writes, preserve a new-system backup, and reconcile these records before returning to PHP. Prefer rolling forward with a repaired Bun artifact. There is no automatic reverse importer and no safe claim that a code rollback also rolls back business data.
