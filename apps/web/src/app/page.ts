@@ -18,10 +18,20 @@ import {
   rentalSteps,
 } from "../../../../packages/contracts/src/models";
 import { Api } from "./api";
+import { AuthDialog } from "./auth-dialog";
+import { emptySearch, RentalSearch, type SearchFields } from "./rental-search";
+import { StayCalendar } from "./stay-calendar";
 @Component({
   selector: "crozon-page",
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    AuthDialog,
+    StayCalendar,
+    RentalSearch,
+  ],
   templateUrl: "./page.html",
 })
 export class PageComponent {
@@ -58,10 +68,105 @@ export class PageComponent {
     tarifs: "Tarifs",
     conditions: "Conditions",
   };
+  readonly accountLinks = [
+    { label: "Vue d’ensemble", path: "/mon-compte", pages: ["account"] },
+    { label: "Messagerie", path: "/mon-compte/messages", pages: ["messages"] },
+    { label: "Mes vacances", path: "/mon-profil/vacances", pages: [] },
+    {
+      label: "Réservations reçues",
+      path: "/mon-compte/reservations",
+      pages: [],
+    },
+    { label: "Annonces", path: "/mon-compte/annonces", pages: ["my-rentals"] },
+    {
+      label: "Coups de cœur",
+      path: "/mon-compte/coups-de-coeur",
+      pages: ["favorites"],
+    },
+    { label: "Profil", path: "/mon-compte/informations", pages: ["profile"] },
+  ];
+  readonly equipmentChoices = [
+    "Wi-Fi",
+    "Cheminée",
+    "Lave-linge",
+    "Climatisation",
+    "Parking",
+    "Lave-vaisselle",
+    "Aspirateur",
+    "Jardin",
+    "Fer à repasser",
+    "Barbecue",
+    "Micro-ondes",
+    "Sèche-cheveux",
+  ];
+  extraEquipment = "";
+  get customEquipment() {
+    return this.equipmentText
+      .split("\n")
+      .filter((item) => item && !this.equipmentChoices.includes(item));
+  }
+  addEquipment() {
+    const value = this.extraEquipment.trim();
+    if (value && !this.hasEquipment(value)) this.toggleEquipment(value);
+    this.extraEquipment = "";
+  }
+  showPassword = false;
+  get isAuth() {
+    return ["login", "register", "forgot", "reset", "verify"].includes(
+      this.page(),
+    );
+  }
+  get isAccount() {
+    return [
+      "account",
+      "profile",
+      "favorites",
+      "my-rentals",
+      "bookings",
+      "booking",
+      "messages",
+      "subscription",
+      "payment-confirm",
+    ].includes(this.page());
+  }
+  get progress() {
+    return Math.round(
+      ((this.rental()?.completedSteps.length ?? 0) / this.steps.length) * 100,
+    );
+  }
+  get editorGroup() {
+    return this.steps.indexOf(this.step as (typeof this.steps)[number]) < 6
+      ? 1
+      : 2;
+  }
+  get previousStep() {
+    return this.steps[
+      this.steps.indexOf(this.step as (typeof this.steps)[number]) - 1
+    ];
+  }
+  closeAuth() {
+    void this.router.navigateByUrl("/");
+  }
+  hasEquipment(value: string) {
+    return this.equipmentText.split("\n").includes(value);
+  }
+  toggleEquipment(value: string) {
+    const values = this.equipmentText.split("\n").filter(Boolean);
+    this.equipmentText = (
+      values.includes(value)
+        ? values.filter((item) => item !== value)
+        : [...values, value]
+    ).join("\n");
+  }
+  coverPhoto(index: number) {
+    const photo = this.editor.photos.splice(index, 1)[0];
+    if (photo) this.editor.photos.unshift(photo);
+  }
   email = "";
   password = "";
   confirmPassword = "";
   search = "";
+  searchFields = emptySearch();
   message = "";
   start = "";
   end = "";
@@ -184,17 +289,36 @@ export class PageComponent {
         });
         return;
       }
+      if (["home", "catalog", "detail"].includes(page)) await this.api.me();
       if (generation !== this.generation) return;
       if (["home", "catalog", "my-rentals"].includes(page)) {
         this.search = url.searchParams.get("q") ?? "";
+        this.searchFields = {
+          q: this.search,
+          start: url.searchParams.get("start") ?? "",
+          end: url.searchParams.get("end") ?? "",
+          people: url.searchParams.get("people") ?? "",
+          type: url.searchParams.get("type") ?? "",
+          maxPrice: url.searchParams.has("maxPrice")
+            ? String(Number(url.searchParams.get("maxPrice")) / 100)
+            : "",
+        };
         const result = await this.api.request<Page<Rental>>(
-          `${page === "my-rentals" ? "/my" : ""}/rentals?page=${this.pageNumber}&q=${encodeURIComponent(this.search)}`,
+          `${page === "my-rentals" ? "/my" : ""}/rentals?page=${this.pageNumber}&q=${encodeURIComponent(this.search)}&${new URLSearchParams(Object.fromEntries(["start", "end", "people", "type", "maxPrice"].map((key) => [key, url.searchParams.get(key) ?? ""]))).toString()}`,
         );
         if (generation !== this.generation) return;
         this.rentals.set(result.items);
         this.total = result.total;
       }
+      if (page === "home")
+        this.plans.set(await this.api.request<Plan[]>("/plans"));
       if (page === "detail") {
+        if (url.searchParams.has("start"))
+          this.start = url.searchParams.get("start") ?? "";
+        if (url.searchParams.has("end"))
+          this.end = url.searchParams.get("end") ?? "";
+        if (url.searchParams.has("people"))
+          this.peopleCount = Number(url.searchParams.get("people")) || 2;
         const slug =
           path === "/previsualisation/annonce"
             ? url.searchParams.get("rental_id")
@@ -207,8 +331,15 @@ export class PageComponent {
             (await this.api.request<Rental[]>("/favorites")).map((r) => r.id),
           );
       }
-      if (page === "favorites")
-        this.rentals.set(await this.api.request<Rental[]>("/favorites"));
+      if (
+        ["home", "catalog", "favorites"].includes(page) &&
+        this.api.persona()
+      ) {
+        const saved = await this.api.request<Rental[]>("/favorites");
+        if (generation !== this.generation) return;
+        this.favorites.set(saved.map((item) => item.id));
+        if (page === "favorites") this.rentals.set(saved);
+      }
       if (page === "profile")
         this.profile = { ...(this.api.persona()?.profile ?? this.profile) };
       if (page === "editor") {
@@ -374,9 +505,18 @@ export class PageComponent {
       this.notice.set("Vos informations sont enregistrées.");
     });
   }
-  searchRentals() {
+  searchRentals(fields: SearchFields) {
     void this.router.navigate(["/annonces"], {
-      queryParams: { q: this.search },
+      queryParams: {
+        q: fields.q,
+        start: fields.start || null,
+        end: fields.end || null,
+        people: fields.people || null,
+        type: fields.type || null,
+        maxPrice: fields.maxPrice
+          ? Math.round(Number(fields.maxPrice) * 100)
+          : null,
+      },
     });
   }
   async favorite(rental: Rental) {
@@ -396,12 +536,21 @@ export class PageComponent {
       this.favorites.update((ids) =>
         saved ? ids.filter((id) => id !== rental.id) : [...ids, rental.id],
       );
+      if (saved && this.page() === "favorites")
+        this.rentals.update((items) =>
+          items.filter((item) => item.id !== rental.id),
+        );
       this.notice.set(
         saved
           ? "Annonce retirée de vos coups de cœur."
           : "Annonce ajoutée à vos coups de cœur.",
       );
     });
+  }
+  chooseStay(range: { start: string; end: string }) {
+    this.start = range.start;
+    this.end = range.end;
+    this.quote.set(null);
   }
   async calculate() {
     await this.action(async () => {

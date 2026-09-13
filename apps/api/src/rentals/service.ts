@@ -13,6 +13,7 @@ import type { Connection } from "../database";
 import { event } from "../database";
 import { assert } from "../errors";
 import { completeStep } from "./domain";
+import type { RentalFilters } from "./search";
 export async function getRental(
   db: Connection,
   id: string,
@@ -51,14 +52,34 @@ export function rentals(sql: SQL) {
       page: number,
       search: string,
       actor?: Persona,
+      filters: RentalFilters = {},
     ): Promise<Page<Rental>> {
       const offset = (page - 1) * 25;
       const condition = actor
         ? sql`owner_id=${actor.id}`
         : sql`status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()}`;
       const term = `%${search.replace(/[\\%_]/g, "\\$&")}%`;
+      const today = new Date().toISOString().slice(0, 10);
+      const capacity = filters.people
+        ? sql`(data->>'peopleCount')::integer>=${filters.people}`
+        : sql`true`;
+      const kind = filters.type
+        ? sql`data->>'type'=${filters.type}`
+        : sql`true`;
+      const price = filters.maxPrice
+        ? sql`(data->>'dailyRate')::integer<=${filters.maxPrice}`
+        : sql`true`;
+      const availability =
+        filters.start && filters.end
+          ? sql`
+        ${filters.start}::date >= ${today}::date + (data->>'minLeadDays')::integer
+        AND ${filters.start}::date <= date_trunc('month',${today}::date) + make_interval(months => (data->>'maxLeadMonths')::integer) + (extract(day from ${today}::date)::integer-1) * interval '1 day'
+        AND NOT EXISTS (SELECT 1 FROM jsonb_array_elements(data->'unavailable') period WHERE period->>'start'<${filters.end} AND period->>'end'>${filters.start})
+        AND NOT EXISTS (SELECT 1 FROM crozon_bookings b WHERE b.rental_id=r.id AND b.status IN ('booked','confirmed') AND b.start_date<${filters.end}::date AND b.end_date>${filters.start}::date)
+      `
+          : sql`true`;
       const rows =
-        await sql`SELECT data,count(*) OVER() AS total FROM crozon_rentals WHERE ${condition} AND (data->>'title' ILIKE ${term} OR data->'address'->>'town' ILIKE ${term}) ORDER BY id LIMIT 25 OFFSET ${offset}`;
+        await sql`SELECT data,count(*) OVER() AS total FROM crozon_rentals r WHERE ${condition} AND (data->>'title' ILIKE ${term} OR data->'address'->>'town' ILIKE ${term}) AND ${capacity} AND ${kind} AND ${price} AND ${availability} ORDER BY id LIMIT 25 OFFSET ${offset}`;
       return {
         items: rows.map((r: { data: Rental }) => r.data),
         page,

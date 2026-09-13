@@ -62,6 +62,11 @@ test("booking request, private conversation, confirmation, cancellation and rele
       .getByRole("button", { name: "Confirmer la réservation" })
       .click();
     await expect(owner.getByText("Confirmée", { exact: true })).toBeVisible();
+    const searchUrl = `/api/rentals?start=${futureDate(offset)}&end=${futureDate(offset + 8)}`;
+    expect(
+      (await page.request.get(searchUrl).then((response) => response.json()))
+        .total,
+    ).toBe(0);
     await owner.getByRole("link", { name: /Ouvrir la conversation/ }).click();
     await expect(
       owner.getByText("Bonjour, nous venons en famille.", { exact: true }),
@@ -84,6 +89,10 @@ test("booking request, private conversation, confirmation, cancellation and rele
     await owner.goto(bookingUrl);
     await owner.getByRole("button", { name: "Annuler la réservation" }).click();
     await expect(owner.getByText("Annulée", { exact: true })).toBeVisible();
+    expect(
+      (await page.request.get(searchUrl).then((response) => response.json()))
+        .total,
+    ).toBe(1);
     await page.goto(bookingUrl);
     await expect(page.getByText("Annulée", { exact: true })).toBeVisible();
     await stranger.reload();

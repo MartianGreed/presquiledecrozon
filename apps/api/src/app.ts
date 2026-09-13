@@ -9,6 +9,7 @@ import { correspondence } from "./correspondence/service";
 import { assert, invalid, Problem } from "./errors";
 import { identity, rateLimit } from "./identity/service";
 import { readBounded, upload } from "./media";
+import { rentalFilters } from "./rentals/search";
 import { rentals } from "./rentals/service";
 import * as S from "./schemas";
 
@@ -91,7 +92,12 @@ export async function application(sql: SQL, config: AppConfig) {
     ),
   );
   route("GET", "/api/rentals", async ({ url }) =>
-    catalog.list(page(url), (url.searchParams.get("q") ?? "").slice(0, 100)),
+    catalog.list(
+      page(url),
+      (url.searchParams.get("q") ?? "").slice(0, 100),
+      undefined,
+      rentalFilters(url.searchParams),
+    ),
   );
   route("GET", "/api/my/rentals", async ({ url, request }) =>
     catalog.list(page(url), "", await accounts.persona(request)),

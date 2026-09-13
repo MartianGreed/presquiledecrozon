@@ -54,6 +54,8 @@ test("registration rejects mismatch, verifies email, persists profile and logs o
   await page.reload();
   await expect(page.getByLabel("Prénom", { exact: true })).toHaveValue("Alex");
   await expect(page.getByLabel("Téléphone")).toHaveValue("0612345678");
+  if (await page.getByRole("button", { name: /Menu/ }).isVisible())
+    await page.getByRole("button", { name: /Menu/ }).click();
   await page.getByRole("button", { name: "Déconnexion" }).click();
   await expect(
     page.getByRole("heading", { name: "Se connecter", exact: true }),
@@ -85,13 +87,17 @@ test("password recovery changes credentials, revokes sessions and rejects token 
     );
     const link = emailLink(signedIn);
     await page.goto(link);
-    await page.getByLabel("Nouveau mot de passe").fill(`${password} changed`);
+    await page
+      .getByLabel("Nouveau mot de passe", { exact: true })
+      .fill(`${password} changed`);
     await page
       .getByRole("button", { name: "Enregistrer mon mot de passe" })
       .click();
     await expect(
       page.getByRole("heading", { name: "Mon compte", exact: true }),
     ).toBeVisible();
+    if (await page.getByRole("button", { name: /Menu/ }).isVisible())
+      await page.getByRole("button", { name: /Menu/ }).click();
     await page.getByRole("button", { name: "Déconnexion" }).click();
     await oldSession.reload();
     await expect(
@@ -105,7 +111,9 @@ test("password recovery changes credentials, revokes sessions and rejects token 
     await expect(page.getByRole("alert")).toContainText("incorrect");
     await login(page, signedIn, `${password} changed`);
     await page.goto(link);
-    await page.getByLabel("Nouveau mot de passe").fill(`${password} replay`);
+    await page
+      .getByLabel("Nouveau mot de passe", { exact: true })
+      .fill(`${password} replay`);
     await page
       .getByRole("button", { name: "Enregistrer mon mot de passe" })
       .click();
