@@ -799,6 +799,171 @@ suite("PostgreSQL application acceptance", () => {
       ).status,
     ).toBe(200);
   });
+  test("event proposals require consent and moderation before public access", async () => {
+    const content = {
+      kind: "event",
+      slug: "festival-test",
+      title: "Festival de test",
+      summary: "Un événement de démonstration.",
+      body: "Description réservée aux tests de publication.",
+      category: "Culture",
+      town: "Crozon",
+      address: "Place de la mairie",
+      start: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      end: new Date(Date.now() + 31 * 86400000).toISOString().slice(0, 10),
+      startTime: "10:00",
+      endTime: "18:00",
+      price: "Entrée libre",
+      images: [],
+      organizer: {
+        name: "Association de test",
+        email: "organizer@example.test",
+        phone: "0600000001",
+        website: "https://example.test",
+      },
+      contactConsent: false,
+      publicationConsent: true,
+    };
+    const submitter = {
+      firstname: "Nom privé",
+      lastname: "Identité privée",
+      email: "private@example.test",
+      phone: "0600000002",
+    };
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, publicationConsent: false }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          {
+            content: {
+              ...content,
+              organizer: {
+                ...content.organizer,
+                website: "javascript:alert(1)",
+              },
+            },
+            submitter,
+          },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, images: [rental.photos[0]] }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, start: "2026-02-30" }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const proposed = await request(
+      "/api/events/proposals",
+      "POST",
+      { content, submitter },
+      guestCookie,
+    );
+    expect(proposed.status).toBe(200);
+    const entry = (await proposed.json()) as {
+      id: string;
+      version: number;
+      content: typeof content;
+    };
+    expect((await request(`/api/content/${entry.content.slug}`)).status).toBe(
+      404,
+    );
+    expect(
+      (
+        await request(
+          `/api/admin/content/${entry.id}`,
+          "PUT",
+          {
+            content: entry.content,
+            version: entry.version,
+            status: "published",
+          },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    const published = await request(
+      `/api/admin/content/${entry.id}`,
+      "PUT",
+      { content: entry.content, version: entry.version, status: "published" },
+      ownerCookie,
+    );
+    expect(published.status).toBe(200);
+    expect(
+      (
+        await request(
+          `/api/admin/content/${entry.id}`,
+          "PUT",
+          { content: entry.content, version: entry.version, status: "draft" },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(409);
+    const publicEntry = await request(
+      `/api/content/${entry.content.slug}`,
+    ).then((r) => r.json());
+    expect(JSON.stringify(publicEntry)).not.toContain("private@example.test");
+    expect(JSON.stringify(publicEntry)).not.toContain("Nom privé");
+    expect(JSON.stringify(publicEntry)).not.toContain("organizer@example.test");
+    const found = (await request(
+      "/api/content?kind=event&q=Festival&town=Crozon&category=Culture",
+    ).then((r) => r.json())) as { total: number };
+    expect(found.total).toBe(1);
+    const missing = (await request(
+      "/api/content?kind=event&q=Introuvable",
+    ).then((r) => r.json())) as { total: number };
+    expect(missing.total).toBe(0);
+    const legal = {
+      ...content,
+      kind: "page",
+      slug: "conditions-generales",
+      title: "Conditions générales",
+      start: "",
+      end: "",
+      startTime: "",
+      endTime: "",
+      category: "",
+      town: "",
+      address: "",
+      images: [],
+    };
+    const created = await request(
+      "/api/admin/content",
+      "POST",
+      { content: legal, status: "draft", version: 0 },
+      ownerCookie,
+    );
+    expect(created.status).toBe(200);
+    expect((await request("/api/content/conditions-generales")).status).toBe(
+      404,
+    );
+  });
   test("configured OAuth binds state to the browser and provisions email-less accounts safely", async () => {
     expect(
       await request("/api/sign-in/providers").then((r) => r.json()),
@@ -816,6 +981,7 @@ suite("PostgreSQL application acceptance", () => {
       }),
     );
     let subject = "12345";
+    let googleEmail = "owner@example.test";
     const oauthApp = await application(sql, config, {
       execute: (req) => {
         const url = new URL(req.url);
@@ -849,7 +1015,7 @@ suite("PostgreSQL application acceptance", () => {
                 }
               : {
                   sub: subject,
-                  email: "owner@example.test",
+                  email: googleEmail,
                   email_verified: true,
                   name: "Owner",
                 },
@@ -978,6 +1144,22 @@ suite("PostgreSQL application acceptance", () => {
         (r) => r.json(),
       ),
     ).toEqual({ hasPassword: false, email: "social@example.test" });
+    googleEmail = "social@example.test";
+    const collision = await begin("google");
+    expect(
+      (
+        await oauthRequest(collision.path, "GET", undefined, collision.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    expect(
+      (
+        await oauthRequest("/api/auth/register/password", "POST", {
+          email: "social@example.test",
+          password: "A long test password 2026!",
+        })
+      ).status,
+    ).toBe(409);
+    googleEmail = "owner@example.test";
     const google = await begin("google");
     expect(
       (

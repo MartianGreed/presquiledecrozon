@@ -42,6 +42,9 @@ export async function migrate(sql: SQL): Promise<void> {
  SELECT id,rental_id,persona_id,data->>'ownerId' AS owner_id,data->>'rentalTitle' AS title,data->>'start' AS start_date,data->>'end' AS end_date,data->>'createdAt' AS created_at,'booking' AS kind FROM crozon_bookings
  UNION ALL SELECT c.id,c.rental_id,c.persona_id,c.owner_id,r.data->>'title',NULL,NULL,c.created_at::text,'direct' FROM crozon_direct_conversations c JOIN crozon_rentals r ON r.id=c.rental_id;
  INSERT INTO crozon_schema(version) VALUES(3) ON CONFLICT DO NOTHING;
+ CREATE TABLE IF NOT EXISTS crozon_content(id text PRIMARY KEY,author_id text NOT NULL REFERENCES crozon_personas(id),kind text NOT NULL,slug text NOT NULL UNIQUE,status text NOT NULL CHECK(status IN ('draft','pending','published')),version integer NOT NULL,data jsonb NOT NULL,submitter jsonb NOT NULL,updated_at timestamptz NOT NULL DEFAULT now());
+ CREATE INDEX IF NOT EXISTS crozon_content_public ON crozon_content(kind,status,updated_at);
+ INSERT INTO crozon_schema(version) VALUES(4) ON CONFLICT DO NOTHING;
  `);
   });
 }

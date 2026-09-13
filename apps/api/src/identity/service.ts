@@ -1,6 +1,9 @@
 import {
   AuthDependencyError,
+  AuthStoreError,
+  type AuthUser,
   argon2id,
+  IdentityConflict,
   makeAuth,
   makeAuthHandler,
   type OAuthHttpClient,
@@ -39,8 +42,37 @@ export async function identity(
   const providers = socialProviders(config);
   const hasher = argon2id();
   const store = makeAuthStore(sql);
+  const availableEmail = (user: AuthUser) =>
+    Effect.gen(function* () {
+      if (!user.email) return;
+      const rows = yield* Effect.tryPromise({
+        try: () =>
+          sql`SELECT id FROM crozon_personas WHERE email=${user.email!.trim().toLowerCase()} AND id<>${user.id}`,
+        catch: (cause) =>
+          new AuthStoreError({ operation: "check-contact-email", cause }),
+      });
+      if (rows.length)
+        return yield* new IdentityConflict({
+          tenantId: user.tenantId,
+          identity: "contact-email",
+        });
+    });
   const auth = makeAuth({
-    store,
+    store: {
+      ...store,
+      createPasswordUser: (user, credential) =>
+        availableEmail(user).pipe(
+          Effect.andThen(store.createPasswordUser(user, credential)),
+        ),
+      createOAuthUser: (user, identity) =>
+        availableEmail(user).pipe(
+          Effect.andThen(store.createOAuthUser(user, identity)),
+        ),
+      createMagicLinkUser: (user) =>
+        availableEmail(user).pipe(
+          Effect.andThen(store.createMagicLinkUser(user)),
+        ),
+    },
     oauthProviderResolver: providers.resolver,
     ...(oauthHttpClient ? { oauthHttpClient } : {}),
     accountLinkPolicy: {
@@ -278,8 +310,11 @@ export async function identity(
       );
       const existing =
         await db`SELECT id FROM crozon_personas WHERE email=${rows[0].email}`;
+      const identity = await Effect.runPromise(
+        store.findUserByEmail(TENANT, rows[0].email),
+      );
       assert(
-        !existing.length,
+        !existing.length && (!identity || identity.id === actor.id),
         409,
         "contact_email",
         "Cette adresse ne peut pas être associée à ce compte. Utilisez votre méthode de connexion habituelle.",

@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { filter } from "rxjs";
+import type { ContentKind } from "../../../../packages/contracts/src/content";
 import {
   type Booking,
   type Conversation,
@@ -23,6 +24,7 @@ import { AccountSettings } from "./account-settings";
 import { AccountSubscriptions } from "./account-subscriptions";
 import { Api } from "./api";
 import { AuthDialog } from "./auth-dialog";
+import { ContentPages } from "./content";
 import { passkeyError, signInWithPasskey } from "./passkeys";
 import { emptySearch, RentalSearch, type SearchFields } from "./rental-search";
 import { Reviews } from "./reviews";
@@ -40,6 +42,7 @@ import { StayCalendar } from "./stay-calendar";
     AccountSettings,
     AccountSubscriptions,
     Reviews,
+    ContentPages,
   ],
   templateUrl: "./page.html",
 })
@@ -185,6 +188,8 @@ export class PageComponent {
     const photo = this.editor.photos.splice(index, 1)[0];
     if (photo) this.editor.photos.unshift(photo);
   }
+  contentKind: ContentKind = "event";
+  contentSlug = "";
   email = "";
   password = "";
   confirmPassword = "";
@@ -290,7 +295,39 @@ export class PageComponent {
       else if (path === "/mon-compte/messages") page = "messages";
       else if (path.startsWith("/abonnement"))
         page = path.includes("/confirm/") ? "payment-confirm" : "subscription";
-      else if (path === "/admin/avis") page = "admin-reviews";
+      else if (
+        ["/evenements", "/activites", "/restaurants", "/informations"].includes(
+          path,
+        )
+      ) {
+        page = "content-list";
+        this.contentKind =
+          path === "/activites"
+            ? "activity"
+            : path === "/restaurants"
+              ? "restaurant"
+              : path === "/informations"
+                ? "page"
+                : "event";
+      } else if (path === "/proposer-un-evenement") page = "content-proposal";
+      else if (path === "/admin/publications") page = "content-admin";
+      else if (path === "/plan-du-site") page = "sitemap";
+      else if (
+        [
+          "/conditions-generales",
+          "/mentions-legales",
+          "/confidentialite",
+          "/cookies",
+        ].includes(path)
+      ) {
+        page = "content-detail";
+        this.contentSlug = path.slice(1);
+      } else if (
+        /^\/(evenement|activite|restaurant|informations)\/[^/]+$/.test(path)
+      ) {
+        page = "content-detail";
+        this.contentSlug = decodeURIComponent(path.split("/")[2]);
+      } else if (path === "/admin/avis") page = "admin-reviews";
       else if (path === "/admin") page = "admin";
       else if (path === "/mon-compte") page = "account";
       else if (path !== "/") page = "not-found";
@@ -311,6 +348,8 @@ export class PageComponent {
         "account",
         "admin",
         "admin-reviews",
+        "content-proposal",
+        "content-admin",
       ];
       if (protectedPages.includes(page) && !(await this.api.me())) {
         await this.router.navigate(["/login"], {

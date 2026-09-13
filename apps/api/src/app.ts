@@ -6,6 +6,8 @@ import { admin, referenceKinds } from "./admin";
 import { billing } from "./billing/service";
 import { bookings } from "./bookings/service";
 import { type AppConfig, secret } from "./config";
+import { ContentWriteSchema, ProposalSchema } from "./content/schema";
+import { content } from "./content/service";
 import { reviews } from "./correspondence/reviews";
 import { correspondence } from "./correspondence/service";
 import { assert, invalid, Problem } from "./errors";
@@ -66,6 +68,7 @@ export async function application(
   const accounts = await identity(sql, config, oauthHttpClient);
   const catalog = rentals(sql);
   const reservations = bookings(sql);
+  const publishing = content(sql);
   const feedback = reviews(sql);
   const messages = correspondence(sql);
   const payments = billing(sql, config);
@@ -356,6 +359,45 @@ export async function application(
   route("GET", "/api/admin/reviews", async ({ request, url }) =>
     feedback.administration(await accounts.persona(request), page(url)),
   );
+  const contentFilters = (url: URL) => ({
+    kind: (url.searchParams.get("kind") ?? "").slice(0, 20),
+    q: (url.searchParams.get("q") ?? "").slice(0, 100),
+    category: (url.searchParams.get("category") ?? "").slice(0, 100),
+    town: (url.searchParams.get("town") ?? "").slice(0, 100),
+    period: url.searchParams.get("period") ?? "all",
+  });
+  route("GET", "/api/content", async ({ url }) =>
+    publishing.list(page(url), contentFilters(url)),
+  );
+  route("GET", "/api/content/:slug", async ({ params }) =>
+    publishing.detail(params.slug!),
+  );
+  route("GET", "/api/admin/content", async ({ url, request }) =>
+    publishing.list(
+      page(url),
+      contentFilters(url),
+      await accounts.persona(request),
+    ),
+  );
+  route("POST", "/api/events/proposals", async ({ request }) => {
+    const actor = await accounts.persona(request);
+    await rateLimit(sql, `proposal:${actor.id}`, 10);
+    const input = await body(request, ProposalSchema);
+    return publishing.propose(actor, input.content, input.submitter);
+  });
+  const saveContent: Handler = async ({ request, params }) => {
+    const actor = await accounts.persona(request);
+    const input = await body(request, ContentWriteSchema);
+    return publishing.save(
+      actor,
+      params.id,
+      input.content,
+      input.status,
+      input.version,
+    );
+  };
+  route("POST", "/api/admin/content", saveContent);
+  route("PUT", "/api/admin/content/:id", saveContent);
   route("GET", "/api/conversations", async ({ request, url }) =>
     messages.conversations(
       await accounts.persona(request),
@@ -517,7 +559,7 @@ export async function application(
           "Image introuvable.",
         );
         const publicRows =
-          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb UNION ALL SELECT id FROM crozon_personas WHERE NOT disabled AND profile->>'avatarUrl'=${path} LIMIT 1`;
+          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb UNION ALL SELECT id FROM crozon_personas WHERE NOT disabled AND profile->>'avatarUrl'=${path} UNION ALL SELECT id FROM crozon_content WHERE status='published' AND data->'images' @> ${[path]}::jsonb LIMIT 1`;
         if (!publicRows.length) {
           const actor = await accounts.persona(request);
           const rows =

@@ -44,6 +44,12 @@ Add a content module with public listing/detail queries and authorized editing c
 
 Use the same content module for restaurants, activities and legal/editorial pages, with a restricted kind and stable French routes. Render text safely, validate external URLs and enforce image ownership. The user will supply legal/editorial content later. Provide publishing controls and drafts; do not fabricate policies. Draft/unavailable content must be clear in the interface.
 
+Implemented routes: `/evenements`, `/activites`, `/restaurants`, `/proposer-un-evenement`, individual `/evenement/:slug`, `/activite/:slug`, `/restaurant/:slug` and `/informations/:slug` pages. `/admin/publications` manages proposals and all content kinds. Updates use a version to reject stale edits. Public event lists filter dates, category, commune and text before pagination. Proposals enter the pending state; publishing requires an administrator and publication consent. Images use the same validated upload pipeline as rental and avatar photos.
+
+The footer links to `conditions-generales`, `mentions-legales`, `confidentialite` and `cookies`. To provide approved text later, create a Page d’information in `/admin/publications` using the corresponding slug, save it as a draft, then publish after approval. Until then those routes explicitly say the content is not yet published. `/plan-du-site` lists the main routes and published information pages. No sample legal text or tourism entries are seeded in the preview.
+
+The provider and publishing configuration is ready for later input. Live OAuth and final legal/editorial approval are the only deferred items requested by the user; the application flows are covered by provider-boundary backend tests and browser publication journeys.
+
 ## Verification
 
 Use a dedicated `_test` database for backend and browser suites. Never truncate the user's Contremaitre preview. Capture desktop and phone evidence for home, authentication, account, editor, listing, conversations and new content flows. Verify the final source through Contremaitre and open reviewable pull requests for the delivery tickets.
