@@ -19,7 +19,7 @@ Verified locally on 2026-09-12 with Bun 1.3.14, Node 24.18.0 and PostgreSQL 17.1
 
 The API acceptance suite includes every saved rental section, private drafts, stale versions, unpaid publication, signed payment amount/session binding and replay, conflicting concurrent booking requests, conversation isolation, administrator references/account disable, initialized legacy requests, cancellation, reset token replay and session revocation. The migration suite checks identifiers, historical cents, relationships, source timezone conversion, CDN path construction and existing Symfony bcrypt login.
 
-The original workspace remains unchanged. New runtime files pass `git diff --check`; two whitespace findings belong to unchanged archived README/CLAUDE files.
+The migration's new runtime files passed `git diff --check`.
 
 ## External rollout evidence still required
 

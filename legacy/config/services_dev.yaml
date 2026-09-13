@@ -1,4 +1,0 @@
-# Development-specific services configuration
-parameters:
-    # Override cdn_host to be empty in dev environment
-    cdn_host: ''

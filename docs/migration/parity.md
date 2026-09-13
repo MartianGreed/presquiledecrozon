@@ -1,6 +1,6 @@
 # Behavior inventory
 
-The application source at `5c62d87` is the migration reference. The original files remain under `legacy/`. No file there is part of the TypeScript build, serving path or container.
+The application source at `5c62d87` is the migration reference. Retrieve the original Symfony files through Git history, for example `git show 5c62d87:src/Kernel.php`. The archived source has been removed from the current tree.
 
 | Legacy capability / page | Replacement | Verification |
 | --- | --- | --- |

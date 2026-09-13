@@ -11,13 +11,3 @@ coverage/
 playwright-report/
 test-results/
 *.log
-legacy/vendor/
-legacy/node_modules/
-legacy/var/
-legacy/public/uploads/
-legacy/public/build/
-legacy/.env.local
-legacy/.env.*.local
-legacy/.phpunit.result.cache
-legacy/.php-cs-fixer.cache
-legacy/config/secrets/*/*.decrypt.private.php

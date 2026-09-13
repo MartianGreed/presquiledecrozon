@@ -10,5 +10,5 @@
 - `bun run test:e2e` seeds its own test database and exercises the built app.
 - PostgreSQL migrations are explicit: `bun run db:migrate`. Serving never migrates.
 - Preserve persona terminology, French URLs, integer cents, ownership checks and booking locks.
-- `legacy/` is audit/rollback reference only and is excluded from runtime, CI and Docker images.
+- The original Symfony source is in Git at `5c62d87`; use Git history for legacy code reference.
 - Migration acceptance and operational limits live in `docs/migration/` and GitHub epic #2.
