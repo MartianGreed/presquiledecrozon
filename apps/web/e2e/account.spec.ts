@@ -72,6 +72,9 @@ test("password recovery changes credentials, revokes sessions and rejects token 
     await api(page.request, "/auth/sign-out", {});
     await page.goto("/login");
     await page.getByRole("link", { name: "Mot de passe oublié ?" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Mot de passe oublié", exact: true }),
+    ).toBeVisible();
     await page.getByLabel("Adresse e-mail").fill(signedIn);
     await page.getByRole("button", { name: "Recevoir le lien" }).click();
     await expect(page.getByRole("status")).toContainText(
