@@ -55,6 +55,9 @@ test("registration rejects mismatch, verifies email, persists profile and logs o
   await expect(page.getByLabel("Prénom", { exact: true })).toHaveValue("Alex");
   await expect(page.getByLabel("Téléphone")).toHaveValue("0612345678");
   await page.getByRole("button", { name: "Déconnexion" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Se connecter", exact: true }),
+  ).toBeVisible();
   await page.goto("/mon-compte/informations");
   await expect(
     page.getByRole("heading", { name: "Se connecter" }),
