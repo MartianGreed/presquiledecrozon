@@ -14,8 +14,19 @@ import {
   type Subscription,
 } from "../packages/contracts/src/models";
 
-const url = process.env.TEST_DATABASE_URL;
-if (!url || !new URL(url).pathname.endsWith("_test"))
+const preview = process.argv[2] === "preview";
+if (
+  preview &&
+  (process.env.CONTREMAITRE_PREVIEW !== "1" ||
+    process.env.MAIL_MODE !== "outbox" ||
+    process.env.STRIPE_SECRET_KEY ||
+    process.env.MAILJET_API_KEY)
+)
+  throw new Error(
+    "Preview seeding requires CONTREMAITRE_PREVIEW=1, MAIL_MODE=outbox and no provider credentials.",
+  );
+const url = preview ? process.env.DATABASE_URL : process.env.TEST_DATABASE_URL;
+if (!url || (!preview && !new URL(url).pathname.endsWith("_test")))
   throw new Error("A dedicated TEST_DATABASE_URL ending in _test is required.");
 const sql = new SQL(url);
 try {
@@ -26,16 +37,22 @@ try {
     process.stdout.write(rows[0].body);
   } else {
     await migrate(sql);
-    const names =
-      await sql`SELECT tablename FROM pg_tables WHERE schemaname='public' AND (tablename LIKE 'crozon_%' OR tablename LIKE 'auth_%') AND tablename<>'crozon_schema'`;
-    for (const row of names)
-      await sql`TRUNCATE TABLE ${sql(row.tablename)} CASCADE`;
+    if (!preview) {
+      const names =
+        await sql`SELECT tablename FROM pg_tables WHERE schemaname='public' AND (tablename LIKE 'crozon_%' OR tablename LIKE 'auth_%') AND tablename<>'crozon_schema'`;
+      for (const row of names)
+        await sql`TRUNCATE TABLE ${sql(row.tablename)} CASCADE`;
+    }
     const config = await Effect.runPromise(
       load(settings, {
         env: {
           DATABASE_URL: url,
-          APP_ORIGIN: process.env.E2E_BASE_URL ?? "http://localhost:3000",
-          UPLOAD_DIRECTORY: "/tmp/crozon-test-uploads",
+          APP_ORIGIN:
+            (preview ? process.env.APP_ORIGIN : process.env.E2E_BASE_URL) ??
+            "http://localhost:3000",
+          UPLOAD_DIRECTORY: preview
+            ? (process.env.UPLOAD_DIRECTORY ?? "/app/var/uploads")
+            : "/tmp/crozon-test-uploads",
         },
       }),
     );
