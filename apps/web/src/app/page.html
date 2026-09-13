@@ -5,7 +5,7 @@
 @if(error()){<div role="alert" class="alert error">{{error()}} @if(error().includes('informations personnelles')){<a routerLink="/mon-compte/informations">Compléter mon profil</a>}</div>}
 @if(notice()){<div role="status" class="alert success">{{notice()}}</div>}
 @if(loading()){<p role="status" class="loading">Chargement…</p>}
-@else {
+@else if(!loadFailed()) {
 @switch(page()){
 @case('home') {<div class="section-heading"><div><p class="eyebrow">Le début des vacances</p><h2>Un chez-vous sur la presqu'île</h2></div><a routerLink="/annonces">Voir toutes les locations ↗</a></div>}
 @case('catalog'){<p class="eyebrow">Choisissez votre escale</p><h1>Les locations de vacances</h1><form class="search-form light" (ngSubmit)="searchRentals()"><label class="sr-only" for="search">Rechercher</label><input id="search" name="search" [(ngModel)]="search" placeholder="Ville ou nom du logement"><button>Rechercher</button></form><p>{{total}} location{{total>1?'s':''}}</p>}
