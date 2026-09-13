@@ -1,0 +1,37 @@
+version: 1
+project: presquiledecrozon
+services:
+  db:
+    kind: postgres
+  web:
+    build: .
+    dockerfile: Dockerfile.contremaitre
+    working_dir: /app
+    command: [bun, apps/api/src/main.ts]
+    port: 3000
+    http: true
+    depends_on: [db]
+    environment:
+      # Bun 1.3.14 mistakes the existing /app directory for a database socket.
+      # The managed URL already contains sslmode; an empty path forces TCP.
+      DATABASE_URL: '{{db.url}}&path='
+      APP_ORIGIN: '{{web.browser_url}}'
+      MAIL_MODE: outbox
+      CONTREMAITRE_PREVIEW: '1'
+      UPLOAD_DIRECTORY: /app/var/uploads
+    volumes:
+      uploads: /app/var/uploads
+    init: [bun, scripts/e2e-db.ts, preview]
+    migrate: [bun, apps/api/src/migrate.ts]
+    ready: [bun, -e, 'const response = await fetch("http://127.0.0.1:3000/health/ready"); if (!response.ok) process.exit(1);']
+verification:
+  exclude: [test-results, playwright-report, .angular, dist]
+  profiles:
+    smoke:
+      - name: pricing
+        service: web
+        command: [bun, test, apps/api/test/pricing.test.ts]
+        timeout_seconds: 60
+      - name: browser
+        command: [node, --use-system-ca, --experimental-strip-types, scripts/contremaitre-smoke.ts]
+        timeout_seconds: 120

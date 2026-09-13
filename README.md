@@ -27,6 +27,33 @@ bun run admin:promote your-address@example.com
 
 Administrators manage subscription plans, discounts, reference data, rentals, reservations and account access at `/admin`. Create an active subscription plan before accepting listing payments. Configure Stripe and its signed webhook before accepting real payments.
 
+## Local preview with Contremaitre
+
+From this checkout, with Contremaitre and its native runtime installed:
+
+```sh
+bun install --frozen-lockfile
+bun x playwright install chromium
+contremaitre ensure --json
+contremaitre verify --profile smoke --json
+contremaitre report --json
+```
+
+Open the returned `web` URL. Contremaitre manages a separate PostgreSQL database and persistent uploads for this workspace. It builds `Dockerfile.contremaitre`, initializes the schema and demo data, then runs the application. Use `ensure` after editing source to rebuild it. This image does not enable hot reload.
+
+The preview contains **La maison des embruns** and two verified accounts:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Owner and administrator | `browser-owner@example.test` | `Crozon browser test 2026!` |
+| Traveler | `browser-guest@example.test` | `Crozon browser test 2026!` |
+
+Use the traveler to request a stay, then the owner to confirm it and exchange messages. The owner's `/admin` page manages reference data. The sample listing has a synthetic paid publication entitlement; no payment provider is contacted. Stripe checkout and automatic geocoding require separate provider configuration and are unavailable in this preview. Email is stored in `crozon_outbox` without delivery.
+
+Preview initialization preserves existing rows and edits. It requires `CONTREMAITRE_PREVIEW=1`, `MAIL_MODE=outbox` and no Stripe or Mailjet key. The existing end-to-end test command still resets only dedicated `_test` databases; do not point it at the preview. The Contremaitre smoke profile reads the catalog, checks desktop/mobile pages and signs both demo users in and out without changing listings or bookings. Screenshots appear in the returned review page.
+
+`contremaitre down` stops the workspace environment and retains its data. These shared demo credentials are intended only for the local preview.
+
 ## Checks
 
 The integration and migration suites **truncate their test databases**. Use two dedicated databases with names ending in `_test` and provide their URLs through your shell or a local env file. Do not use a production database or a shared development database.
