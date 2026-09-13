@@ -20,5 +20,5 @@ export async function event(
 ): Promise<void> {
   const id = crypto.randomUUID();
   await db`INSERT INTO crozon_notifications (id,persona_id,data) VALUES (${id},${personaId},${{ id, personaId, message, href, read: false, createdAt: new Date().toISOString() }})`;
-  await db`INSERT INTO crozon_outbox (id,recipient,subject,body) SELECT ${crypto.randomUUID()},email,${"Presqu’île de Crozon"},${message} FROM crozon_personas WHERE id=${personaId}`;
+  await db`INSERT INTO crozon_outbox (id,recipient,subject,body) SELECT ${crypto.randomUUID()},email,${"Presqu’île de Crozon"},${message} FROM crozon_personas WHERE id=${personaId} AND email IS NOT NULL AND email<>'' AND coalesce((preferences->>'emailNotifications')::boolean,true)`;
 }

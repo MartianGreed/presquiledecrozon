@@ -1,14 +1,19 @@
 import { join } from "node:path";
+import type { OAuthHttpClient } from "@structure-ai/auth";
 import type { SQL } from "bun";
 import { Schema } from "effect";
 import { admin, referenceKinds } from "./admin";
 import { billing } from "./billing/service";
 import { bookings } from "./bookings/service";
 import { type AppConfig, secret } from "./config";
+import { ContentWriteSchema, ProposalSchema } from "./content/schema";
+import { content } from "./content/service";
+import { reviews } from "./correspondence/reviews";
 import { correspondence } from "./correspondence/service";
 import { assert, invalid, Problem } from "./errors";
 import { identity, rateLimit } from "./identity/service";
 import { readBounded, upload } from "./media";
+import { rentalFilters } from "./rentals/search";
 import { rentals } from "./rentals/service";
 import * as S from "./schemas";
 
@@ -55,10 +60,16 @@ interface Context {
   params: Record<string, string>;
 }
 type Handler = (context: Context) => Promise<unknown>;
-export async function application(sql: SQL, config: AppConfig) {
-  const accounts = await identity(sql, config);
+export async function application(
+  sql: SQL,
+  config: AppConfig,
+  oauthHttpClient?: OAuthHttpClient,
+) {
+  const accounts = await identity(sql, config, oauthHttpClient);
   const catalog = rentals(sql);
   const reservations = bookings(sql);
+  const publishing = content(sql);
+  const feedback = reviews(sql);
   const messages = correspondence(sql);
   const payments = billing(sql, config);
   const administration = admin(sql);
@@ -83,7 +94,73 @@ export async function application(sql: SQL, config: AppConfig) {
       handler,
     });
   };
+  route("GET", "/api/me/subscriptions", async ({ request, url }) =>
+    payments.accountSubscriptions(await accounts.persona(request), page(url)),
+  );
+  route("GET", "/api/sign-in/providers", async () => accounts.providers);
+  route("GET", "/api/me/preferences", async ({ request }) =>
+    accounts.preferences(await accounts.persona(request)),
+  );
+  route("PUT", "/api/me/preferences", async ({ request }) =>
+    accounts.savePreferences(
+      await accounts.persona(request),
+      await body(request, S.PreferencesSchema),
+    ),
+  );
+  route("POST", "/api/me/avatar", async ({ request }) => {
+    const actor = await accounts.persona(request);
+    assert(
+      actor.profile,
+      400,
+      "profile_required",
+      "Enregistrez vos informations avant d’ajouter une photo.",
+    );
+    const image = await upload(sql, actor, request, config.uploadDirectory);
+    return accounts.avatar(actor, image.path);
+  });
+  route("DELETE", "/api/me/avatar", async ({ request }) =>
+    accounts.avatar(await accounts.persona(request), null),
+  );
   route("GET", "/api/me", async ({ request }) => accounts.persona(request));
+  route("GET", "/api/me/security", async ({ request }) =>
+    accounts.security(await accounts.persona(request)),
+  );
+  route("POST", "/api/me/contact-email", async ({ request }) =>
+    accounts.requestContactEmail(
+      await accounts.persona(request),
+      (
+        await body(
+          request,
+          Schema.Struct({
+            email: Schema.String.pipe(
+              Schema.maxLength(254),
+              Schema.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+            ),
+          }),
+        )
+      ).email,
+    ),
+  );
+  route("POST", "/api/me/contact-email/verify", async ({ request }) =>
+    accounts.verifyContactEmail(
+      await accounts.persona(request),
+      (
+        await body(
+          request,
+          Schema.Struct({
+            token: Schema.String.pipe(
+              Schema.minLength(1),
+              Schema.maxLength(200),
+            ),
+          }),
+        )
+      ).token,
+    ),
+  );
+  route("GET", "/api/me/passkeys", ({ request }) => accounts.passkeys(request));
+  route("DELETE", "/api/me/passkeys/:id", ({ request, params }) =>
+    accounts.removePasskey(request, params.id!),
+  );
   route("PUT", "/api/me", async ({ request }) =>
     accounts.saveProfile(
       await accounts.persona(request),
@@ -91,7 +168,12 @@ export async function application(sql: SQL, config: AppConfig) {
     ),
   );
   route("GET", "/api/rentals", async ({ url }) =>
-    catalog.list(page(url), (url.searchParams.get("q") ?? "").slice(0, 100)),
+    catalog.list(
+      page(url),
+      (url.searchParams.get("q") ?? "").slice(0, 100),
+      undefined,
+      rentalFilters(url.searchParams),
+    ),
   );
   route("GET", "/api/my/rentals", async ({ url, request }) =>
     catalog.list(page(url), "", await accounts.persona(request)),
@@ -224,8 +306,104 @@ export async function application(sql: SQL, config: AppConfig) {
   route("DELETE", "/api/favorites/:id", async ({ request, params }) =>
     messages.favorite(await accounts.persona(request), params.id!, false),
   );
+  route(
+    "POST",
+    "/api/rentals/:id/conversations",
+    async ({ request, params }) => {
+      const actor = await accounts.persona(request);
+      await rateLimit(sql, `contact:${actor.id}`, 50);
+      return messages.contact(actor, params.id!);
+    },
+  );
+  route("GET", "/api/rentals/:id/reviews", async ({ request, params, url }) =>
+    feedback.list(
+      params.id!,
+      page(url),
+      await accounts.persona(request).catch((error) => {
+        if (error instanceof Problem && error.status === 401) return undefined;
+        throw error;
+      }),
+    ),
+  );
+  route("GET", "/api/rentals/:id/reviewable", async ({ request, params }) =>
+    feedback.eligible(await accounts.persona(request), params.id!),
+  );
+  route("POST", "/api/bookings/:id/review", async ({ request, params }) =>
+    feedback.create(
+      await accounts.persona(request),
+      params.id!,
+      await body(
+        request,
+        Schema.Struct({
+          rating: Schema.Number.pipe(Schema.int(), Schema.between(1, 5)),
+          body: Schema.String.pipe(Schema.minLength(1), Schema.maxLength(5000)),
+        }),
+      ),
+    ),
+  );
+  route("PUT", "/api/reviews/:id/reply", async ({ request, params }) =>
+    feedback.reply(
+      await accounts.persona(request),
+      params.id!,
+      (await body(request, S.MessageRequest)).body,
+    ),
+  );
+  route("POST", "/api/reviews/:id/moderate", async ({ request, params }) =>
+    feedback.moderate(
+      await accounts.persona(request),
+      params.id!,
+      (await body(request, Schema.Struct({ published: Schema.Boolean })))
+        .published,
+    ),
+  );
+  route("GET", "/api/admin/reviews", async ({ request, url }) =>
+    feedback.administration(await accounts.persona(request), page(url)),
+  );
+  const contentFilters = (url: URL) => ({
+    kind: (url.searchParams.get("kind") ?? "").slice(0, 20),
+    q: (url.searchParams.get("q") ?? "").slice(0, 100),
+    category: (url.searchParams.get("category") ?? "").slice(0, 100),
+    town: (url.searchParams.get("town") ?? "").slice(0, 100),
+    period: url.searchParams.get("period") ?? "all",
+  });
+  route("GET", "/api/content", async ({ url }) =>
+    publishing.list(page(url), contentFilters(url)),
+  );
+  route("GET", "/api/content/:slug", async ({ params }) =>
+    publishing.detail(params.slug!),
+  );
+  route("GET", "/api/admin/content", async ({ url, request }) =>
+    publishing.list(
+      page(url),
+      contentFilters(url),
+      await accounts.persona(request),
+    ),
+  );
+  route("POST", "/api/events/proposals", async ({ request }) => {
+    const actor = await accounts.persona(request);
+    await rateLimit(sql, `proposal:${actor.id}`, 10);
+    const input = await body(request, ProposalSchema);
+    return publishing.propose(actor, input.content, input.submitter);
+  });
+  const saveContent: Handler = async ({ request, params }) => {
+    const actor = await accounts.persona(request);
+    const input = await body(request, ContentWriteSchema);
+    return publishing.save(
+      actor,
+      params.id,
+      input.content,
+      input.status,
+      input.version,
+    );
+  };
+  route("POST", "/api/admin/content", saveContent);
+  route("PUT", "/api/admin/content/:id", saveContent);
   route("GET", "/api/conversations", async ({ request, url }) =>
-    messages.conversations(await accounts.persona(request), page(url)),
+    messages.conversations(
+      await accounts.persona(request),
+      page(url),
+      (url.searchParams.get("q") ?? "").slice(0, 100),
+    ),
   );
   route(
     "GET",
@@ -238,6 +416,7 @@ export async function application(sql: SQL, config: AppConfig) {
     "/api/conversations/:id/messages",
     async ({ request, params }) => {
       const actor = await accounts.persona(request);
+      await rateLimit(sql, `message:${actor.id}`, 100);
       return messages.send(
         actor,
         params.id!,
@@ -362,6 +541,8 @@ export async function application(sql: SQL, config: AppConfig) {
         );
         activeAuth++;
         countedAuth = true;
+        if (path.startsWith("/api/auth/passkeys/register/"))
+          await accounts.persona(request);
         return await accounts.handler(request);
       }
       if (path.startsWith("/media/")) {
@@ -378,7 +559,7 @@ export async function application(sql: SQL, config: AppConfig) {
           "Image introuvable.",
         );
         const publicRows =
-          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb LIMIT 1`;
+          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb UNION ALL SELECT id FROM crozon_personas WHERE NOT disabled AND profile->>'avatarUrl'=${path} UNION ALL SELECT id FROM crozon_content WHERE status='published' AND data->'images' @> ${[path]}::jsonb LIMIT 1`;
         if (!publicRows.length) {
           const actor = await accounts.persona(request);
           const rows =

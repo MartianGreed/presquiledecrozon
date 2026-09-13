@@ -4,12 +4,15 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormsModule } from "@angular/forms";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { filter } from "rxjs";
+import type { ContentKind } from "../../../../packages/contracts/src/content";
 import {
   type Booking,
+  type Conversation,
   emptyRental,
   type Message,
   type Notification,
   type Page,
+  type Persona,
   type Plan,
   type Profile,
   type Quote,
@@ -17,11 +20,30 @@ import {
   type RentalInput,
   rentalSteps,
 } from "../../../../packages/contracts/src/models";
+import { AccountSettings } from "./account-settings";
+import { AccountSubscriptions } from "./account-subscriptions";
 import { Api } from "./api";
+import { AuthDialog } from "./auth-dialog";
+import { ContentPages } from "./content";
+import { passkeyError, signInWithPasskey } from "./passkeys";
+import { emptySearch, RentalSearch, type SearchFields } from "./rental-search";
+import { Reviews } from "./reviews";
+import { StayCalendar } from "./stay-calendar";
 @Component({
   selector: "crozon-page",
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    AuthDialog,
+    StayCalendar,
+    RentalSearch,
+    AccountSettings,
+    AccountSubscriptions,
+    Reviews,
+    ContentPages,
+  ],
   templateUrl: "./page.html",
 })
 export class PageComponent {
@@ -36,10 +58,12 @@ export class PageComponent {
   readonly notice = signal("");
   readonly rentals = signal<Rental[]>([]);
   readonly rental = signal<Rental | null>(null);
+  readonly conversations = signal<Conversation[]>([]);
   readonly bookings = signal<Booking[]>([]);
   readonly booking = signal<Booking | null>(null);
   readonly messages = signal<Message[]>([]);
   readonly notifications = signal<Notification[]>([]);
+  readonly socialProviders = signal<string[]>([]);
   readonly plans = signal<Plan[]>([]);
   readonly quote = signal<Quote | null>(null);
   readonly favorites = signal<string[]>([]);
@@ -58,10 +82,119 @@ export class PageComponent {
     tarifs: "Tarifs",
     conditions: "Conditions",
   };
+  readonly accountLinks = [
+    { label: "Vue d’ensemble", path: "/mon-compte", pages: ["account"] },
+    { label: "Messagerie", path: "/mon-compte/messages", pages: ["messages"] },
+    { label: "Mes vacances", path: "/mon-profil/vacances", pages: [] },
+    {
+      label: "Réservations reçues",
+      path: "/mon-compte/reservations",
+      pages: [],
+    },
+    { label: "Annonces", path: "/mon-compte/annonces", pages: ["my-rentals"] },
+    {
+      label: "Coups de cœur",
+      path: "/mon-compte/coups-de-coeur",
+      pages: ["favorites"],
+    },
+    {
+      label: "Abonnements",
+      path: "/mon-compte/abonnements",
+      pages: ["subscriptions"],
+    },
+    { label: "Profil", path: "/mon-compte/informations", pages: ["profile"] },
+    {
+      label: "Paramètres",
+      path: "/mon-compte/parametres",
+      pages: ["settings"],
+    },
+  ];
+  readonly equipmentChoices = [
+    "Wi-Fi",
+    "Cheminée",
+    "Lave-linge",
+    "Climatisation",
+    "Parking",
+    "Lave-vaisselle",
+    "Aspirateur",
+    "Jardin",
+    "Fer à repasser",
+    "Barbecue",
+    "Micro-ondes",
+    "Sèche-cheveux",
+  ];
+  extraEquipment = "";
+  get customEquipment() {
+    return this.equipmentText
+      .split("\n")
+      .filter((item) => item && !this.equipmentChoices.includes(item));
+  }
+  addEquipment() {
+    const value = this.extraEquipment.trim();
+    if (value && !this.hasEquipment(value)) this.toggleEquipment(value);
+    this.extraEquipment = "";
+  }
+  showPassword = false;
+  get isAuth() {
+    return ["login", "register", "forgot", "reset", "verify"].includes(
+      this.page(),
+    );
+  }
+  get isAccount() {
+    return [
+      "account",
+      "profile",
+      "favorites",
+      "my-rentals",
+      "bookings",
+      "booking",
+      "messages",
+      "subscription",
+      "payment-confirm",
+      "settings",
+      "subscriptions",
+    ].includes(this.page());
+  }
+  get progress() {
+    return Math.round(
+      ((this.rental()?.completedSteps.length ?? 0) / this.steps.length) * 100,
+    );
+  }
+  get editorGroup() {
+    return this.steps.indexOf(this.step as (typeof this.steps)[number]) < 6
+      ? 1
+      : 2;
+  }
+  get previousStep() {
+    return this.steps[
+      this.steps.indexOf(this.step as (typeof this.steps)[number]) - 1
+    ];
+  }
+  closeAuth() {
+    void this.router.navigateByUrl("/");
+  }
+  hasEquipment(value: string) {
+    return this.equipmentText.split("\n").includes(value);
+  }
+  toggleEquipment(value: string) {
+    const values = this.equipmentText.split("\n").filter(Boolean);
+    this.equipmentText = (
+      values.includes(value)
+        ? values.filter((item) => item !== value)
+        : [...values, value]
+    ).join("\n");
+  }
+  coverPhoto(index: number) {
+    const photo = this.editor.photos.splice(index, 1)[0];
+    if (photo) this.editor.photos.unshift(photo);
+  }
+  contentKind: ContentKind = "event";
+  contentSlug = "";
   email = "";
   password = "";
   confirmPassword = "";
   search = "";
+  searchFields = emptySearch();
   message = "";
   start = "";
   end = "";
@@ -145,6 +278,8 @@ export class PageComponent {
       else if (path.startsWith("/deposez-votre-annonce/"))
         page = path.endsWith("/termine") ? "rental-done" : "editor";
       else if (path === "/mon-compte/informations") page = "profile";
+      else if (path === "/mon-compte/abonnements") page = "subscriptions";
+      else if (path === "/mon-compte/parametres") page = "settings";
       else if (path === "/mon-compte/coups-de-coeur") page = "favorites";
       else if (path === "/mon-compte/annonces") page = "my-rentals";
       else if (
@@ -160,6 +295,39 @@ export class PageComponent {
       else if (path === "/mon-compte/messages") page = "messages";
       else if (path.startsWith("/abonnement"))
         page = path.includes("/confirm/") ? "payment-confirm" : "subscription";
+      else if (
+        ["/evenements", "/activites", "/restaurants", "/informations"].includes(
+          path,
+        )
+      ) {
+        page = "content-list";
+        this.contentKind =
+          path === "/activites"
+            ? "activity"
+            : path === "/restaurants"
+              ? "restaurant"
+              : path === "/informations"
+                ? "page"
+                : "event";
+      } else if (path === "/proposer-un-evenement") page = "content-proposal";
+      else if (path === "/admin/publications") page = "content-admin";
+      else if (path === "/plan-du-site") page = "sitemap";
+      else if (
+        [
+          "/conditions-generales",
+          "/mentions-legales",
+          "/confidentialite",
+          "/cookies",
+        ].includes(path)
+      ) {
+        page = "content-detail";
+        this.contentSlug = path.slice(1);
+      } else if (
+        /^\/(evenement|activite|restaurant|informations)\/[^/]+$/.test(path)
+      ) {
+        page = "content-detail";
+        this.contentSlug = decodeURIComponent(path.split("/")[2]);
+      } else if (path === "/admin/avis") page = "admin-reviews";
       else if (path === "/admin") page = "admin";
       else if (path === "/mon-compte") page = "account";
       else if (path !== "/") page = "not-found";
@@ -168,6 +336,8 @@ export class PageComponent {
         "editor",
         "rental-done",
         "profile",
+        "settings",
+        "subscriptions",
         "favorites",
         "my-rentals",
         "bookings",
@@ -177,6 +347,9 @@ export class PageComponent {
         "payment-confirm",
         "account",
         "admin",
+        "admin-reviews",
+        "content-proposal",
+        "content-admin",
       ];
       if (protectedPages.includes(page) && !(await this.api.me())) {
         await this.router.navigate(["/login"], {
@@ -184,17 +357,45 @@ export class PageComponent {
         });
         return;
       }
+      if (["home", "catalog", "detail"].includes(page)) await this.api.me();
       if (generation !== this.generation) return;
       if (["home", "catalog", "my-rentals"].includes(page)) {
         this.search = url.searchParams.get("q") ?? "";
+        this.searchFields = {
+          q: this.search,
+          start: url.searchParams.get("start") ?? "",
+          end: url.searchParams.get("end") ?? "",
+          people: url.searchParams.get("people") ?? "",
+          type: url.searchParams.get("type") ?? "",
+          maxPrice: url.searchParams.has("maxPrice")
+            ? String(Number(url.searchParams.get("maxPrice")) / 100)
+            : "",
+        };
         const result = await this.api.request<Page<Rental>>(
-          `${page === "my-rentals" ? "/my" : ""}/rentals?page=${this.pageNumber}&q=${encodeURIComponent(this.search)}`,
+          `${page === "my-rentals" ? "/my" : ""}/rentals?page=${this.pageNumber}&q=${encodeURIComponent(this.search)}&${new URLSearchParams(Object.fromEntries(["start", "end", "people", "type", "maxPrice"].map((key) => [key, url.searchParams.get(key) ?? ""]))).toString()}`,
         );
         if (generation !== this.generation) return;
         this.rentals.set(result.items);
         this.total = result.total;
       }
+      if (["login", "register"].includes(page)) {
+        this.socialProviders.set(
+          await this.api.request<string[]>("/sign-in/providers"),
+        );
+        if (url.searchParams.get("oauth") === "failed")
+          this.error.set(
+            "La connexion a échoué ou a été annulée. Réessayez. Pour associer un compte existant, connectez-vous d’abord avec votre méthode habituelle.",
+          );
+      }
+      if (page === "home")
+        this.plans.set(await this.api.request<Plan[]>("/plans"));
       if (page === "detail") {
+        if (url.searchParams.has("start"))
+          this.start = url.searchParams.get("start") ?? "";
+        if (url.searchParams.has("end"))
+          this.end = url.searchParams.get("end") ?? "";
+        if (url.searchParams.has("people"))
+          this.peopleCount = Number(url.searchParams.get("people")) || 2;
         const slug =
           path === "/previsualisation/annonce"
             ? url.searchParams.get("rental_id")
@@ -207,8 +408,15 @@ export class PageComponent {
             (await this.api.request<Rental[]>("/favorites")).map((r) => r.id),
           );
       }
-      if (page === "favorites")
-        this.rentals.set(await this.api.request<Rental[]>("/favorites"));
+      if (
+        ["home", "catalog", "favorites"].includes(page) &&
+        this.api.persona()
+      ) {
+        const saved = await this.api.request<Rental[]>("/favorites");
+        if (generation !== this.generation) return;
+        this.favorites.set(saved.map((item) => item.id));
+        if (page === "favorites") this.rentals.set(saved);
+      }
       if (page === "profile")
         this.profile = { ...(this.api.persona()?.profile ?? this.profile) };
       if (page === "editor") {
@@ -255,10 +463,11 @@ export class PageComponent {
           1,
           Number(url.searchParams.get("conversationsPage") ?? 1),
         );
-        const result = await this.api.request<Page<Booking>>(
-          `/conversations?page=${this.conversationPage}`,
+        const result = await this.api.request<Page<Conversation>>(
+          `/conversations?page=${this.conversationPage}&q=${encodeURIComponent(url.searchParams.get("q") ?? "")}`,
         );
-        this.bookings.set(result.items);
+        this.conversations.set(result.items);
+        this.search = url.searchParams.get("q") ?? "";
         this.conversationTotal = result.total;
         this.conversationId =
           url.searchParams.get("conversation") ?? result.items[0]?.id ?? "";
@@ -319,6 +528,23 @@ export class PageComponent {
       this.busy.set(false);
     }
   }
+  async finishSignIn() {
+    await this.api.me();
+    const next = this.url().searchParams.get("next");
+    await this.router.navigateByUrl(
+      next?.startsWith("/") && !next.startsWith("//") ? next : "/mon-compte",
+    );
+  }
+  passkeyLogin() {
+    return this.action(async () => {
+      try {
+        await signInWithPasskey(this.api);
+      } catch (error) {
+        throw new Error(passkeyError(error));
+      }
+      await this.finishSignIn();
+    });
+  }
   async auth() {
     await this.action(async () => {
       const page = this.page();
@@ -327,13 +553,7 @@ export class PageComponent {
           email: this.email,
           password: this.password,
         });
-        await this.api.me();
-        const next = this.url().searchParams.get("next");
-        await this.router.navigateByUrl(
-          next?.startsWith("/") && !next.startsWith("//")
-            ? next
-            : "/mon-compte",
-        );
+        await this.finishSignIn();
       } else if (page === "register") {
         if (this.password !== this.confirmPassword)
           throw new Error("Les mots de passe ne correspondent pas.");
@@ -368,15 +588,60 @@ export class PageComponent {
       }
     });
   }
+  async uploadAvatar(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    await this.action(async () => {
+      const persona = await this.api.upload<Persona>("/me/avatar", file);
+      this.api.persona.set(persona);
+      this.profile = { ...persona.profile! };
+      this.notice.set("Votre photo de profil est enregistrée.");
+    });
+    input.value = "";
+  }
+  removeAvatar() {
+    return this.action(async () => {
+      const persona = await this.api.request<Persona>("/me/avatar", "DELETE");
+      this.api.persona.set(persona);
+      this.profile = { ...persona.profile! };
+      this.notice.set("Votre photo de profil a été retirée.");
+    });
+  }
+  socialLogin(provider: string) {
+    return this.action(async () => {
+      const next = this.url().searchParams.get("next");
+      const returnTo =
+        next?.startsWith("/") && !next.startsWith("//") && !next.includes("\\")
+          ? next
+          : "/mon-compte";
+      const response = await this.api.request<{ authorizationUrl: string }>(
+        `/auth/oauth/${provider}/start`,
+        "POST",
+        { returnTo },
+      );
+      location.assign(response.authorizationUrl);
+    });
+  }
   async saveProfile() {
     await this.action(async () => {
-      this.api.persona.set(await this.api.request("/me", "PUT", this.profile));
+      const { avatarUrl: _avatarUrl, ...profile } = this.profile;
+      this.api.persona.set(await this.api.request("/me", "PUT", profile));
       this.notice.set("Vos informations sont enregistrées.");
     });
   }
-  searchRentals() {
+  searchRentals(fields: SearchFields) {
     void this.router.navigate(["/annonces"], {
-      queryParams: { q: this.search },
+      queryParams: {
+        q: fields.q,
+        start: fields.start || null,
+        end: fields.end || null,
+        people: fields.people || null,
+        type: fields.type || null,
+        maxPrice: fields.maxPrice
+          ? Math.round(Number(fields.maxPrice) * 100)
+          : null,
+      },
     });
   }
   async favorite(rental: Rental) {
@@ -396,12 +661,21 @@ export class PageComponent {
       this.favorites.update((ids) =>
         saved ? ids.filter((id) => id !== rental.id) : [...ids, rental.id],
       );
+      if (saved && this.page() === "favorites")
+        this.rentals.update((items) =>
+          items.filter((item) => item.id !== rental.id),
+        );
       this.notice.set(
         saved
           ? "Annonce retirée de vos coups de cœur."
           : "Annonce ajoutée à vos coups de cœur.",
       );
     });
+  }
+  chooseStay(range: { start: string; end: string }) {
+    this.start = range.start;
+    this.end = range.end;
+    this.quote.set(null);
   }
   async calculate() {
     await this.action(async () => {
@@ -492,17 +766,7 @@ export class PageComponent {
       if (this.editor.photos.length + files.length > 30)
         throw new Error("Vous pouvez ajouter au maximum 30 photos.");
       for (const file of files) {
-        const response = await fetch("/api/media", {
-          method: "POST",
-          headers: { "content-type": file.type },
-          body: file,
-          signal: AbortSignal.timeout(30000),
-        });
-        const result = await response.json();
-        if (!response.ok)
-          throw new Error(
-            result.message ?? "Impossible d’ajouter cette photo.",
-          );
+        const result = await this.api.upload<{ path: string }>("/media", file);
         this.editor.photos = [...this.editor.photos, result.path];
       }
       input.value = "";
@@ -575,6 +839,33 @@ export class PageComponent {
           {},
         ),
       );
+    });
+  }
+  searchConversations() {
+    return this.router.navigate(["/mon-compte/messages"], {
+      queryParams: { q: this.search || null },
+    });
+  }
+  contactOwner() {
+    return this.action(async () => {
+      if (!this.api.persona()) {
+        await this.router.navigate(["/login"], {
+          queryParams: { next: this.router.url },
+        });
+        return;
+      }
+      if (!this.api.persona()?.profile) {
+        await this.router.navigateByUrl("/mon-compte/informations");
+        return;
+      }
+      const conversation = await this.api.request<{ id: string }>(
+        `/rentals/${this.rental()!.id}/conversations`,
+        "POST",
+        {},
+      );
+      await this.router.navigate(["/mon-compte/messages"], {
+        queryParams: { conversation: conversation.id },
+      });
     });
   }
   async changeConversationPage(delta: number) {

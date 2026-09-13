@@ -29,6 +29,22 @@ export async function migrate(sql: SQL): Promise<void> {
  CREATE TABLE IF NOT EXISTS crozon_legacy_archive(source_table text NOT NULL,source_key text NOT NULL,data jsonb NOT NULL,PRIMARY KEY(source_table,source_key));
  CREATE TABLE IF NOT EXISTS crozon_imports(id text PRIMARY KEY,checksum text NOT NULL,counts jsonb NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
  INSERT INTO crozon_schema(version) VALUES(1) ON CONFLICT DO NOTHING;
+ ALTER TABLE crozon_personas ADD COLUMN IF NOT EXISTS preferences jsonb NOT NULL DEFAULT '{"emailNotifications":true}';
+ ALTER TABLE crozon_personas ALTER COLUMN email DROP NOT NULL;
+ CREATE TABLE IF NOT EXISTS crozon_contact_tokens(hash text PRIMARY KEY,persona_id text NOT NULL REFERENCES crozon_personas(id),email text NOT NULL,expires_at timestamptz NOT NULL);
+ INSERT INTO crozon_schema(version) VALUES(2) ON CONFLICT DO NOTHING;
+ CREATE TABLE IF NOT EXISTS crozon_direct_conversations(id text PRIMARY KEY,rental_id text NOT NULL REFERENCES crozon_rentals(id),persona_id text NOT NULL REFERENCES crozon_personas(id),owner_id text NOT NULL REFERENCES crozon_personas(id),created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(rental_id,persona_id));
+ CREATE TABLE IF NOT EXISTS crozon_direct_messages(id text PRIMARY KEY,booking_id text NOT NULL REFERENCES crozon_direct_conversations(id),persona_id text NOT NULL REFERENCES crozon_personas(id),data jsonb NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
+ CREATE INDEX IF NOT EXISTS crozon_direct_messages_conversation ON crozon_direct_messages(booking_id,created_at);
+ CREATE TABLE IF NOT EXISTS crozon_reviews(id text PRIMARY KEY,booking_id text NOT NULL UNIQUE REFERENCES crozon_bookings(id),rental_id text NOT NULL REFERENCES crozon_rentals(id),persona_id text NOT NULL REFERENCES crozon_personas(id),rating integer NOT NULL CHECK(rating BETWEEN 1 AND 5),body text NOT NULL,reply text NOT NULL DEFAULT '',published boolean NOT NULL DEFAULT true,created_at timestamptz NOT NULL DEFAULT now());
+ CREATE INDEX IF NOT EXISTS crozon_reviews_rental ON crozon_reviews(rental_id,created_at);
+ CREATE OR REPLACE VIEW crozon_conversation_index AS
+ SELECT id,rental_id,persona_id,data->>'ownerId' AS owner_id,data->>'rentalTitle' AS title,data->>'start' AS start_date,data->>'end' AS end_date,data->>'createdAt' AS created_at,'booking' AS kind FROM crozon_bookings
+ UNION ALL SELECT c.id,c.rental_id,c.persona_id,c.owner_id,r.data->>'title',NULL,NULL,c.created_at::text,'direct' FROM crozon_direct_conversations c JOIN crozon_rentals r ON r.id=c.rental_id;
+ INSERT INTO crozon_schema(version) VALUES(3) ON CONFLICT DO NOTHING;
+ CREATE TABLE IF NOT EXISTS crozon_content(id text PRIMARY KEY,author_id text NOT NULL REFERENCES crozon_personas(id),kind text NOT NULL,slug text NOT NULL UNIQUE,status text NOT NULL CHECK(status IN ('draft','pending','published')),version integer NOT NULL,data jsonb NOT NULL,submitter jsonb NOT NULL,updated_at timestamptz NOT NULL DEFAULT now());
+ CREATE INDEX IF NOT EXISTS crozon_content_public ON crozon_content(kind,status,updated_at);
+ INSERT INTO crozon_schema(version) VALUES(4) ON CONFLICT DO NOTHING;
  `);
   });
 }

@@ -14,6 +14,7 @@ import {
 } from "../../../packages/contracts/src/models";
 import { application } from "../src/app";
 import { settings } from "../src/config";
+import { event } from "../src/database";
 import { migrate } from "../src/migrate";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -329,6 +330,23 @@ suite("PostgreSQL application acceptance", () => {
       ).status,
     ).toBe(400);
   });
+  test("subscription history is restricted to its purchaser", async () => {
+    const own = (await request(
+      "/api/me/subscriptions",
+      "GET",
+      undefined,
+      ownerCookie,
+    ).then((r) => r.json())) as { items: Subscription[]; total: number };
+    expect(own.total).toBe(1);
+    expect(own.items[0]?.status).toBe("consumed");
+    const other = (await request(
+      "/api/me/subscriptions",
+      "GET",
+      undefined,
+      guestCookie,
+    ).then((r) => r.json())) as { total: number };
+    expect(other.total).toBe(0);
+  });
   test("favorites are idempotent and scoped to each persona", async () => {
     expect(
       (await request(`/api/favorites/${rental.id}`, "PUT", {}, guestCookie))
@@ -465,6 +483,210 @@ suite("PostgreSQL application acceptance", () => {
       ).length,
     ).toBeGreaterThan(0);
   });
+  test("direct contact creates no booking and only participants can exchange messages", async () => {
+    const before = await sql`SELECT count(*) AS n FROM crozon_bookings`;
+    const created = await request(
+      `/api/rentals/${rental.id}/conversations`,
+      "POST",
+      {},
+      guestCookie,
+    );
+    expect(created.status).toBe(200);
+    const conversation = (await created.json()) as { id: string };
+    expect(
+      (
+        (await request(
+          `/api/rentals/${rental.id}/conversations`,
+          "POST",
+          {},
+          guestCookie,
+        ).then((r) => r.json())) as { id: string }
+      ).id,
+    ).toBe(conversation.id);
+    expect((await sql`SELECT count(*) AS n FROM crozon_bookings`)[0].n).toBe(
+      before[0].n,
+    );
+    expect(
+      (
+        await request(
+          `/api/rentals/${rental.id}/conversations`,
+          "POST",
+          {},
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/conversations/${conversation.id}/messages`,
+          "GET",
+          undefined,
+          otherCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/conversations/${conversation.id}/messages`,
+          "POST",
+          { body: "Le jardin est-il clos ?" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const messages = (await request(
+      `/api/conversations/${conversation.id}/messages`,
+      "GET",
+      undefined,
+      ownerCookie,
+    ).then((r) => r.json())) as { items: Array<{ body: string }> };
+    expect(messages.items[0]?.body).toBe("Le jardin est-il clos ?");
+    const found = (await request(
+      "/api/conversations?q=Maison",
+      "GET",
+      undefined,
+      guestCookie,
+    ).then((r) => r.json())) as {
+      items: Array<{ counterpart: { name: string } }>;
+    };
+    expect(found.items).toHaveLength(2);
+    expect(found.items[0]?.counterpart.name).toBe("Marie Martin");
+    expect(JSON.stringify(found)).not.toContain("owner@example.test");
+    expect(
+      (
+        (await request(
+          "/api/conversations?q=Introuvable",
+          "GET",
+          undefined,
+          guestCookie,
+        ).then((r) => r.json())) as { total: number }
+      ).total,
+    ).toBe(0);
+  });
+  test("reviews require a completed owned stay and support owner replies and moderation", async () => {
+    expect(
+      (
+        await request(
+          `/api/bookings/${booking.id}/review`,
+          "POST",
+          { rating: 5, body: "Très bon séjour" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const completed: Booking = {
+      ...booking,
+      id: crypto.randomUUID(),
+      start: "2025-01-01",
+      end: "2025-01-08",
+      status: "done",
+    };
+    await sql`INSERT INTO crozon_bookings(id,rental_id,persona_id,start_date,end_date,status,data) VALUES(${completed.id},${rental.id},${completed.personaId},${completed.start},${completed.end},'done',${completed})`;
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 5, body: "Intrusion" },
+          otherCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 6, body: "Très bon séjour" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const created = await request(
+      `/api/bookings/${completed.id}/review`,
+      "POST",
+      { rating: 5, body: "Très bon séjour" },
+      guestCookie,
+    );
+    expect(created.status).toBe(200);
+    const review = (await created.json()) as { id: string };
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 3, body: "Doublon" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(409);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/reply`,
+          "PUT",
+          { body: "Intrusion" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/reply`,
+          "PUT",
+          { body: "Merci !" },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const published = (await request(`/api/rentals/${rental.id}/reviews`).then(
+      (r) => r.json(),
+    )) as { average: number; items: Array<{ reply: string }> };
+    expect(published.average).toBe(5);
+    expect(published.items[0]?.reply).toBe("Merci !");
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: false },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(403);
+    await sql`UPDATE crozon_personas SET admin=true WHERE id=${owner.id}`;
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: false },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        (await request(`/api/rentals/${rental.id}/reviews`).then((r) =>
+          r.json(),
+        )) as { total: number }
+      ).total,
+    ).toBe(0);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: true },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    await sql`UPDATE crozon_personas SET admin=false WHERE id=${owner.id}`;
+  });
   test("administrators manage references and disabled accounts lose access", async () => {
     await sql`UPDATE crozon_personas SET admin=true WHERE id=${owner.id}`;
     const plan = {
@@ -576,6 +798,448 @@ suite("PostgreSQL application acceptance", () => {
         })
       ).status,
     ).toBe(200);
+  });
+  test("event proposals require consent and moderation before public access", async () => {
+    const content = {
+      kind: "event",
+      slug: "festival-test",
+      title: "Festival de test",
+      summary: "Un événement de démonstration.",
+      body: "Description réservée aux tests de publication.",
+      category: "Culture",
+      town: "Crozon",
+      address: "Place de la mairie",
+      start: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      end: new Date(Date.now() + 31 * 86400000).toISOString().slice(0, 10),
+      startTime: "10:00",
+      endTime: "18:00",
+      price: "Entrée libre",
+      images: [],
+      organizer: {
+        name: "Association de test",
+        email: "organizer@example.test",
+        phone: "0600000001",
+        website: "https://example.test",
+      },
+      contactConsent: false,
+      publicationConsent: true,
+    };
+    const submitter = {
+      firstname: "Nom privé",
+      lastname: "Identité privée",
+      email: "private@example.test",
+      phone: "0600000002",
+    };
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, publicationConsent: false }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          {
+            content: {
+              ...content,
+              organizer: {
+                ...content.organizer,
+                website: "javascript:alert(1)",
+              },
+            },
+            submitter,
+          },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, images: [rental.photos[0]] }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          "/api/events/proposals",
+          "POST",
+          { content: { ...content, start: "2026-02-30" }, submitter },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const proposed = await request(
+      "/api/events/proposals",
+      "POST",
+      { content, submitter },
+      guestCookie,
+    );
+    expect(proposed.status).toBe(200);
+    const entry = (await proposed.json()) as {
+      id: string;
+      version: number;
+      content: typeof content;
+    };
+    expect((await request(`/api/content/${entry.content.slug}`)).status).toBe(
+      404,
+    );
+    expect(
+      (
+        await request(
+          `/api/admin/content/${entry.id}`,
+          "PUT",
+          {
+            content: entry.content,
+            version: entry.version,
+            status: "published",
+          },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    const published = await request(
+      `/api/admin/content/${entry.id}`,
+      "PUT",
+      { content: entry.content, version: entry.version, status: "published" },
+      ownerCookie,
+    );
+    expect(published.status).toBe(200);
+    expect(
+      (
+        await request(
+          `/api/admin/content/${entry.id}`,
+          "PUT",
+          { content: entry.content, version: entry.version, status: "draft" },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(409);
+    const publicEntry = await request(
+      `/api/content/${entry.content.slug}`,
+    ).then((r) => r.json());
+    expect(JSON.stringify(publicEntry)).not.toContain("private@example.test");
+    expect(JSON.stringify(publicEntry)).not.toContain("Nom privé");
+    expect(JSON.stringify(publicEntry)).not.toContain("organizer@example.test");
+    const found = (await request(
+      "/api/content?kind=event&q=Festival&town=Crozon&category=Culture",
+    ).then((r) => r.json())) as { total: number };
+    expect(found.total).toBe(1);
+    const missing = (await request(
+      "/api/content?kind=event&q=Introuvable",
+    ).then((r) => r.json())) as { total: number };
+    expect(missing.total).toBe(0);
+    const legal = {
+      ...content,
+      kind: "page",
+      slug: "conditions-generales",
+      title: "Conditions générales",
+      start: "",
+      end: "",
+      startTime: "",
+      endTime: "",
+      category: "",
+      town: "",
+      address: "",
+      images: [],
+    };
+    const created = await request(
+      "/api/admin/content",
+      "POST",
+      { content: legal, status: "draft", version: 0 },
+      ownerCookie,
+    );
+    expect(created.status).toBe(200);
+    expect((await request("/api/content/conditions-generales")).status).toBe(
+      404,
+    );
+  });
+  test("configured OAuth binds state to the browser and provisions email-less accounts safely", async () => {
+    expect(
+      await request("/api/sign-in/providers").then((r) => r.json()),
+    ).toEqual([]);
+    const config = await Effect.runPromise(
+      load(settings, {
+        env: {
+          DATABASE_URL: databaseUrl!,
+          APP_ORIGIN: origin,
+          GOOGLE_OAUTH_CLIENT_ID: "google-test",
+          GOOGLE_OAUTH_CLIENT_SECRET: "google-secret",
+          FACEBOOK_OAUTH_CLIENT_ID: "facebook-test",
+          FACEBOOK_OAUTH_CLIENT_SECRET: "facebook-secret",
+        },
+      }),
+    );
+    let subject = "12345";
+    let googleEmail = "owner@example.test";
+    const oauthApp = await application(sql, config, {
+      execute: (req) => {
+        const url = new URL(req.url);
+        if (
+          url.pathname.endsWith("/token") ||
+          url.pathname.endsWith("/oauth/access_token")
+        ) {
+          return Effect.promise(async () => {
+            const fields = new URLSearchParams(await req.text());
+            expect(fields.get("code_verifier")).toBeTruthy();
+            expect(fields.get("redirect_uri")).toMatch(
+              /\/api\/auth\/oauth\/(google|facebook)\/callback$/,
+            );
+            return Response.json({
+              access_token: "provider-test-token",
+              token_type: "Bearer",
+            });
+          });
+        }
+        expect(req.headers.get("authorization")).toBe(
+          "Bearer provider-test-token",
+        );
+        return Effect.succeed(
+          Response.json(
+            url.hostname === "graph.facebook.com"
+              ? {
+                  id: subject,
+                  name: "Social Guest",
+                  email: "owner@example.test",
+                  verified: true,
+                }
+              : {
+                  sub: subject,
+                  email: googleEmail,
+                  email_verified: true,
+                  name: "Owner",
+                },
+          ),
+        );
+      },
+    });
+    const oauthRequest = (
+      path: string,
+      method = "GET",
+      data?: unknown,
+      cookie = "",
+    ) =>
+      oauthApp.handler(
+        new Request(origin + path, {
+          method,
+          headers: { origin, cookie, "content-type": "application/json" },
+          body: data ? JSON.stringify(data) : undefined,
+        }),
+      );
+    async function begin(provider: string) {
+      const response = await oauthRequest(
+        `/api/auth/oauth/${provider}/start`,
+        "POST",
+        { returnTo: "/mon-compte/parametres" },
+      );
+      expect(response.status).toBe(200);
+      const result = (await response.json()) as { authorizationUrl: string };
+      const url = new URL(result.authorizationUrl);
+      expect(url.searchParams.get("code_challenge_method")).toBe("S256");
+      return {
+        path: `/api/auth/oauth/${provider}/callback?state=${url.searchParams.get("state")}&code=test-code`,
+        cookie: response.headers.getSetCookie()[0]!.split(";")[0]!,
+      };
+    }
+    const first = await begin("facebook");
+    expect((await oauthRequest(first.path)).headers.get("location")).toBe(
+      "/login?oauth=failed",
+    );
+    const completed = await oauthRequest(
+      first.path,
+      "GET",
+      undefined,
+      first.cookie,
+    );
+    expect(completed.status).toBe(303);
+    expect(completed.headers.get("location")).toBe(
+      `${origin}/mon-compte/parametres`,
+    );
+    const session = completed.headers
+      .getSetCookie()
+      .find((c) => c.startsWith("crozon_session="))!
+      .split(";")[0]!;
+    const me = (await oauthRequest("/api/me", "GET", undefined, session).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(me.id).not.toBe(owner.id);
+    expect(me.email).toBe("");
+    expect(
+      (
+        await oauthRequest(first.path, "GET", undefined, first.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    subject = "12346";
+    const second = await begin("facebook");
+    const completed2 = await oauthRequest(
+      second.path,
+      "GET",
+      undefined,
+      second.cookie,
+    );
+    const session2 = completed2.headers
+      .getSetCookie()
+      .find((c) => c.startsWith("crozon_session="))!
+      .split(";")[0]!;
+    const me2 = (await oauthRequest("/api/me", "GET", undefined, session2).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(me2.id).not.toBe(me.id);
+    expect(me2.email).toBe("");
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email",
+          "POST",
+          { email: "social@example.test" },
+          session,
+        )
+      ).status,
+    ).toBe(200);
+    const contact =
+      await sql`SELECT body FROM crozon_outbox WHERE recipient='social@example.test' ORDER BY created_at DESC LIMIT 1`;
+    const token = new URL(contact[0].body).searchParams.get("contact-token");
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session2,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session,
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      await oauthRequest("/api/me/security", "GET", undefined, session).then(
+        (r) => r.json(),
+      ),
+    ).toEqual({ hasPassword: false, email: "social@example.test" });
+    googleEmail = "social@example.test";
+    const collision = await begin("google");
+    expect(
+      (
+        await oauthRequest(collision.path, "GET", undefined, collision.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    expect(
+      (
+        await oauthRequest("/api/auth/register/password", "POST", {
+          email: "social@example.test",
+          password: "A long test password 2026!",
+        })
+      ).status,
+    ).toBe(409);
+    googleEmail = "owner@example.test";
+    const google = await begin("google");
+    expect(
+      (
+        await oauthRequest(google.path, "GET", undefined, google.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    const linking = await begin("google");
+    const linked = await oauthRequest(
+      linking.path,
+      "GET",
+      undefined,
+      `${linking.cookie}; ${ownerCookie}`,
+    );
+    expect(linked.headers.get("location")).toBe(
+      `${origin}/mon-compte/parametres`,
+    );
+    expect(
+      linked.headers
+        .getSetCookie()
+        .some((c) => c.startsWith("crozon_session=")),
+    ).toBe(true);
+    const badReturn = await oauthRequest(
+      "/api/auth/oauth/google/start",
+      "POST",
+      { returnTo: "https://evil.test" },
+    );
+    expect(badReturn.status).toBe(400);
+  });
+  test("notification preferences retain in-app messages and security email", async () => {
+    expect(
+      (
+        await request(
+          "/api/me/preferences",
+          "PUT",
+          { emailNotifications: false },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const before =
+      await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`;
+    await event(sql, _guest.id, "Preference test", "/mon-compte/messages");
+    const after =
+      await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`;
+    expect(after[0].n).toBe(before[0].n);
+    expect(
+      (
+        await sql`SELECT id FROM crozon_notifications WHERE persona_id=${_guest.id} AND data->>'message'='Preference test'`
+      ).length,
+    ).toBe(1);
+    expect(
+      await request("/api/me/preferences", "GET", undefined, guestCookie).then(
+        (r) => r.json(),
+      ),
+    ).toEqual({ emailNotifications: false });
+    expect(
+      (
+        await request("/api/auth/password/reset/request", "POST", {
+          email: _guest.email,
+        })
+      ).status,
+    ).toBe(202);
+    expect(
+      (
+        await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`
+      )[0].n,
+    ).not.toBe(before[0].n);
+    const me = (await request("/api/me", "GET", undefined, guestCookie).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(
+      (
+        await request(
+          "/api/me",
+          "PUT",
+          { ...me.profile, avatarUrl: rental.photos[0] },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
   });
   test("password recovery is single-use and revokes old sessions", async () => {
     expect(

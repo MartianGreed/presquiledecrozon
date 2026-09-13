@@ -7,6 +7,7 @@ import { TENANT } from "../apps/api/src/identity/service";
 import { migrate } from "../apps/api/src/migrate";
 import { rentals } from "../apps/api/src/rentals/service";
 import {
+  type Booking,
   emptyRental,
   type Persona,
   type Rental,
@@ -35,6 +36,17 @@ try {
       await sql`SELECT body FROM crozon_outbox WHERE recipient=${process.argv[3]!} AND body LIKE 'http%' ORDER BY created_at DESC LIMIT 1`;
     if (!rows[0]) throw new Error("No test email found.");
     process.stdout.write(rows[0].body);
+  } else if (process.argv[2] === "completed-stay") {
+    const rows =
+      await sql`SELECT b.data FROM crozon_bookings b JOIN crozon_personas p ON p.id=b.persona_id WHERE b.id=${process.argv[3]!} AND p.email=${process.argv[4]!}`;
+    if (!rows[0]) throw new Error("Test booking and traveler do not match.");
+    const booking: Booking = {
+      ...rows[0].data,
+      start: "2025-02-01",
+      end: "2025-02-08",
+      status: "done",
+    };
+    await sql`UPDATE crozon_bookings SET start_date=${booking.start},end_date=${booking.end},status='done',data=${booking} WHERE id=${booking.id}`;
   } else if (process.argv[2] === "paid-entitlement") {
     // Test-only business fixture. Never settle a real payment or use a preview database.
     const rows =

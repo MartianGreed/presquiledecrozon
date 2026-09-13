@@ -6,6 +6,21 @@ export const settings = Settings.struct({
     default: new URL("http://localhost:3000"),
   }),
   databaseUrl: Settings.secret("DATABASE_URL"),
+  googleOAuthClientId: Settings.optional(
+    Settings.secret("GOOGLE_OAUTH_CLIENT_ID"),
+  ),
+  googleOAuthClientSecret: Settings.optional(
+    Settings.secret("GOOGLE_OAUTH_CLIENT_SECRET"),
+  ),
+  facebookOAuthClientId: Settings.optional(
+    Settings.secret("FACEBOOK_OAUTH_CLIENT_ID"),
+  ),
+  facebookOAuthClientSecret: Settings.optional(
+    Settings.secret("FACEBOOK_OAUTH_CLIENT_SECRET"),
+  ),
+  facebookGraphVersion: Settings.string("FACEBOOK_GRAPH_VERSION", {
+    default: "v25.0",
+  }),
   stripeSecret: Settings.optional(Settings.secret("STRIPE_SECRET_KEY")),
   stripeWebhookSecret: Settings.optional(
     Settings.secret("STRIPE_WEBHOOK_SECRET"),

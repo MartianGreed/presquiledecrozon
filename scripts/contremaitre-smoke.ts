@@ -27,7 +27,7 @@ try {
   expect(items.length).toBeGreaterThan(0);
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: /Votre prochaine/ }),
+    page.getByRole("heading", { name: /Se loger en Presqu’île de Crozon/i }),
   ).toBeVisible();
   await page.screenshot({ path: join(artifacts, "home.png"), fullPage: true });
   await page.goto(`/annonce/${items[0].slug}`);
@@ -61,6 +61,8 @@ try {
     await expect(
       page.getByRole("heading", { name: "Mon compte", exact: true }),
     ).toBeVisible();
+    if (await page.getByRole("button", { name: /Menu/ }).isVisible())
+      await page.getByRole("button", { name: /Menu/ }).click();
     await page.getByRole("button", { name: "Déconnexion" }).click();
     await expect(
       page.getByRole("heading", { name: "Se connecter", exact: true }),

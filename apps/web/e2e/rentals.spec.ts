@@ -36,9 +36,14 @@ test("owner completes all listing steps, uploads photos, resumes and controls pu
   await page.getByLabel("Nom de la chambre").fill("Chambre côté mer");
   await page.getByLabel("Nombre", { exact: true }).fill("2");
   await next(page, "Équipements");
-  await page
-    .getByLabel("Équipements disponibles")
-    .fill("Wi-Fi\nJardin\nParking");
+  await page.getByLabel("Wi-Fi", { exact: true }).check();
+  await page.getByLabel("Jardin", { exact: true }).check();
+  await page.getByLabel("Parking", { exact: true }).check();
+  await page.getByLabel("Équipement supplémentaire").fill("Prise de recharge");
+  await page.getByRole("button", { name: "+ Ajouter un équipement" }).click();
+  await expect(
+    page.getByRole("button", { name: "Retirer Prise de recharge" }),
+  ).toBeVisible();
   await next(page, "Description");
   await page.getByLabel("Titre de votre annonce").fill(title);
   await page
@@ -87,7 +92,22 @@ test("owner completes all listing steps, uploads photos, resumes and controls pu
         .evaluate((image: HTMLImageElement) => image.naturalWidth),
     )
     .toBeGreaterThan(0);
+  const secondPhoto = await page
+    .getByRole("img", { name: "Photo de votre logement" })
+    .nth(1)
+    .getAttribute("src");
+  await page
+    .getByRole("button", { name: "Choisir comme couverture" })
+    .first()
+    .click();
+  await expect(
+    page.getByRole("img", { name: "Photo de votre logement" }).first(),
+  ).toHaveAttribute("src", secondPhoto!);
   await next(page, "Préférences");
+  const persisted = await page.request
+    .get(`/api/rentals/${id}`)
+    .then((response) => response.json());
+  expect(persisted.photos[0]).toBe(secondPhoto);
   await page.getByLabel("Délai minimum").fill("2");
   await page.getByLabel("Réservation possible").fill("12");
   await next(page, "Calendrier");
@@ -164,10 +184,12 @@ test("owner completes all listing steps, uploads photos, resumes and controls pu
     await expect(anonymous.getByRole("alert")).toContainText("indisponible");
     await expect(anonymous.locator(".quote")).toHaveCount(0);
     await anonymous
-      .getByRole("link", { name: "Presqu'île de Crozon", exact: true })
+      .getByRole("link", { name: "Presqu’île de Crozon, accueil", exact: true })
       .click();
     await expect(
-      anonymous.getByRole("heading", { name: /Votre prochaine/ }),
+      anonymous.getByRole("heading", {
+        name: /Se loger en Presqu’île de Crozon/i,
+      }),
     ).toBeVisible();
     await page.goto("/mon-compte/annonces");
     await page.getByRole("button", { name: "Désactiver", exact: true }).click();
@@ -178,6 +200,7 @@ test("owner completes all listing steps, uploads photos, resumes and controls pu
       0,
     );
     await page.getByRole("link", { name: "Modifier", exact: true }).click();
+    await page.getByText("Toutes les étapes", { exact: true }).click();
     await page.getByRole("link", { name: /Description/, exact: false }).click();
     await expect(page.getByLabel("Titre de votre annonce")).toHaveValue(title);
     await page.reload();

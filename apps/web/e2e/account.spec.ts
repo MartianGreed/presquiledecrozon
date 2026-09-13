@@ -54,6 +54,8 @@ test("registration rejects mismatch, verifies email, persists profile and logs o
   await page.reload();
   await expect(page.getByLabel("Prénom", { exact: true })).toHaveValue("Alex");
   await expect(page.getByLabel("Téléphone")).toHaveValue("0612345678");
+  if (await page.getByRole("button", { name: /Menu/ }).isVisible())
+    await page.getByRole("button", { name: /Menu/ }).click();
   await page.getByRole("button", { name: "Déconnexion" }).click();
   await expect(
     page.getByRole("heading", { name: "Se connecter", exact: true }),
@@ -85,13 +87,17 @@ test("password recovery changes credentials, revokes sessions and rejects token 
     );
     const link = emailLink(signedIn);
     await page.goto(link);
-    await page.getByLabel("Nouveau mot de passe").fill(`${password} changed`);
+    await page
+      .getByLabel("Nouveau mot de passe", { exact: true })
+      .fill(`${password} changed`);
     await page
       .getByRole("button", { name: "Enregistrer mon mot de passe" })
       .click();
     await expect(
       page.getByRole("heading", { name: "Mon compte", exact: true }),
     ).toBeVisible();
+    if (await page.getByRole("button", { name: /Menu/ }).isVisible())
+      await page.getByRole("button", { name: /Menu/ }).click();
     await page.getByRole("button", { name: "Déconnexion" }).click();
     await oldSession.reload();
     await expect(
@@ -105,7 +111,9 @@ test("password recovery changes credentials, revokes sessions and rejects token 
     await expect(page.getByRole("alert")).toContainText("incorrect");
     await login(page, signedIn, `${password} changed`);
     await page.goto(link);
-    await page.getByLabel("Nouveau mot de passe").fill(`${password} replay`);
+    await page
+      .getByLabel("Nouveau mot de passe", { exact: true })
+      .fill(`${password} replay`);
     await page
       .getByRole("button", { name: "Enregistrer mon mot de passe" })
       .click();
@@ -143,7 +151,7 @@ test("protected deep link returns to the requested page after login", async ({
   ).toBeVisible();
   await expect(
     page.getByText(
-      "Vos conversations apparaîtront après une demande de réservation.",
+      "Vos conversations apparaîtront après un premier contact ou une demande de réservation.",
     ),
   ).toBeVisible();
 });
@@ -165,4 +173,59 @@ test("anonymous favorite returns to the chosen listing after sign-in", async ({
   await expect(page).toHaveURL(new RegExp(`/annonce/${slug}$`));
   await page.getByRole("button", { name: /Coup de cœur/ }).click();
   await expect(page.getByRole("status")).toContainText("ajoutée");
+});
+
+test("profile photo and email notification preference persist", async ({
+  page,
+  signedIn,
+}) => {
+  expect(signedIn).toContain("@example.test");
+  await page.goto("/mon-compte/informations");
+  await page
+    .getByLabel("Photo de profil")
+    .setInputFiles("apps/web/public/images/coast.jpg");
+  await expect(
+    page.getByRole("img", { name: "Votre photo de profil", exact: true }),
+  ).toBeVisible();
+  const path = await page
+    .getByRole("img", { name: "Votre photo de profil", exact: true })
+    .getAttribute("src");
+  await page.getByLabel("Commune").fill("Crozon");
+  await page
+    .getByRole("button", { name: "Enregistrer mes informations" })
+    .click();
+  await expect(page.getByRole("status")).toContainText("enregistrées");
+  await page.reload();
+  await expect(
+    page.getByRole("img", { name: "Votre photo de profil", exact: true }),
+  ).toHaveAttribute("src", path!);
+  await expect(page.getByLabel("Commune")).toHaveValue("Crozon");
+  await page.goto("/mon-compte/parametres");
+  await page.getByLabel("Recevoir les notifications par e-mail").uncheck();
+  await page
+    .getByRole("button", { name: "Enregistrer mes préférences" })
+    .click();
+  await expect(page.getByRole("status")).toContainText("préférences");
+  await page.reload();
+  await expect(
+    page.getByLabel("Recevoir les notifications par e-mail"),
+  ).not.toBeChecked();
+});
+
+test("subscription overview is available and empty for a new account", async ({
+  page,
+  signedIn,
+}) => {
+  expect(signedIn).toContain("@example.test");
+  await page.goto("/mon-compte");
+  await page
+    .getByRole("navigation", { name: "Mon espace personnel" })
+    .getByRole("link", { name: "Abonnements" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Mes abonnements" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Vous n’avez pas encore d’abonnement."),
+  ).toBeVisible();
 });

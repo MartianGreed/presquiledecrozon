@@ -1,7 +1,9 @@
 import type { SQL } from "bun";
 import Stripe from "stripe";
 import type {
+  AccountSubscription,
   Discount,
+  Page,
   Persona,
   Plan,
   Subscription,
@@ -37,6 +39,23 @@ export function billing(sql: SQL, config: AppConfig) {
       const rows =
         await sql`SELECT data FROM crozon_reference WHERE kind='plans' AND data->>'active'='true' ORDER BY id`;
       return rows.map((r: { data: Plan }) => r.data);
+    },
+    async accountSubscriptions(
+      actor: Persona,
+      page: number,
+    ): Promise<Page<AccountSubscription>> {
+      const rows =
+        await sql`SELECT s.data, r.data->>'title' AS title FROM crozon_subscriptions s JOIN crozon_rentals r ON r.id=s.rental_id WHERE s.persona_id=${actor.id} ORDER BY s.id DESC LIMIT 25 OFFSET ${(page - 1) * 25}`;
+      const count =
+        await sql`SELECT count(*) AS total FROM crozon_subscriptions WHERE persona_id=${actor.id}`;
+      return {
+        items: rows.map((row: { data: Subscription; title: string }) => ({
+          ...row.data,
+          rentalTitle: row.title,
+        })),
+        page,
+        total: Number(count[0].total),
+      };
     },
     async subscriptions(
       actor: Persona,

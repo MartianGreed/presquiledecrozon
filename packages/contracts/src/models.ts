@@ -1,4 +1,6 @@
 export interface Profile {
+  avatarUrl?: string;
+  town?: string;
   firstname: string;
   lastname: string;
   cellphone: string;
@@ -81,6 +83,26 @@ export interface Booking {
   quote: Quote;
   createdAt: string;
 }
+export interface Conversation {
+  id: string;
+  rentalId: string;
+  rentalTitle: string;
+  start: string | null;
+  end: string | null;
+  kind: "booking" | "direct";
+  counterpart: { name: string; avatarUrl?: string };
+}
+export interface Review {
+  id: string;
+  rentalId: string;
+  rentalTitle: string;
+  author: { name: string; avatarUrl?: string };
+  rating: number;
+  body: string;
+  reply: string;
+  createdAt: string;
+  published: boolean;
+}
 export interface Message {
   id: string;
   bookingId: string;
@@ -124,6 +146,9 @@ export interface Subscription {
   paymentIntentId: string | null;
   discountId: string | null;
   expiresAt: string | null;
+}
+export interface AccountSubscription extends Subscription {
+  rentalTitle: string;
 }
 export interface Page<T> {
   items: T[];
