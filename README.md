@@ -95,3 +95,5 @@ The [migration epic](https://github.com/MartianGreed/presquiledecrozon/issues/2)
 The container uses Bun at runtime and contains no PHP or legacy source. Build with `docker build -t crozon:VERSION .`. `compose.yaml` provides PostgreSQL, a separate schema-migration job and the application. Set `POSTGRES_PASSWORD`, `DATABASE_URL` (host `database`, URL-encoded password), `APP_ORIGIN` and provider credentials through your deployment environment. Terminate HTTPS at your reverse proxy and forward to the loopback-only port 3000.
 
 Deployment does not migrate the legacy data automatically. Rehearse export, import, media access and backup restoration against an isolated copy before switching traffic. The new schema uses `crozon_` and `auth_` tables and does not mutate the legacy tables.
+
+The [Figma acceptance matrix](docs/testing/figma-journeys.md) maps Playwright scenarios to design frames and records remaining design and provider gaps. `bun run test:e2e` runs all 16 scenarios on desktop and mobile Chromium.

@@ -35,6 +35,24 @@ try {
       await sql`SELECT body FROM crozon_outbox WHERE recipient=${process.argv[3]!} AND body LIKE 'http%' ORDER BY created_at DESC LIMIT 1`;
     if (!rows[0]) throw new Error("No test email found.");
     process.stdout.write(rows[0].body);
+  } else if (process.argv[2] === "paid-entitlement") {
+    // Test-only business fixture. Never settle a real payment or use a preview database.
+    const rows =
+      await sql`SELECT r.id,r.owner_id FROM crozon_rentals r JOIN crozon_personas p ON p.id=r.owner_id WHERE r.id=${process.argv[3]!} AND p.email=${process.argv[4]!}`;
+    if (!rows[0]) throw new Error("Test rental and owner do not match.");
+    const sub: Subscription = {
+      id: crypto.randomUUID(),
+      rentalId: rows[0].id,
+      personaId: rows[0].owner_id,
+      planId: "annual",
+      amount: 9900,
+      months: 12,
+      status: "paid",
+      paymentIntentId: null,
+      discountId: null,
+      expiresAt: null,
+    };
+    await sql`INSERT INTO crozon_subscriptions(id,rental_id,persona_id,data) VALUES(${sub.id},${sub.rentalId},${sub.personaId},${sub})`;
   } else {
     await migrate(sql);
     if (!preview) {

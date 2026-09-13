@@ -30,6 +30,7 @@ export class PageComponent {
   private readonly destroy = inject(DestroyRef);
   readonly page = signal("home");
   readonly loading = signal(true);
+  readonly loadFailed = signal(false);
   readonly busy = signal(false);
   readonly error = signal("");
   readonly notice = signal("");
@@ -122,6 +123,7 @@ export class PageComponent {
     const url = this.url();
     const path = url.pathname;
     this.loading.set(true);
+    this.loadFailed.set(false);
     this.error.set("");
     this.notice.set("");
     this.quote.set(null);
@@ -283,8 +285,16 @@ export class PageComponent {
             await this.api.request<Rental>(`/rentals/${this.rentalId}`),
           );
       }
-      if (page === "admin") await this.loadAdmin();
+      if (page === "admin") {
+        const rows = await this.api.request<Record<string, unknown>[]>(
+          `/admin/${this.adminKind}?page=${this.pageNumber}`,
+        );
+        if (generation !== this.generation) return;
+        this.adminRows.set(rows);
+      }
     } catch (error) {
+      if (generation !== this.generation) return;
+      this.loadFailed.set(true);
       this.error.set(
         error instanceof Error
           ? error.message
@@ -372,7 +382,9 @@ export class PageComponent {
   async favorite(rental: Rental) {
     await this.action(async () => {
       if (!this.api.persona()) {
-        await this.router.navigate(["/login"]);
+        await this.router.navigate(["/login"], {
+          queryParams: { next: this.router.url },
+        });
         return;
       }
       const saved = this.favorites().includes(rental.id);
@@ -410,7 +422,9 @@ export class PageComponent {
       const rental = this.rental();
       if (!rental) return;
       if (!this.api.persona()) {
-        await this.router.navigate(["/login"]);
+        await this.router.navigate(["/login"], {
+          queryParams: { next: this.router.url },
+        });
         return;
       }
       const booking = await this.api.request<Booking>(

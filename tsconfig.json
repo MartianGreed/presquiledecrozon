@@ -21,6 +21,8 @@
   "include": [
     "apps/api/**/*.ts",
     "packages/**/*.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "apps/web/e2e/**/*.ts",
+    "playwright.migration.config.ts"
   ]
 }
