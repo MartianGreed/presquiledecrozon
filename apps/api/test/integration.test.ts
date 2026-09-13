@@ -14,6 +14,7 @@ import {
 } from "../../../packages/contracts/src/models";
 import { application } from "../src/app";
 import { settings } from "../src/config";
+import { event } from "../src/database";
 import { migrate } from "../src/migrate";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -329,6 +330,23 @@ suite("PostgreSQL application acceptance", () => {
       ).status,
     ).toBe(400);
   });
+  test("subscription history is restricted to its purchaser", async () => {
+    const own = (await request(
+      "/api/me/subscriptions",
+      "GET",
+      undefined,
+      ownerCookie,
+    ).then((r) => r.json())) as { items: Subscription[]; total: number };
+    expect(own.total).toBe(1);
+    expect(own.items[0]?.status).toBe("consumed");
+    const other = (await request(
+      "/api/me/subscriptions",
+      "GET",
+      undefined,
+      guestCookie,
+    ).then((r) => r.json())) as { total: number };
+    expect(other.total).toBe(0);
+  });
   test("favorites are idempotent and scoped to each persona", async () => {
     expect(
       (await request(`/api/favorites/${rental.id}`, "PUT", {}, guestCookie))
@@ -576,6 +594,266 @@ suite("PostgreSQL application acceptance", () => {
         })
       ).status,
     ).toBe(200);
+  });
+  test("configured OAuth binds state to the browser and provisions email-less accounts safely", async () => {
+    expect(
+      await request("/api/sign-in/providers").then((r) => r.json()),
+    ).toEqual([]);
+    const config = await Effect.runPromise(
+      load(settings, {
+        env: {
+          DATABASE_URL: databaseUrl!,
+          APP_ORIGIN: origin,
+          GOOGLE_OAUTH_CLIENT_ID: "google-test",
+          GOOGLE_OAUTH_CLIENT_SECRET: "google-secret",
+          FACEBOOK_OAUTH_CLIENT_ID: "facebook-test",
+          FACEBOOK_OAUTH_CLIENT_SECRET: "facebook-secret",
+        },
+      }),
+    );
+    let subject = "12345";
+    const oauthApp = await application(sql, config, {
+      execute: (req) => {
+        const url = new URL(req.url);
+        if (
+          url.pathname.endsWith("/token") ||
+          url.pathname.endsWith("/oauth/access_token")
+        ) {
+          return Effect.promise(async () => {
+            const fields = new URLSearchParams(await req.text());
+            expect(fields.get("code_verifier")).toBeTruthy();
+            expect(fields.get("redirect_uri")).toMatch(
+              /\/api\/auth\/oauth\/(google|facebook)\/callback$/,
+            );
+            return Response.json({
+              access_token: "provider-test-token",
+              token_type: "Bearer",
+            });
+          });
+        }
+        expect(req.headers.get("authorization")).toBe(
+          "Bearer provider-test-token",
+        );
+        return Effect.succeed(
+          Response.json(
+            url.hostname === "graph.facebook.com"
+              ? {
+                  id: subject,
+                  name: "Social Guest",
+                  email: "owner@example.test",
+                  verified: true,
+                }
+              : {
+                  sub: subject,
+                  email: "owner@example.test",
+                  email_verified: true,
+                  name: "Owner",
+                },
+          ),
+        );
+      },
+    });
+    const oauthRequest = (
+      path: string,
+      method = "GET",
+      data?: unknown,
+      cookie = "",
+    ) =>
+      oauthApp.handler(
+        new Request(origin + path, {
+          method,
+          headers: { origin, cookie, "content-type": "application/json" },
+          body: data ? JSON.stringify(data) : undefined,
+        }),
+      );
+    async function begin(provider: string) {
+      const response = await oauthRequest(
+        `/api/auth/oauth/${provider}/start`,
+        "POST",
+        { returnTo: "/mon-compte/parametres" },
+      );
+      expect(response.status).toBe(200);
+      const result = (await response.json()) as { authorizationUrl: string };
+      const url = new URL(result.authorizationUrl);
+      expect(url.searchParams.get("code_challenge_method")).toBe("S256");
+      return {
+        path: `/api/auth/oauth/${provider}/callback?state=${url.searchParams.get("state")}&code=test-code`,
+        cookie: response.headers.getSetCookie()[0]!.split(";")[0]!,
+      };
+    }
+    const first = await begin("facebook");
+    expect((await oauthRequest(first.path)).headers.get("location")).toBe(
+      "/login?oauth=failed",
+    );
+    const completed = await oauthRequest(
+      first.path,
+      "GET",
+      undefined,
+      first.cookie,
+    );
+    expect(completed.status).toBe(303);
+    expect(completed.headers.get("location")).toBe(
+      `${origin}/mon-compte/parametres`,
+    );
+    const session = completed.headers
+      .getSetCookie()
+      .find((c) => c.startsWith("crozon_session="))!
+      .split(";")[0]!;
+    const me = (await oauthRequest("/api/me", "GET", undefined, session).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(me.id).not.toBe(owner.id);
+    expect(me.email).toBe("");
+    expect(
+      (
+        await oauthRequest(first.path, "GET", undefined, first.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    subject = "12346";
+    const second = await begin("facebook");
+    const completed2 = await oauthRequest(
+      second.path,
+      "GET",
+      undefined,
+      second.cookie,
+    );
+    const session2 = completed2.headers
+      .getSetCookie()
+      .find((c) => c.startsWith("crozon_session="))!
+      .split(";")[0]!;
+    const me2 = (await oauthRequest("/api/me", "GET", undefined, session2).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(me2.id).not.toBe(me.id);
+    expect(me2.email).toBe("");
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email",
+          "POST",
+          { email: "social@example.test" },
+          session,
+        )
+      ).status,
+    ).toBe(200);
+    const contact =
+      await sql`SELECT body FROM crozon_outbox WHERE recipient='social@example.test' ORDER BY created_at DESC LIMIT 1`;
+    const token = new URL(contact[0].body).searchParams.get("contact-token");
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session2,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session,
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        await oauthRequest(
+          "/api/me/contact-email/verify",
+          "POST",
+          { token },
+          session,
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      await oauthRequest("/api/me/security", "GET", undefined, session).then(
+        (r) => r.json(),
+      ),
+    ).toEqual({ hasPassword: false, email: "social@example.test" });
+    const google = await begin("google");
+    expect(
+      (
+        await oauthRequest(google.path, "GET", undefined, google.cookie)
+      ).headers.get("location"),
+    ).toBe("/login?oauth=failed");
+    const linking = await begin("google");
+    const linked = await oauthRequest(
+      linking.path,
+      "GET",
+      undefined,
+      `${linking.cookie}; ${ownerCookie}`,
+    );
+    expect(linked.headers.get("location")).toBe(
+      `${origin}/mon-compte/parametres`,
+    );
+    expect(
+      linked.headers
+        .getSetCookie()
+        .some((c) => c.startsWith("crozon_session=")),
+    ).toBe(true);
+    const badReturn = await oauthRequest(
+      "/api/auth/oauth/google/start",
+      "POST",
+      { returnTo: "https://evil.test" },
+    );
+    expect(badReturn.status).toBe(400);
+  });
+  test("notification preferences retain in-app messages and security email", async () => {
+    expect(
+      (
+        await request(
+          "/api/me/preferences",
+          "PUT",
+          { emailNotifications: false },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const before =
+      await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`;
+    await event(sql, _guest.id, "Preference test", "/mon-compte/messages");
+    const after =
+      await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`;
+    expect(after[0].n).toBe(before[0].n);
+    expect(
+      (
+        await sql`SELECT id FROM crozon_notifications WHERE persona_id=${_guest.id} AND data->>'message'='Preference test'`
+      ).length,
+    ).toBe(1);
+    expect(
+      await request("/api/me/preferences", "GET", undefined, guestCookie).then(
+        (r) => r.json(),
+      ),
+    ).toEqual({ emailNotifications: false });
+    expect(
+      (
+        await request("/api/auth/password/reset/request", "POST", {
+          email: _guest.email,
+        })
+      ).status,
+    ).toBe(202);
+    expect(
+      (
+        await sql`SELECT count(*) AS n FROM crozon_outbox WHERE recipient=${_guest.email}`
+      )[0].n,
+    ).not.toBe(before[0].n);
+    const me = (await request("/api/me", "GET", undefined, guestCookie).then(
+      (r) => r.json(),
+    )) as Persona;
+    expect(
+      (
+        await request(
+          "/api/me",
+          "PUT",
+          { ...me.profile, avatarUrl: rental.photos[0] },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
   });
   test("password recovery is single-use and revokes old sessions", async () => {
     expect(

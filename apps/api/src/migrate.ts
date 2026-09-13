@@ -29,6 +29,10 @@ export async function migrate(sql: SQL): Promise<void> {
  CREATE TABLE IF NOT EXISTS crozon_legacy_archive(source_table text NOT NULL,source_key text NOT NULL,data jsonb NOT NULL,PRIMARY KEY(source_table,source_key));
  CREATE TABLE IF NOT EXISTS crozon_imports(id text PRIMARY KEY,checksum text NOT NULL,counts jsonb NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
  INSERT INTO crozon_schema(version) VALUES(1) ON CONFLICT DO NOTHING;
+ ALTER TABLE crozon_personas ADD COLUMN IF NOT EXISTS preferences jsonb NOT NULL DEFAULT '{"emailNotifications":true}';
+ ALTER TABLE crozon_personas ALTER COLUMN email DROP NOT NULL;
+ CREATE TABLE IF NOT EXISTS crozon_contact_tokens(hash text PRIMARY KEY,persona_id text NOT NULL REFERENCES crozon_personas(id),email text NOT NULL,expires_at timestamptz NOT NULL);
+ INSERT INTO crozon_schema(version) VALUES(2) ON CONFLICT DO NOTHING;
  `);
   });
 }

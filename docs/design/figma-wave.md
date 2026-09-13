@@ -24,7 +24,11 @@ Use the installed `@structure-ai/auth` provider resolver and OAuth HTTP handler.
 
 Avatar uploads reuse the validated media pipeline and enforce upload ownership. Add explicit notification preferences without suppressing transactional authentication emails. Add settings and subscription pages to the account navigation. Live OAuth verification needs client credentials and registered callback URLs. The user confirmed these are not ready and will supply configuration later.
 
-The user also requested passkeys. Add WebAuthn registration for authenticated accounts, discoverable sign-in and credential removal, with virtual-authenticator browser coverage.
+Provider configuration is optional: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `FACEBOOK_OAUTH_CLIENT_ID`, `FACEBOOK_OAUTH_CLIENT_SECRET`, and `FACEBOOK_GRAPH_VERSION` (default `v25.0`). Register `${APP_ORIGIN}/api/auth/oauth/google/callback` and `${APP_ORIGIN}/api/auth/oauth/facebook/callback` with their providers. Obtain Google credentials in the [Google Auth platform](https://console.cloud.google.com/auth/clients) and Facebook credentials in the [Meta app dashboard](https://developers.facebook.com/apps/). No existing vault location was supplied.
+
+Facebook only requests public profile, because its account verification is not proof of email ownership. Such accounts initially have no contact email. Settings provides a separate, authenticated, single-use email verification flow with a 30-minute expiry. It does not silently merge accounts or create a password credential. Existing accounts can explicitly associate a social identity from Settings while signed in. OAuth state is bound to a SameSite HttpOnly browser cookie in addition to Structure's one-use state and PKCE. Callback failures return to a French login message.
+
+The user also requested passkeys. WebAuthn registration, discoverable sign-in and credential removal are implemented using Structure, with virtual-authenticator browser coverage including replay and cross-account removal rejection. Passkeys use the hostname and origin of `APP_ORIGIN`; a passkey registered on one preview hostname cannot sign in on another. HTTPS is required except for localhost browser development. No provider credential is needed for passkeys.
 
 ## Conversations and reviews, #22
 

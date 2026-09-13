@@ -174,3 +174,58 @@ test("anonymous favorite returns to the chosen listing after sign-in", async ({
   await page.getByRole("button", { name: /Coup de cœur/ }).click();
   await expect(page.getByRole("status")).toContainText("ajoutée");
 });
+
+test("profile photo and email notification preference persist", async ({
+  page,
+  signedIn,
+}) => {
+  expect(signedIn).toContain("@example.test");
+  await page.goto("/mon-compte/informations");
+  await page
+    .getByLabel("Photo de profil")
+    .setInputFiles("apps/web/public/images/coast.jpg");
+  await expect(
+    page.getByRole("img", { name: "Votre photo de profil", exact: true }),
+  ).toBeVisible();
+  const path = await page
+    .getByRole("img", { name: "Votre photo de profil", exact: true })
+    .getAttribute("src");
+  await page.getByLabel("Commune").fill("Crozon");
+  await page
+    .getByRole("button", { name: "Enregistrer mes informations" })
+    .click();
+  await expect(page.getByRole("status")).toContainText("enregistrées");
+  await page.reload();
+  await expect(
+    page.getByRole("img", { name: "Votre photo de profil", exact: true }),
+  ).toHaveAttribute("src", path!);
+  await expect(page.getByLabel("Commune")).toHaveValue("Crozon");
+  await page.goto("/mon-compte/parametres");
+  await page.getByLabel("Recevoir les notifications par e-mail").uncheck();
+  await page
+    .getByRole("button", { name: "Enregistrer mes préférences" })
+    .click();
+  await expect(page.getByRole("status")).toContainText("préférences");
+  await page.reload();
+  await expect(
+    page.getByLabel("Recevoir les notifications par e-mail"),
+  ).not.toBeChecked();
+});
+
+test("subscription overview is available and empty for a new account", async ({
+  page,
+  signedIn,
+}) => {
+  expect(signedIn).toContain("@example.test");
+  await page.goto("/mon-compte");
+  await page
+    .getByRole("navigation", { name: "Mon espace personnel" })
+    .getByRole("link", { name: "Abonnements" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Mes abonnements" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Vous n’avez pas encore d’abonnement."),
+  ).toBeVisible();
+});

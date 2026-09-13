@@ -1,4 +1,5 @@
 import { join } from "node:path";
+import type { OAuthHttpClient } from "@structure-ai/auth";
 import type { SQL } from "bun";
 import { Schema } from "effect";
 import { admin, referenceKinds } from "./admin";
@@ -56,8 +57,12 @@ interface Context {
   params: Record<string, string>;
 }
 type Handler = (context: Context) => Promise<unknown>;
-export async function application(sql: SQL, config: AppConfig) {
-  const accounts = await identity(sql, config);
+export async function application(
+  sql: SQL,
+  config: AppConfig,
+  oauthHttpClient?: OAuthHttpClient,
+) {
+  const accounts = await identity(sql, config, oauthHttpClient);
   const catalog = rentals(sql);
   const reservations = bookings(sql);
   const messages = correspondence(sql);
@@ -84,7 +89,73 @@ export async function application(sql: SQL, config: AppConfig) {
       handler,
     });
   };
+  route("GET", "/api/me/subscriptions", async ({ request, url }) =>
+    payments.accountSubscriptions(await accounts.persona(request), page(url)),
+  );
+  route("GET", "/api/sign-in/providers", async () => accounts.providers);
+  route("GET", "/api/me/preferences", async ({ request }) =>
+    accounts.preferences(await accounts.persona(request)),
+  );
+  route("PUT", "/api/me/preferences", async ({ request }) =>
+    accounts.savePreferences(
+      await accounts.persona(request),
+      await body(request, S.PreferencesSchema),
+    ),
+  );
+  route("POST", "/api/me/avatar", async ({ request }) => {
+    const actor = await accounts.persona(request);
+    assert(
+      actor.profile,
+      400,
+      "profile_required",
+      "Enregistrez vos informations avant d’ajouter une photo.",
+    );
+    const image = await upload(sql, actor, request, config.uploadDirectory);
+    return accounts.avatar(actor, image.path);
+  });
+  route("DELETE", "/api/me/avatar", async ({ request }) =>
+    accounts.avatar(await accounts.persona(request), null),
+  );
   route("GET", "/api/me", async ({ request }) => accounts.persona(request));
+  route("GET", "/api/me/security", async ({ request }) =>
+    accounts.security(await accounts.persona(request)),
+  );
+  route("POST", "/api/me/contact-email", async ({ request }) =>
+    accounts.requestContactEmail(
+      await accounts.persona(request),
+      (
+        await body(
+          request,
+          Schema.Struct({
+            email: Schema.String.pipe(
+              Schema.maxLength(254),
+              Schema.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+            ),
+          }),
+        )
+      ).email,
+    ),
+  );
+  route("POST", "/api/me/contact-email/verify", async ({ request }) =>
+    accounts.verifyContactEmail(
+      await accounts.persona(request),
+      (
+        await body(
+          request,
+          Schema.Struct({
+            token: Schema.String.pipe(
+              Schema.minLength(1),
+              Schema.maxLength(200),
+            ),
+          }),
+        )
+      ).token,
+    ),
+  );
+  route("GET", "/api/me/passkeys", ({ request }) => accounts.passkeys(request));
+  route("DELETE", "/api/me/passkeys/:id", ({ request, params }) =>
+    accounts.removePasskey(request, params.id!),
+  );
   route("PUT", "/api/me", async ({ request }) =>
     accounts.saveProfile(
       await accounts.persona(request),
@@ -368,6 +439,8 @@ export async function application(sql: SQL, config: AppConfig) {
         );
         activeAuth++;
         countedAuth = true;
+        if (path.startsWith("/api/auth/passkeys/register/"))
+          await accounts.persona(request);
         return await accounts.handler(request);
       }
       if (path.startsWith("/media/")) {
@@ -384,7 +457,7 @@ export async function application(sql: SQL, config: AppConfig) {
           "Image introuvable.",
         );
         const publicRows =
-          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb LIMIT 1`;
+          await sql`SELECT id FROM crozon_rentals WHERE status='published' AND data->>'subscriptionExpiresAt'>${new Date().toISOString()} AND data->'photos' @> ${[path]}::jsonb UNION ALL SELECT id FROM crozon_personas WHERE NOT disabled AND profile->>'avatarUrl'=${path} LIMIT 1`;
         if (!publicRows.length) {
           const actor = await accounts.persona(request);
           const rows =

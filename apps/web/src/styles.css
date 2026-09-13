@@ -666,7 +666,7 @@ summary:focus-visible {
 .account-layout .rental-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.account-layout .page-content > form {
+.account-layout :where(.page-content) > form {
   max-width: 700px;
 }
 .account-grid {
@@ -1792,4 +1792,125 @@ legend {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+.auth-separator {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 24px 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.auth-separator::before,
+.auth-separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.passkey-login {
+  width: 100%;
+  font-size: 13px;
+}
+.settings-section {
+  border-top: 1px solid var(--line);
+  margin: 30px 0;
+  padding: 24px 0;
+}
+.settings-section h2 {
+  color: var(--blue);
+  font-size: 20px;
+}
+.settings-section p {
+  font-size: 14px;
+}
+.settings-section form {
+  max-width: 550px;
+  margin-top: 24px;
+}
+.passkey-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.passkey-row strong {
+  overflow-wrap: anywhere;
+}
+
+.profile-form .form-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.profile-form > button {
+  display: flex;
+  margin-left: auto;
+}
+.profile-form > label:has(select) {
+  max-width: 250px;
+}
+.avatar-settings {
+  margin-top: 50px;
+}
+.avatar-settings h2 {
+  color: var(--blue);
+  font-size: 18px;
+}
+.avatar-settings p {
+  font-size: 13px;
+}
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.avatar-upload > img {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.avatar-upload label {
+  min-width: 0;
+}
+.avatar-upload input {
+  font-size: 12px;
+}
+.persona-avatar img {
+  object-fit: cover;
+}
+.persona-avatar:has(img[src^="/media/"]) {
+  overflow: hidden;
+}
+.persona-avatar img[src^="/media/"] {
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 900px) {
+  .profile-form .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 500px) {
+  .profile-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .avatar-upload {
+    flex-direction: column;
+    align-items: start;
+    gap: 16px;
+  }
+}
+
+.social-login {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.social-login .google-login {
+  border-color: var(--pink);
+}
+.subscription-summary {
+  margin-bottom: 20px;
 }

@@ -1,4 +1,6 @@
 export interface Profile {
+  avatarUrl?: string;
+  town?: string;
   firstname: string;
   lastname: string;
   cellphone: string;
@@ -124,6 +126,9 @@ export interface Subscription {
   paymentIntentId: string | null;
   discountId: string | null;
   expiresAt: string | null;
+}
+export interface AccountSubscription extends Subscription {
+  rentalTitle: string;
 }
 export interface Page<T> {
   items: T[];

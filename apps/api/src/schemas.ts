@@ -10,7 +10,9 @@ export const DateOnly = S.String.pipe(S.pattern(/^\d{4}-\d{2}-\d{2}$/));
 const DateOrEmpty = S.Union(DateOnly, S.Literal(""));
 const period = S.Struct({ start: DateOnly, end: DateOnly });
 const time = S.String.pipe(S.pattern(/^([01]\d|2[0-3]):[0-5]\d$/));
+export const PreferencesSchema = S.Struct({ emailNotifications: S.Boolean });
 export const ProfileSchema = S.Struct({
+  town: S.optional(text(100)),
   firstname: nonempty(100),
   lastname: nonempty(100),
   cellphone: text(30),

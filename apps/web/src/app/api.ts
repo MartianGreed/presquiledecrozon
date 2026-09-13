@@ -47,6 +47,21 @@ export class Api {
     }
     return data as T;
   }
+  async upload<T>(path: string, file: File): Promise<T> {
+    const response = await fetch(`/api${path}`, {
+      method: "POST",
+      headers: { "content-type": file.type },
+      body: file,
+      signal: AbortSignal.timeout(30000),
+    });
+    const result = await response.json();
+    if (!response.ok)
+      throw new ApiError(
+        result.message ?? "Impossible d’ajouter cette photo.",
+        response.status,
+      );
+    return result as T;
+  }
   async me(): Promise<Persona | null> {
     try {
       const persona = await this.request<Persona>("/me");

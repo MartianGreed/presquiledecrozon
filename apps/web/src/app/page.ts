@@ -10,6 +10,7 @@ import {
   type Message,
   type Notification,
   type Page,
+  type Persona,
   type Plan,
   type Profile,
   type Quote,
@@ -17,8 +18,11 @@ import {
   type RentalInput,
   rentalSteps,
 } from "../../../../packages/contracts/src/models";
+import { AccountSettings } from "./account-settings";
+import { AccountSubscriptions } from "./account-subscriptions";
 import { Api } from "./api";
 import { AuthDialog } from "./auth-dialog";
+import { passkeyError, signInWithPasskey } from "./passkeys";
 import { emptySearch, RentalSearch, type SearchFields } from "./rental-search";
 import { StayCalendar } from "./stay-calendar";
 @Component({
@@ -31,6 +35,8 @@ import { StayCalendar } from "./stay-calendar";
     AuthDialog,
     StayCalendar,
     RentalSearch,
+    AccountSettings,
+    AccountSubscriptions,
   ],
   templateUrl: "./page.html",
 })
@@ -50,6 +56,7 @@ export class PageComponent {
   readonly booking = signal<Booking | null>(null);
   readonly messages = signal<Message[]>([]);
   readonly notifications = signal<Notification[]>([]);
+  readonly socialProviders = signal<string[]>([]);
   readonly plans = signal<Plan[]>([]);
   readonly quote = signal<Quote | null>(null);
   readonly favorites = signal<string[]>([]);
@@ -83,7 +90,17 @@ export class PageComponent {
       path: "/mon-compte/coups-de-coeur",
       pages: ["favorites"],
     },
+    {
+      label: "Abonnements",
+      path: "/mon-compte/abonnements",
+      pages: ["subscriptions"],
+    },
     { label: "Profil", path: "/mon-compte/informations", pages: ["profile"] },
+    {
+      label: "Paramètres",
+      path: "/mon-compte/parametres",
+      pages: ["settings"],
+    },
   ];
   readonly equipmentChoices = [
     "Wi-Fi",
@@ -127,6 +144,8 @@ export class PageComponent {
       "messages",
       "subscription",
       "payment-confirm",
+      "settings",
+      "subscriptions",
     ].includes(this.page());
   }
   get progress() {
@@ -250,6 +269,8 @@ export class PageComponent {
       else if (path.startsWith("/deposez-votre-annonce/"))
         page = path.endsWith("/termine") ? "rental-done" : "editor";
       else if (path === "/mon-compte/informations") page = "profile";
+      else if (path === "/mon-compte/abonnements") page = "subscriptions";
+      else if (path === "/mon-compte/parametres") page = "settings";
       else if (path === "/mon-compte/coups-de-coeur") page = "favorites";
       else if (path === "/mon-compte/annonces") page = "my-rentals";
       else if (
@@ -273,6 +294,8 @@ export class PageComponent {
         "editor",
         "rental-done",
         "profile",
+        "settings",
+        "subscriptions",
         "favorites",
         "my-rentals",
         "bookings",
@@ -309,6 +332,15 @@ export class PageComponent {
         if (generation !== this.generation) return;
         this.rentals.set(result.items);
         this.total = result.total;
+      }
+      if (["login", "register"].includes(page)) {
+        this.socialProviders.set(
+          await this.api.request<string[]>("/sign-in/providers"),
+        );
+        if (url.searchParams.get("oauth") === "failed")
+          this.error.set(
+            "La connexion a échoué ou a été annulée. Réessayez. Pour associer un compte existant, connectez-vous d’abord avec votre méthode habituelle.",
+          );
       }
       if (page === "home")
         this.plans.set(await this.api.request<Plan[]>("/plans"));
@@ -450,6 +482,23 @@ export class PageComponent {
       this.busy.set(false);
     }
   }
+  async finishSignIn() {
+    await this.api.me();
+    const next = this.url().searchParams.get("next");
+    await this.router.navigateByUrl(
+      next?.startsWith("/") && !next.startsWith("//") ? next : "/mon-compte",
+    );
+  }
+  passkeyLogin() {
+    return this.action(async () => {
+      try {
+        await signInWithPasskey(this.api);
+      } catch (error) {
+        throw new Error(passkeyError(error));
+      }
+      await this.finishSignIn();
+    });
+  }
   async auth() {
     await this.action(async () => {
       const page = this.page();
@@ -458,13 +507,7 @@ export class PageComponent {
           email: this.email,
           password: this.password,
         });
-        await this.api.me();
-        const next = this.url().searchParams.get("next");
-        await this.router.navigateByUrl(
-          next?.startsWith("/") && !next.startsWith("//")
-            ? next
-            : "/mon-compte",
-        );
+        await this.finishSignIn();
       } else if (page === "register") {
         if (this.password !== this.confirmPassword)
           throw new Error("Les mots de passe ne correspondent pas.");
@@ -499,9 +542,45 @@ export class PageComponent {
       }
     });
   }
+  async uploadAvatar(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    await this.action(async () => {
+      const persona = await this.api.upload<Persona>("/me/avatar", file);
+      this.api.persona.set(persona);
+      this.profile = { ...persona.profile! };
+      this.notice.set("Votre photo de profil est enregistrée.");
+    });
+    input.value = "";
+  }
+  removeAvatar() {
+    return this.action(async () => {
+      const persona = await this.api.request<Persona>("/me/avatar", "DELETE");
+      this.api.persona.set(persona);
+      this.profile = { ...persona.profile! };
+      this.notice.set("Votre photo de profil a été retirée.");
+    });
+  }
+  socialLogin(provider: string) {
+    return this.action(async () => {
+      const next = this.url().searchParams.get("next");
+      const returnTo =
+        next?.startsWith("/") && !next.startsWith("//") && !next.includes("\\")
+          ? next
+          : "/mon-compte";
+      const response = await this.api.request<{ authorizationUrl: string }>(
+        `/auth/oauth/${provider}/start`,
+        "POST",
+        { returnTo },
+      );
+      location.assign(response.authorizationUrl);
+    });
+  }
   async saveProfile() {
     await this.action(async () => {
-      this.api.persona.set(await this.api.request("/me", "PUT", this.profile));
+      const { avatarUrl: _avatarUrl, ...profile } = this.profile;
+      this.api.persona.set(await this.api.request("/me", "PUT", profile));
       this.notice.set("Vos informations sont enregistrées.");
     });
   }
@@ -641,17 +720,7 @@ export class PageComponent {
       if (this.editor.photos.length + files.length > 30)
         throw new Error("Vous pouvez ajouter au maximum 30 photos.");
       for (const file of files) {
-        const response = await fetch("/api/media", {
-          method: "POST",
-          headers: { "content-type": file.type },
-          body: file,
-          signal: AbortSignal.timeout(30000),
-        });
-        const result = await response.json();
-        if (!response.ok)
-          throw new Error(
-            result.message ?? "Impossible d’ajouter cette photo.",
-          );
+        const result = await this.api.upload<{ path: string }>("/media", file);
         this.editor.photos = [...this.editor.photos, result.path];
       }
       input.value = "";
