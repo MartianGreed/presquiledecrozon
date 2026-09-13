@@ -1,38 +1,26 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
+    "target": "ES2022",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
     "lib": [
-      "es2017",
-      "dom"
+      "ES2022",
+      "DOM"
     ],
+    "types": [
+      "bun"
+    ],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@crozon/animation-utils": [
-        "assets/src/animation-utils/index.ts"
-      ],
-      "@crozon/calendar": [
-        "assets/src/calendar/index.ts"
-      ],
-      "@crozon/utils": [
-        "assets/src/utils/index.ts"
-      ]
-    }
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true
   },
-  "exclude": [
-    "node_modules",
-    "tmp",
-    "vendor"
+  "include": [
+    "apps/api/**/*.ts",
+    "packages/**/*.ts",
+    "scripts/**/*.ts"
   ]
 }
