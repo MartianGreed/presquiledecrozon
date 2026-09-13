@@ -1914,3 +1914,60 @@ legend {
 .subscription-summary {
   margin-bottom: 20px;
 }
+
+.conversation-search {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.conversation-search label {
+  flex: 1;
+  margin: 0;
+}
+.conversation img,
+.review-author img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.reviews-section {
+  margin-top: 48px;
+  max-width: 900px;
+}
+.review-card {
+  border-bottom: 1px solid #d8d9d8;
+  padding: 28px 0;
+}
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.review-author time {
+  margin-left: auto;
+  font-size: 13px;
+}
+.review-stars {
+  color: #a77813;
+  letter-spacing: 3px;
+  font-size: 22px;
+}
+.review-card blockquote {
+  margin: 20px 0 0 24px;
+  padding: 20px;
+  background: #f7f5f2;
+  border-left: 3px solid #006287;
+}
+.review-form {
+  margin-top: 32px;
+  padding: 24px;
+  background: #f7f5f2;
+}
+@media (max-width: 600px) {
+  .conversation-search {
+    display: block;
+  }
+  .conversation-search button {
+    margin-top: 12px;
+  }
+}

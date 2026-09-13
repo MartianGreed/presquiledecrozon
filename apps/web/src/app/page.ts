@@ -6,6 +6,7 @@ import { NavigationEnd, Router, RouterLink } from "@angular/router";
 import { filter } from "rxjs";
 import {
   type Booking,
+  type Conversation,
   emptyRental,
   type Message,
   type Notification,
@@ -24,6 +25,7 @@ import { Api } from "./api";
 import { AuthDialog } from "./auth-dialog";
 import { passkeyError, signInWithPasskey } from "./passkeys";
 import { emptySearch, RentalSearch, type SearchFields } from "./rental-search";
+import { Reviews } from "./reviews";
 import { StayCalendar } from "./stay-calendar";
 @Component({
   selector: "crozon-page",
@@ -37,6 +39,7 @@ import { StayCalendar } from "./stay-calendar";
     RentalSearch,
     AccountSettings,
     AccountSubscriptions,
+    Reviews,
   ],
   templateUrl: "./page.html",
 })
@@ -52,6 +55,7 @@ export class PageComponent {
   readonly notice = signal("");
   readonly rentals = signal<Rental[]>([]);
   readonly rental = signal<Rental | null>(null);
+  readonly conversations = signal<Conversation[]>([]);
   readonly bookings = signal<Booking[]>([]);
   readonly booking = signal<Booking | null>(null);
   readonly messages = signal<Message[]>([]);
@@ -286,6 +290,7 @@ export class PageComponent {
       else if (path === "/mon-compte/messages") page = "messages";
       else if (path.startsWith("/abonnement"))
         page = path.includes("/confirm/") ? "payment-confirm" : "subscription";
+      else if (path === "/admin/avis") page = "admin-reviews";
       else if (path === "/admin") page = "admin";
       else if (path === "/mon-compte") page = "account";
       else if (path !== "/") page = "not-found";
@@ -305,6 +310,7 @@ export class PageComponent {
         "payment-confirm",
         "account",
         "admin",
+        "admin-reviews",
       ];
       if (protectedPages.includes(page) && !(await this.api.me())) {
         await this.router.navigate(["/login"], {
@@ -418,10 +424,11 @@ export class PageComponent {
           1,
           Number(url.searchParams.get("conversationsPage") ?? 1),
         );
-        const result = await this.api.request<Page<Booking>>(
-          `/conversations?page=${this.conversationPage}`,
+        const result = await this.api.request<Page<Conversation>>(
+          `/conversations?page=${this.conversationPage}&q=${encodeURIComponent(url.searchParams.get("q") ?? "")}`,
         );
-        this.bookings.set(result.items);
+        this.conversations.set(result.items);
+        this.search = url.searchParams.get("q") ?? "";
         this.conversationTotal = result.total;
         this.conversationId =
           url.searchParams.get("conversation") ?? result.items[0]?.id ?? "";
@@ -793,6 +800,33 @@ export class PageComponent {
           {},
         ),
       );
+    });
+  }
+  searchConversations() {
+    return this.router.navigate(["/mon-compte/messages"], {
+      queryParams: { q: this.search || null },
+    });
+  }
+  contactOwner() {
+    return this.action(async () => {
+      if (!this.api.persona()) {
+        await this.router.navigate(["/login"], {
+          queryParams: { next: this.router.url },
+        });
+        return;
+      }
+      if (!this.api.persona()?.profile) {
+        await this.router.navigateByUrl("/mon-compte/informations");
+        return;
+      }
+      const conversation = await this.api.request<{ id: string }>(
+        `/rentals/${this.rental()!.id}/conversations`,
+        "POST",
+        {},
+      );
+      await this.router.navigate(["/mon-compte/messages"], {
+        queryParams: { conversation: conversation.id },
+      });
     });
   }
   async changeConversationPage(delta: number) {

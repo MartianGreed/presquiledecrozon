@@ -483,6 +483,210 @@ suite("PostgreSQL application acceptance", () => {
       ).length,
     ).toBeGreaterThan(0);
   });
+  test("direct contact creates no booking and only participants can exchange messages", async () => {
+    const before = await sql`SELECT count(*) AS n FROM crozon_bookings`;
+    const created = await request(
+      `/api/rentals/${rental.id}/conversations`,
+      "POST",
+      {},
+      guestCookie,
+    );
+    expect(created.status).toBe(200);
+    const conversation = (await created.json()) as { id: string };
+    expect(
+      (
+        (await request(
+          `/api/rentals/${rental.id}/conversations`,
+          "POST",
+          {},
+          guestCookie,
+        ).then((r) => r.json())) as { id: string }
+      ).id,
+    ).toBe(conversation.id);
+    expect((await sql`SELECT count(*) AS n FROM crozon_bookings`)[0].n).toBe(
+      before[0].n,
+    );
+    expect(
+      (
+        await request(
+          `/api/rentals/${rental.id}/conversations`,
+          "POST",
+          {},
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/conversations/${conversation.id}/messages`,
+          "GET",
+          undefined,
+          otherCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/conversations/${conversation.id}/messages`,
+          "POST",
+          { body: "Le jardin est-il clos ?" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const messages = (await request(
+      `/api/conversations/${conversation.id}/messages`,
+      "GET",
+      undefined,
+      ownerCookie,
+    ).then((r) => r.json())) as { items: Array<{ body: string }> };
+    expect(messages.items[0]?.body).toBe("Le jardin est-il clos ?");
+    const found = (await request(
+      "/api/conversations?q=Maison",
+      "GET",
+      undefined,
+      guestCookie,
+    ).then((r) => r.json())) as {
+      items: Array<{ counterpart: { name: string } }>;
+    };
+    expect(found.items).toHaveLength(2);
+    expect(found.items[0]?.counterpart.name).toBe("Marie Martin");
+    expect(JSON.stringify(found)).not.toContain("owner@example.test");
+    expect(
+      (
+        (await request(
+          "/api/conversations?q=Introuvable",
+          "GET",
+          undefined,
+          guestCookie,
+        ).then((r) => r.json())) as { total: number }
+      ).total,
+    ).toBe(0);
+  });
+  test("reviews require a completed owned stay and support owner replies and moderation", async () => {
+    expect(
+      (
+        await request(
+          `/api/bookings/${booking.id}/review`,
+          "POST",
+          { rating: 5, body: "Très bon séjour" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const completed: Booking = {
+      ...booking,
+      id: crypto.randomUUID(),
+      start: "2025-01-01",
+      end: "2025-01-08",
+      status: "done",
+    };
+    await sql`INSERT INTO crozon_bookings(id,rental_id,persona_id,start_date,end_date,status,data) VALUES(${completed.id},${rental.id},${completed.personaId},${completed.start},${completed.end},'done',${completed})`;
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 5, body: "Intrusion" },
+          otherCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 6, body: "Très bon séjour" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(400);
+    const created = await request(
+      `/api/bookings/${completed.id}/review`,
+      "POST",
+      { rating: 5, body: "Très bon séjour" },
+      guestCookie,
+    );
+    expect(created.status).toBe(200);
+    const review = (await created.json()) as { id: string };
+    expect(
+      (
+        await request(
+          `/api/bookings/${completed.id}/review`,
+          "POST",
+          { rating: 3, body: "Doublon" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(409);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/reply`,
+          "PUT",
+          { body: "Intrusion" },
+          guestCookie,
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/reply`,
+          "PUT",
+          { body: "Merci !" },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    const published = (await request(`/api/rentals/${rental.id}/reviews`).then(
+      (r) => r.json(),
+    )) as { average: number; items: Array<{ reply: string }> };
+    expect(published.average).toBe(5);
+    expect(published.items[0]?.reply).toBe("Merci !");
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: false },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(403);
+    await sql`UPDATE crozon_personas SET admin=true WHERE id=${owner.id}`;
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: false },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        (await request(`/api/rentals/${rental.id}/reviews`).then((r) =>
+          r.json(),
+        )) as { total: number }
+      ).total,
+    ).toBe(0);
+    expect(
+      (
+        await request(
+          `/api/reviews/${review.id}/moderate`,
+          "POST",
+          { published: true },
+          ownerCookie,
+        )
+      ).status,
+    ).toBe(200);
+    await sql`UPDATE crozon_personas SET admin=false WHERE id=${owner.id}`;
+  });
   test("administrators manage references and disabled accounts lose access", async () => {
     await sql`UPDATE crozon_personas SET admin=true WHERE id=${owner.id}`;
     const plan = {

@@ -6,6 +6,7 @@ import { admin, referenceKinds } from "./admin";
 import { billing } from "./billing/service";
 import { bookings } from "./bookings/service";
 import { type AppConfig, secret } from "./config";
+import { reviews } from "./correspondence/reviews";
 import { correspondence } from "./correspondence/service";
 import { assert, invalid, Problem } from "./errors";
 import { identity, rateLimit } from "./identity/service";
@@ -65,6 +66,7 @@ export async function application(
   const accounts = await identity(sql, config, oauthHttpClient);
   const catalog = rentals(sql);
   const reservations = bookings(sql);
+  const feedback = reviews(sql);
   const messages = correspondence(sql);
   const payments = billing(sql, config);
   const administration = admin(sql);
@@ -301,8 +303,65 @@ export async function application(
   route("DELETE", "/api/favorites/:id", async ({ request, params }) =>
     messages.favorite(await accounts.persona(request), params.id!, false),
   );
+  route(
+    "POST",
+    "/api/rentals/:id/conversations",
+    async ({ request, params }) => {
+      const actor = await accounts.persona(request);
+      await rateLimit(sql, `contact:${actor.id}`, 50);
+      return messages.contact(actor, params.id!);
+    },
+  );
+  route("GET", "/api/rentals/:id/reviews", async ({ request, params, url }) =>
+    feedback.list(
+      params.id!,
+      page(url),
+      await accounts.persona(request).catch((error) => {
+        if (error instanceof Problem && error.status === 401) return undefined;
+        throw error;
+      }),
+    ),
+  );
+  route("GET", "/api/rentals/:id/reviewable", async ({ request, params }) =>
+    feedback.eligible(await accounts.persona(request), params.id!),
+  );
+  route("POST", "/api/bookings/:id/review", async ({ request, params }) =>
+    feedback.create(
+      await accounts.persona(request),
+      params.id!,
+      await body(
+        request,
+        Schema.Struct({
+          rating: Schema.Number.pipe(Schema.int(), Schema.between(1, 5)),
+          body: Schema.String.pipe(Schema.minLength(1), Schema.maxLength(5000)),
+        }),
+      ),
+    ),
+  );
+  route("PUT", "/api/reviews/:id/reply", async ({ request, params }) =>
+    feedback.reply(
+      await accounts.persona(request),
+      params.id!,
+      (await body(request, S.MessageRequest)).body,
+    ),
+  );
+  route("POST", "/api/reviews/:id/moderate", async ({ request, params }) =>
+    feedback.moderate(
+      await accounts.persona(request),
+      params.id!,
+      (await body(request, Schema.Struct({ published: Schema.Boolean })))
+        .published,
+    ),
+  );
+  route("GET", "/api/admin/reviews", async ({ request, url }) =>
+    feedback.administration(await accounts.persona(request), page(url)),
+  );
   route("GET", "/api/conversations", async ({ request, url }) =>
-    messages.conversations(await accounts.persona(request), page(url)),
+    messages.conversations(
+      await accounts.persona(request),
+      page(url),
+      (url.searchParams.get("q") ?? "").slice(0, 100),
+    ),
   );
   route(
     "GET",
@@ -315,6 +374,7 @@ export async function application(
     "/api/conversations/:id/messages",
     async ({ request, params }) => {
       const actor = await accounts.persona(request);
+      await rateLimit(sql, `message:${actor.id}`, 100);
       return messages.send(
         actor,
         params.id!,

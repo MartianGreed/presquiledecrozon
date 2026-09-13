@@ -83,6 +83,26 @@ export interface Booking {
   quote: Quote;
   createdAt: string;
 }
+export interface Conversation {
+  id: string;
+  rentalId: string;
+  rentalTitle: string;
+  start: string | null;
+  end: string | null;
+  kind: "booking" | "direct";
+  counterpart: { name: string; avatarUrl?: string };
+}
+export interface Review {
+  id: string;
+  rentalId: string;
+  rentalTitle: string;
+  author: { name: string; avatarUrl?: string };
+  rating: number;
+  body: string;
+  reply: string;
+  createdAt: string;
+  published: boolean;
+}
 export interface Message {
   id: string;
   bookingId: string;

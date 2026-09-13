@@ -151,7 +151,7 @@ test("protected deep link returns to the requested page after login", async ({
   ).toBeVisible();
   await expect(
     page.getByText(
-      "Vos conversations apparaîtront après une demande de réservation.",
+      "Vos conversations apparaîtront après un premier contact ou une demande de réservation.",
     ),
   ).toBeVisible();
 });

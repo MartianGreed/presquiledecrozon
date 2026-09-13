@@ -34,7 +34,9 @@ The user also requested passkeys. WebAuthn registration, discoverable sign-in an
 
 Preserve booking conversations and add a separate direct-contact conversation record. Direct contact does not create or lock a booking. Only participants may read or send messages. The unified conversation list must search on the server, paginate, and display safe counterpart names and avatars rather than private email addresses.
 
-Reviews belong to completed stays. Enforce one review per booking, traveler ownership, an elapsed checkout date and an eligible booking status. Owners can respond, administrators can moderate, and public listings expose only published reviews. The UI provides ratings, written reviews and the owner's response.
+Direct conversations use their own tables; the shared message DTO retains the `bookingId` field as a conversation identifier for compatibility. Search runs on the server before pagination. The existing booking conversation URLs remain valid.
+
+Reviews belong to completed stays. Enforce one review per booking, traveler ownership, an elapsed checkout date and an eligible booking status. Owners can respond, administrators can moderate, and public listings expose only published reviews. The UI provides ratings, written reviews and the owner's response. Reviews become eligible the day after checkout, avoiding publication before departure on the final day. `/admin/avis` supports hiding and restoring reviews. Browser setup can move a fixture stay into the past only with a dedicated `_test` database; production has no test-completion endpoint.
 
 ## Tourism, events and editorial content, #23
 
